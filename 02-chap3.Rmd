@@ -1,0 +1,1408 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Online Survey: Analysis of Responses from GUI Members
+
+
+```{r include=FALSE}
+# Packages
+library(QuantPsyc)
+library(ggpubr)
+library(heplots)
+library(tidyverse)
+library(gt)
+library(lubridate)
+library(forcats)
+library(zoo)
+library(patchwork)
+library(lsr)
+library(psych)
+library(dplyr)
+```
+
+
+<!-- ```{r include=FALSE} -->
+<!-- # loading full GUI data -->
+<!-- gui_df <- readRDS(here::here("data/0_GUI_online_mar20.rds")) -->
+<!-- only_gui <- gui_df %>% -->
+<!--   filter(gui_non_gui == "yes") -->
+<!-- ``` -->
+
+
+<!-- ```{r include=FALSE} -->
+<!-- # replacing 0 in frequency and commitment -->
+<!-- only_gui <- only_gui %>% -->
+<!--   mutate( -->
+<!--     commitment_coded = case_when( # if 0, coded with 1 -->
+<!--       commitment == 0 ~ 1, -->
+<!--       TRUE ~ commitment -->
+<!--     ), -->
+<!--     frequency_coded = case_when( # if 0, coded with 1 -->
+<!--       frequency == 0 ~ 1, -->
+<!--       TRUE ~ frequency -->
+<!--     ), -->
+<!--     gender = case_when( # coding gender -->
+<!--       gender == 1 ~ "Female", -->
+<!--       gender == 3 ~ "Male", -->
+<!--       TRUE ~ "Others" -->
+<!--     ), -->
+<!--     balik = case_when( # if False, coded with 0 -->
+<!--       `which_programs/balik` == "FALSE" ~ 0, -->
+<!--       TRUE ~ 1 -->
+<!--     ), -->
+<!--     corporate = case_when( # if False, coded with 0 -->
+<!--       `which_programs/corporate` == "FALSE" ~ 0, -->
+<!--       TRUE ~ 1 -->
+<!--     ), -->
+<!--     wood = case_when( # if False, coded with 0 -->
+<!--       `which_programs/wood` == "FALSE" ~ 0, -->
+<!--       TRUE ~ 1 -->
+<!--     ), -->
+<!--     sketch = case_when( # if False, coded with 0 -->
+<!--       `which_programs/sketch` == "FALSE" ~ 0, -->
+<!--       TRUE ~ 1 -->
+<!--     ), -->
+<!--     harvesting = case_when( # if False, coded with 0 -->
+<!--       `which_programs/harvesting` == "FALSE" ~ 0, -->
+<!--       TRUE ~ 1 -->
+<!--     ), -->
+<!--     others = case_when( # if False, coded with 0 -->
+<!--       `which_programs/other` == "FALSE" ~ 0, -->
+<!--       TRUE ~ 1 -->
+<!--     ), -->
+<!--     number_programs = (balik + corporate + wood + sketch + harvesting + others), -->
+<!--     program_percent = number_programs / 6 -->
+<!--   ) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- # Create scales -->
+<!-- scale.list <- list( -->
+<!--   SoCoh = c("social_cohesion_1", "social_cohesion_2", "social_cohesion_3", "social_cohesion_4_rev_coded", "social_cohesion_5_rev_coded"), -->
+<!--   SOC = c("soc_1", "soc_2", "soc_3", "soc_4", "soc_5", "soc_6", "soc_7", "soc_8"), -->
+<!--   CNS = c("cns_1", "cns_2", "cns_3", "cns_4_rev_coded", "cns_5", "cns_6", "cns_7", "cns_8", "cns_9", "cns_10"), -->
+<!--   IMI = c("imi_1", "imi_2", "imi_3_rev_coded", "imi_4_rev_coded", "imi_5", "imi_6", "imi_7", "imi_8"), -->
+<!--   Self_Est = c("self_est_1", "self_est_2_rev_coded", "self_est_3", "self_est_4_rev_coded"), -->
+<!--   Self_Eff = c("self_eff_1", "self_eff_2", "self_eff_3", "self_eff_4", "self_eff_5", "self_eff_6", "self_eff_7", "self_eff_8") -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- library(psych) -->
+<!-- my.scales <- scoreItems(scale.list, only_gui) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- ## Cronbach's Alpha -->
+<!-- library(dplyr) -->
+<!-- dfSoCohscore <- select(only_gui, "social_cohesion_1", "social_cohesion_2", "social_cohesion_3", "social_cohesion_4_rev_coded", "social_cohesion_5_rev_coded") -->
+<!-- dfSOCscore <- select(only_gui, "soc_1", "soc_2", "soc_3", "soc_4", "soc_5", "soc_6", "soc_7", "soc_8") -->
+<!-- dfCNSscore <- select(only_gui, "cns_1", "cns_2", "cns_3", "cns_4_rev_coded", "cns_5", "cns_6", "cns_7", "cns_8", "cns_9", "cns_10") -->
+<!-- dfSelf_Estscore <- select(only_gui, "self_est_1", "self_est_2_rev_coded", "self_est_3", "self_est_4_rev_coded") -->
+<!-- dfSelf_Effscore <- select(only_gui, "self_eff_1", "self_eff_2", "self_eff_3", "self_eff_4", "self_eff_5", "self_eff_6", "self_eff_7", "self_eff_8") -->
+<!-- dfIMIscore <- select(only_gui, "imi_1", "imi_2", "imi_3_rev_coded", "imi_4_rev_coded", "imi_5", "imi_6", "imi_7", "imi_8") -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- alpha(dfSoCohscore) -->
+<!-- alpha(dfSOCscore) -->
+<!-- alpha(dfCNSscore) -->
+<!-- alpha(dfSelf_Estscore) -->
+<!-- alpha(dfSelf_Effscore) -->
+<!-- alpha(dfIMIscore) -->
+<!-- ``` -->
+
+## Internal Consistency
+All scales of psychological measures used in the online survey have good Cronbach’s alpha, ranging from .76 to .92 (good internal consistency). Therefore, we will proceed to include all the questions in the respective scales. 
+
+```{r include=FALSE}
+tbl_1 <- tibble(vars = c(1, 2, 3, 4, 5, 6), scales = c("Social Cohesion", "Sense of Community", "Connection to Nature", "Self Esteem", "Self Efficacy", "Intrinsic Motivation"), Cronbachs_Alpha = c(0.76, 0.92, 0.89, 0.76, 0.91, 0.78))
+```
+
+```{r echo=FALSE}
+tbl_1 %>% gt()
+```
+
+
+<!-- ```{r include=FALSE} -->
+<!-- my.scores <- my.scales$scores -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- dfscores <- data.frame(my.scores) -->
+<!-- only_gui_scales <- cbind(only_gui, dfscores) -->
+<!-- ``` -->
+
+
+```{r include=FALSE}
+# Saving Data Scales
+#saveRDS(only_gui_scales, ("data/only_gui_mar20_scales.rds"))
+#only_gui_scales <- readRDS("/data/only_gui_mar20_scales.rds") # for coding
+only_gui_scales <- readRDS(here::here("data/only_gui_mar20_scales.rds")) #for knitting
+```
+
+## Descriptive statistics
+```{r include=FALSE}
+tbl_2 <- only_gui_scales %>%
+  select(age, frequency_coded, commitment_coded, SoCoh, SOC, CNS, IMI, Self_Est, Self_Eff) %>%
+  describe()
+
+tbl_2 <- tbl_2 %>%
+  mutate(variables = c("Age", "Frequency of Visits (per year)", "Total Duration of Commitment (months)", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation", "Self Esteem", "Self Efficacy")) %>%
+  select(vars, variables, everything())
+```
+
+```{r echo=FALSE}
+tbl_2 %>%
+  gt() %>%
+  tab_header(
+    title = "Descriptive Statistics of Major Variables (only GUI Members)"
+  ) %>%
+  cols_align(align = "center") %>%
+  fmt_number(
+    columns = vars(se, kurtosis, skew, range, mad, trimmed, median, sd, mean),
+    decimals = 2
+  ) %>%
+  fmt_number(
+    columns = vars(max, min),
+    decimals = 1
+  )
+```
+
+
+```{r echo=FALSE}
+# Female
+only_gui_scales %>%
+  filter(gender == "Female") %>%
+  select(age, frequency_coded, commitment_coded, SoCoh, SOC, CNS, IMI, Self_Est, Self_Eff) %>%
+  describe() %>%
+  mutate(variables = c("Age", "Frequency of Visits (per year)", "Total Duration of Commitment (months)", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation", "Self Esteem", "Self Efficacy")) %>%
+  select(vars, variables, everything()) %>%
+  gt() %>%
+  tab_header(
+    title = "Descriptive Statistics of Major Variables (Only Female Members)"
+  ) %>%
+  cols_align(align = "center") %>%
+  fmt_number(
+    columns = vars(se, kurtosis, skew, range, mad, trimmed, median, sd, mean),
+    decimals = 2
+  ) %>%
+  fmt_number(
+    columns = vars(max, min),
+    decimals = 1
+  )
+
+# Male
+only_gui_scales %>%
+  filter(gender == "Male") %>%
+  select(age, frequency_coded, commitment_coded, SoCoh, SOC, CNS, IMI, Self_Est, Self_Eff) %>%
+  describe() %>%
+  mutate(variables = c("Age", "Frequency of Visits (per year)", "Total Duration of Commitment (months)", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation", "Self Esteem", "Self Efficacy")) %>%
+  select(vars, variables, everything()) %>%
+  gt() %>%
+  tab_header(
+    title = "Descriptive Statistics of Major Variables (Only Male Members)"
+  ) %>%
+  cols_align(align = "center") %>%
+  fmt_number(
+    columns = vars(se, kurtosis, skew, range, mad, trimmed, median, sd, mean),
+    decimals = 2
+  ) %>%
+  fmt_number(
+    columns = vars(max, min),
+    decimals = 1
+  )
+```
+
+## Profile of GUI Members in the sample
+###Frequency of Visits (per year)
+The maximum number of the frequency visits is __300__- there is one member who visits GUI almost everyday. The mean and median values for the frequency of visits are 20.4 and 5, respectively. From the below chart, it's observed that the frequency of visits is skewed to the left (small numbers of visits)-__30% of respondents__ in this study visit GUI on average __once a year__, and __66% of respondents__ visit GUI __less than 12 times a year__ (on average less than once a month). 
+
+```{r echo=FALSE}
+only_gui_scales %>%
+  select(frequency_coded) %>%
+  skimr::skim()
+```
+
+```{r echo=FALSE}
+only_gui_scales %>%
+  select(frequency_coded) %>%
+  ggplot(aes(x = frequency_coded)) +
+  geom_histogram(bins = 30, alpha = 0.8) +
+  scale_x_continuous(breaks = c(1, 5, 20, 100, 200, 300)) +
+  geom_vline(mapping = aes(xintercept = 5), color = "red", alpha = 0.5) +
+  geom_vline(mapping = aes(xintercept = 1), color = "blue", alpha = 0.5) +
+  geom_vline(mapping = aes(xintercept = 20), color = "blue", alpha = 0.5) +
+  labs(x = "Frequency of Visits", y = "", title = "Distribution of Frequency of Visits", subtitle = "*Red line is median (5) and Blue lines are the 25th (1) and 75th (20) quantile")
+```
+
+```{r include=FALSE}
+only_gui_scales %>%
+  select(frequency_coded) %>%
+  group_by(frequency_coded) %>%
+  summarise(count = n()) %>%
+  arrange(-count)
+```
+
+```{r include=FALSE}
+only_gui_scales %>%
+  select(frequency_coded) %>%
+  group_by(frequency_coded) %>%
+  summarise(count = n()) %>%
+  filter(frequency_coded == 1) %>%
+  summarize(count2 = sum(count))
+```
+
+### Total Duration of Commitment (month)
+The maximum number of durations of commitment is __136__- there is one respondent who has been visiting GUI __more than 11 years__. The mean and median values for the commitment are 25.5 and 15, respectively. From the below chart, it's observed that the commitment is also skewed towards the shorter durations of commitment-44% of respondents in this study engaged with GUI less than or equal to 1 year(12 months), and 76% of respondents engaged with GUI less than or equal to 3 years (36 months). 
+
+```{r include=FALSE}
+only_gui_scales %>%
+  select(commitment_coded) %>%
+  group_by(commitment_coded) %>%
+  summarise(count = n()) %>%
+  filter(commitment_coded <= 36) %>%
+  summarize(count2 = sum(count))
+```
+
+```{r echo=FALSE}
+only_gui_scales %>%
+  select(month_year) %>%
+  skimr::skim()
+```
+
+```{r include=FALSE}
+# Date joined GUI, distribution
+c1 <- only_gui_scales %>%
+  select(month_year) %>%
+  ggplot(aes(x = month_year)) +
+  geom_histogram(bins = 30, alpha = 0.8) +
+  geom_vline(mapping = aes(xintercept = as.numeric(as.Date("2018-09-01"))), color = "red", alpha = 0.5) +
+  scale_x_date(breaks = as.Date(c("2008-08-01", "2010-08-01", "2012-08-01", "2014-08-01", "2016-08-01", "2018-09-01", "2020-03-01"))) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5)) +
+  labs(x = "Dates of first vist to GUI", y = "", title = "Dates of the first visit to GUI", subtitle = "*Red line is median (2018-09-01)")
+```
+
+```{r echo=FALSE}
+only_gui_scales %>%
+  select(commitment_coded) %>%
+  skimr::skim()
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+c2 <- only_gui_scales %>%
+  select(commitment_coded) %>%
+  ggplot(aes(x = commitment_coded)) +
+  geom_histogram(bins = 30, alpha = 0.8) +
+  scale_x_continuous(breaks = c(0, 5, 15, 36, 50, 100, 136)) +
+  geom_vline(mapping = aes(xintercept = 15), color = "red", alpha = 0.5) +
+  geom_vline(mapping = aes(xintercept = 5), color = "blue", alpha = 0.5) +
+  geom_vline(mapping = aes(xintercept = 36), color = "blue", alpha = 0.5) +
+  labs(x = "Total duration of commitment (months)", y = "", title = "Total Duration of Commitment (months)", subtitle = "*Red line is median (15) and Blue lines are the 25th (5) and 75th (36) quantile")
+
+c1 | c2
+```
+
+### Frequency and Commitment
+```{r include=FALSE}
+only_gui_scales %>%
+  filter(commitment_coded <= 15 & frequency_coded <= 5) %>%
+  select(commitment_coded) %>%
+  group_by(commitment_coded) %>%
+  summarise(count = n()) %>%
+  summarise(count2 = sum(count))
+```
+
+The below chart suggests that many of the respondents in this study (36%) are __newer members of GUI (less than or equal to 15 months)__ who visit GUI __less than or equal to 5 times per year__. Also, the below chart and the result of the correlation test between the two variables indicate that the correlation between __frequency and commitment is weak__ (r=0.235, Pearson): it seems that the longer commitment with GUI does not necessarily lead to a higher frequency of visits. 
+
+```{r echo=FALSE}
+only_gui_scales %>%
+  select(frequency_coded, commitment_coded) %>%
+  ggplot(aes(commitment_coded, frequency_coded)) +
+  geom_bin2d() +
+  geom_hline(mapping = aes(yintercept = 5), color = "red", alpha = 0.5) +
+  geom_vline(mapping = aes(xintercept = 15), color = "red", alpha = 0.5) +
+  scale_y_continuous(breaks = c(1, 5, 20, 100, 200, 300)) +
+  scale_x_continuous(breaks = c(0, 5, 15, 36, 50, 100, 136)) +
+  labs(y = "Frequency of Visits per Month", x = "Total duration of commitment (months)", title = "Frequency and Commitment", subtitle = "*Red lines are median for frequency of visits and commitment (5 and 15, respectively)")
+```
+
+```{r include=FALSE}
+library(lsr)
+only_gui_scales %>%
+  select(frequency_coded, commitment_coded) %>%
+  correlate(test = TRUE, corr.method = "pearson", p.adjust.method = "none")
+```
+
+### Genger, Race, and Age
+#### Gender and Race
+From the below tables, it's observed that the majority of respondents in this study are female and Chinese. It would be good to check this distribution against the GUI membership directory (if it exists).
+
+```{r echo=FALSE}
+only_gui_scales %>%
+  select(gender) %>%
+  group_by(gender) %>%
+  summarise(count = n()) %>%
+  gt()
+```
+
+```{r echo=FALSE}
+only_gui_scales %>%
+  select(race) %>%
+  group_by(race) %>%
+  summarise(count = n()) %>%
+  mutate(race_type = c("NA", "Chinese", "Malay", "Indian", "others")) %>%
+  select(race, race_type, count, everything()) %>%
+  gt()
+```
+
+#### Age
+The age of respondents seems to be well-distributed-it's slightly skewed to the left (towards the younger age) but there are still 20% of the respondents who are between the age of 50 and 72.
+
+```{r echo=FALSE}
+only_gui_scales %>%
+  select(age) %>%
+  skimr::skim()
+```
+
+```{r echo=FALSE}
+only_gui_scales %>%
+  select(age) %>%
+  ggplot(aes(x = age)) +
+  geom_histogram(bins = 30, alpha = 0.8) +
+  scale_x_continuous(breaks = c(18, 28, 35, 46, 75)) +
+  geom_vline(mapping = aes(xintercept = 35.5), color = "red", alpha = 0.5) +
+  geom_vline(mapping = aes(xintercept = 28), color = "blue", alpha = 0.5) +
+  geom_vline(mapping = aes(xintercept = 46.2), color = "blue", alpha = 0.5) +
+  labs(x = "Age", y = "", title = "Distribution of Age", subtitle = "*Red line is median (35.5) and Blue lines are the 25th (28) and 75th (46.2) quantile")
+```
+
+```{r include=FALSE}
+only_gui_scales %>%
+  select(age) %>%
+  filter(age >= 50) %>%
+  summarize(count = n())
+```
+
+### Types of Programs Engaged
+The most popular program attended by the respondents is Balik Kampung followed by Harvesting, Wood Workshop, Corporate programs, and Sketching. Among those who selected others, common programs include Farmer's Market 2019, Pesta Kampung, and Pizza making. 
+
+```{r include=FALSE}
+only_gui_scales %>%
+  dplyr::select(balik, corporate, sketch, wood, harvesting, others) %>%
+  summarise(
+    bcount = sum(balik),
+    ccount = sum(corporate),
+    scount = sum(sketch),
+    wcount = sum(wood),
+    hcount = sum(harvesting),
+    ocount = sum(others)
+  )
+
+program_count <- data.frame(
+  "programs" = c("Balik", "Corporate", "Sketch", "Wood", "Harvesting", "Others"),
+  "count" = c(48, 14, 4, 31, 32, 55)
+)
+```
+
+```{r echo=FALSE}
+program_count %>% gt()
+
+program_count %>%
+  group_by(programs) %>%
+  arrange(count) %>%
+  ggplot() +
+  geom_col(aes(x = programs, y = count), fill = "darkgreen", alpha = 0.8) +
+  coord_flip() +
+  labs(x = "Program Type", y = "Number of People Attended Before") +
+  theme_minimal()
+```
+  
+  The below chart indicates that __most of the respondents (53%) attended only one of the GUI's programs__. Those who attended any 2 of GUI's programs are 28%.
+  The below correlation test and scatterplot show that those who engage with GUI in the longer duration attend more number of program types ( __r=0.464__, Pearson). This means that __the longer the member commits on GUI, the more number of types of programs they attend__. 
+  
+```{r echo=FALSE}
+only_gui_scales %>%
+  select(number_programs) %>%
+  ggplot() +
+  geom_bar(aes(x = number_programs), fill = "darkgreen", alpha = 0.8) +
+  labs(x = "Number of Program Types Attended", y = "Number of People in each category") +
+  scale_x_continuous(breaks = c(1, 2, 3, 4, 5, 6)) +
+  scale_y_continuous(breaks = c(0, 10, 20, 30, 40, 50, 55)) +
+  theme_minimal()
+```
+
+```{r include=FALSE}
+a <- only_gui_scales %>%
+  select(number_programs) %>%
+  filter(number_programs == 1) %>%
+  summarize(cout = n())
+a / 104
+```
+
+```{r include=FALSE}
+only_cor <- only_gui_scales %>%
+  select(frequency_coded, commitment_coded, program_percent) %>%
+  correlate(test = TRUE, corr.method = "pearson", p.adjust.method = "none")
+```
+
+```{r include=FALSE}
+pre_pvalue <- round(only_cor$p.value, 2)
+pre_cor <- round(only_cor$correlation, 2)
+
+# Get lower triangle of the correlation matrix
+get_lower_tri <- function(x) {
+  x[upper.tri(x)] <- NA
+  return(x)
+}
+```
+
+```{r include=FALSE}
+library(reshape2)
+lower_tri <- get_lower_tri(pre_cor)
+lower_tri_p <- get_lower_tri(pre_pvalue)
+melted_cor_r <- melt(lower_tri, na.rm = TRUE) %>% rename(cor_r = value)
+melted_cor_p <- melt(lower_tri_p, na.rm = TRUE) %>%
+  rename(pvalue = value) %>%
+  select(pvalue)
+
+melted_only_cor <- cbind(melted_cor_r, melted_cor_p)
+# %>% filter(pvalue <= 0.05) # filtering only significant correlations
+```
+
+```{r echo=FALSE}
+# correlation
+ggplot(melted_only_cor, aes(Var2, Var1, fill = cor_r)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(
+    low = "blue", high = "red", mid = "white",
+    midpoint = 0, limit = c(-1, 1), space = "Lab",
+    name = "Pearson Correlation"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.x = element_text(
+      angle = 90, vjust = 0.5,
+      size = 8, hjust = 1
+    ),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(title = "Correlation Test (Pearson)") +
+  geom_text(aes(Var2, Var1, label = cor_r), color = "black", size = 5) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    axis.ticks = element_blank(),
+    legend.justification = c(0, 1),
+    legend.position = c(0.6, 0.3),
+    legend.direction = "horizontal"
+  ) +
+  guides(fill = guide_colorbar(
+    barwidth = 6, barheight = 0.5,
+    title.position = "top", title.hjust = 0.5
+  ))
+
+# p-value
+ggplot(melted_only_cor, aes(Var2, Var1, fill = pvalue)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(
+    low = "red", high = "white",
+    midpoint = 0.1, limit = c(0, 0.2), space = "Lab",
+    name = "p-value"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.x = element_text(
+      angle = 90, vjust = 0.5,
+      size = 8, hjust = 1
+    ),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(title = "Correlation Test (Pearson)") +
+  geom_text(aes(Var2, Var1, label = pvalue), color = "black", size = 5) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    axis.ticks = element_blank(),
+    legend.justification = c(0, 1),
+    legend.position = c(0.6, 0.3),
+    legend.direction = "horizontal"
+  ) +
+  guides(fill = guide_colorbar(
+    barwidth = 6, barheight = 0.5,
+    title.position = "top", title.hjust = 0.5
+  ))
+```
+
+```{r echo=FALSE}
+only_gui_scales %>%
+  select(commitment_coded, number_programs, frequency_coded) %>%
+  ggplot(aes(x = commitment_coded, y = number_programs)) +
+  geom_point(color = "darkgreen", alpha = 0.5, size = 3) +
+  labs(y = "Number of Program Types Attended", x = "Duration of Commitment (Months)") +
+  scale_y_continuous(breaks = c(1, 2, 3, 4, 5, 6)) +
+  scale_x_continuous(breaks = c(0, 10, 20, 50, 80, 100, 140)) +
+  coord_flip()
+```
+
+### Reasons to visit GUI
+The most common word used to explain reasons to visit GUI is __"Nature"__ followed by __support, community, volunteer, people, activities, and farming__. Most of the words listed in the below charts are also mentioned frequently during the focus group discussions. 
+
+```{r include=FALSE}
+library(tidytext)
+library(wordcloud)
+library(RColorBrewer)
+```
+
+```{r include=FALSE}
+gui_reasons <- only_gui_scales %>% # selecting reasons column
+  select(reasons)
+
+tidy_gui_reasons <- gui_reasons %>%
+  unnest_tokens(word, reasons) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_gui_reasons <- tidy_gui_reasons %>% # removing non-essential words
+  anti_join(stop_words, by = "word")
+tidy_gui_reasons %>%
+  count(word, sort = TRUE)
+```
+
+```{r echo=FALSE}
+tidy_gui_reasons %>%
+  count(word, sort = TRUE) %>%
+  head(30) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(x = word, y = n)) +
+  geom_col(fill = "darkgreen", alpha = 0.8) +
+  xlab(NULL) +
+  labs(y = "", x = "", title = "Most Common Words used to explain reasons to visit GUI") +
+  scale_y_continuous(breaks = c(0, 2, 5, 10, 15, 20)) +
+  theme_minimal() +
+  coord_flip()
+```
+
+```{r echo=FALSE}
+tidy_gui_reasons %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 150, colors = brewer.pal(8, "Greens")))
+```
+
+```{r include=FALSE}
+# Sentimental Analysis: People rarely used negative words to explain why they visit GUI
+bing_tidy_gui_reasons <- tidy_gui_reasons %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  ungroup()
+
+bing_tidy_gui_reasons %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(
+    y = "Contribution to sentiment",
+    x = NULL
+  ) +
+  coord_flip()
+```
+
+
+
+## Normality Check
+
+<!-- ```{r include=FALSE} -->
+<!-- shapiro.test(only_gui_scales$SoCoh) -->
+<!-- hist(only_gui_scales$SoCoh) -->
+<!-- ggqqplot(only_gui_scales$SoCoh) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- shapiro.test(only_gui_scales$SOC) -->
+<!-- hist(only_gui_scales$SOC) -->
+<!-- ggqqplot(only_gui_scales$SOC) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- shapiro.test(only_gui_scales$CNS) -->
+<!-- hist(only_gui_scales$CNS) -->
+<!-- ggqqplot(only_gui_scales$CNS) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- shapiro.test(only_gui_scales$Self_Est) -->
+<!-- hist(only_gui_scales$Self_Est) -->
+<!-- ggqqplot(only_gui_scales$Self_Est) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- shapiro.test(only_gui_scales$Self_Eff) -->
+<!-- hist(only_gui_scales$Self_Eff) -->
+<!-- ggqqplot(only_gui_scales$Self_Eff) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- shapiro.test(only_gui_scales$age) -->
+<!-- hist(only_gui_scales$age) -->
+<!-- ggqqplot(only_gui_scales$age) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- shapiro.test(only_gui_scales$IMI) -->
+<!-- hist(only_gui_scales$IMI) -->
+<!-- ggqqplot(only_gui_scales$IMI) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- shapiro.test(only_gui_scales$frequency_coded) -->
+<!-- hist(only_gui_scales$frequency_coded) -->
+<!-- ggqqplot(only_gui_scales$frequency_coded) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- shapiro.test(only_gui_scales$commitment_coded) -->
+<!-- hist(only_gui_scales$commitment_coded) -->
+<!-- ggqqplot(only_gui_scales$commitment_coded) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- shapiro.test(only_gui_scales$number_programs) -->
+<!-- hist(only_gui_scales$number_programs) -->
+<!-- ggqqplot(only_gui_scales$number_programs) -->
+<!-- ``` -->
+
+
+All the variables below excepts Sense of Community and Intrinsic Motivation do not follow the normal distribution.
+```{r include=FALSE}
+tbl_normality_2 <- tibble(
+  variables = c("Age", "Frequency of Visits (per year)", "Total Duration of Commitment (months)", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation", "Self Esteem", "Self Efficacy"),
+  shapiro_test = c("p <.001", "p <.001", "p <.001", "p <.001", "0.096*", "p <.001", "0.118*", "p <.001", "p <.001")
+)
+```
+
+```{r echo=FALSE}
+tbl_normality_2 %>%
+  gt() %>%
+  tab_source_note(
+    source_note = "*Sense of community and Intrinsic Motivation follows the normal distribution"
+  )
+```
+
+
+## Gender-wise Analysis
+```{r include=FALSE}
+# t test and Effect Size (Gender) for IMI and SOC
+gui_gender_scales <- only_gui_scales %>%
+  filter(gender != "Others")
+
+# Median Test
+library(agricolae)
+Median.test(gui_gender_scales$age, gui_gender_scales$gender)
+Median.test(gui_gender_scales$frequency, gui_gender_scales$gender)
+Median.test(gui_gender_scales$commitment, gui_gender_scales$gender)
+Median.test(gui_gender_scales$SoCoh, gui_gender_scales$gender)
+Median.test(gui_gender_scales$SOC, gui_gender_scales$gender)
+Median.test(gui_gender_scales$CNS, gui_gender_scales$gender)
+Median.test(gui_gender_scales$IMI, gui_gender_scales$gender)
+Median.test(gui_gender_scales$Self_Est, gui_gender_scales$gender)
+Median.test(gui_gender_scales$Self_Eff, gui_gender_scales$gender)
+Median.test(gui_gender_scales$number_programs, gui_gender_scales$gender)
+
+# Summary of Table
+tbl_gender <- tibble(
+  vars = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
+  scales = c("Age", "Frequency", "Commitment", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation", "Self Esteem", "Self Efficacy"),
+  male_median = c(35.5, 9, 10, 6.0, 5.125, 5.20, 5.50, 4.50, 5.00),
+  female_median = c(36.0, 4, 16, 6.2, 5.25, 5.70, 5.87, 5.25, 5.5),
+  Median_test_p_value = c("0.64", "0.079", "0.30", "0.40", "0.40", "0.82", "0.25", "0.09", "0.041*")
+)
+```
+  
+As the difference in the sample size is large (75 female and 28 male), the median test was conducted to see if there are any significant differences between female and male members in the respective variables. Although the difference in the frequency of visits is large (male members visit GUI more than twice as often as female members do), no significant difference was observed. __Self-efficacy__ is the only variable that shows a significant difference: __female members have a higher sense of self-efficacy__.
+
+```{r echo=FALSE}
+tbl_gender %>%
+  gt() %>%
+  tab_header(
+    title = "Test Statistics: Male vs Female"
+  ) %>%
+  cols_align(align = "center") %>%
+  fmt_number(
+    columns = vars(male_median, female_median),
+    decimals = 2
+  )
+```
+
+```{r echo=FALSE}
+a1 <- gui_gender_scales %>%
+  select(SoCoh, gender) %>%
+  ggplot(aes(x = gender, y = SoCoh, fill = gender)) +
+  geom_boxplot() +
+  theme(legend.position = "None") +
+  labs(x = "Gender", y = "Social Cohesion")
+a2 <- gui_gender_scales %>%
+  select(SOC, gender) %>%
+  ggplot(aes(x = gender, y = SOC, fill = gender)) +
+  geom_boxplot() +
+  theme(legend.position = "None") +
+  labs(x = "Gender", y = "Sense of Community")
+a3 <- gui_gender_scales %>%
+  select(CNS, gender) %>%
+  ggplot(aes(x = gender, y = CNS, fill = gender)) +
+  geom_boxplot() +
+  theme(legend.position = "None") +
+  labs(x = "Gender", y = "Connection to Nature")
+a4 <- gui_gender_scales %>%
+  select(Self_Eff, gender) %>%
+  ggplot(aes(x = gender, y = Self_Eff, fill = gender)) +
+  geom_boxplot() +
+  theme(legend.position = "None") +
+  labs(x = "Gender", y = "Self Efficacy")
+a5 <- gui_gender_scales %>%
+  select(Self_Est, gender) %>%
+  ggplot(aes(x = gender, y = Self_Est, fill = gender)) +
+  geom_boxplot() +
+  theme(legend.position = "None") +
+  labs(x = "Gender", y = "Self Esteem")
+a6 <- gui_gender_scales %>%
+  select(age, gender) %>%
+  ggplot(aes(x = gender, y = age, fill = gender)) +
+  geom_boxplot() +
+  theme(legend.position = "None") +
+  labs(x = "Gender", y = "Age")
+a7 <- gui_gender_scales %>%
+  select(frequency_coded, gender) %>%
+  ggplot(aes(x = gender, y = frequency_coded, fill = gender)) +
+  geom_boxplot() +
+  theme(legend.position = "None") +
+  labs(x = "Gender", y = "Frequency of Visits")
+a8 <- gui_gender_scales %>%
+  select(commitment_coded, gender) %>%
+  ggplot(aes(x = gender, y = commitment_coded, fill = gender)) +
+  geom_boxplot() +
+  theme(legend.position = "None") +
+  labs(x = "Gender", y = "Duration of Commitment")
+
+(a1 + a2 + a3) / (a4 + a5 + a6) / (a7 + a8)
+```
+
+
+## Correlation Analysis
+- __Figure 1.__ shows correlation r by the figures and highlights: towards shades of blue mean negative and shades of red mean positive correlation.
+
+- __Figure 2.__ shows the correlation r by __the figures__ and p-value by __the highlights__: the squares highlighted with the shades of red are significant correlations. The squares with grey are non-significant correlations.
+
+- It's observed that __Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation (`IMI`)__ show __significant correlations (moderate to strong)__ among them.   
+
+- Frequency (`frequency_coded`) and commitment (`commitment_coded`) also show significant correlations (moderate, r=0.5, Spearman). However, as discussed earlier, __the correlation test with Pearson__ only showed a weak correlation (r=0.23, Pearson).
+  
+- __1) those who visit GUI frequently__ and __2) those who commit GUI in the long duration__ have __a higher sense of community__ and __a higher Intrinsic Motivation__. Earlier studies from Community Psychology support these findings: __sense of community and intrinsic motivation can be built through frequent interactions over the long term__ (Christens & Peterson, 2010; Bidee, 2013; Oostlander et al., 2013; ).  
+  
+- There is __a strong correlation between Nature Connection and Intrinsic motivation (r=0.465)__, implying that __those who are self-motivated also have a high sense of nature connection.__
+  
+- The number of __program types attended__ (`number_programs`) shows __significant positive correlations__ with __frequency, commitment, Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation (`IMI`)__. Hence, __more committed members__ with __a higher sense of community__ engage in __a variety of programs__. It is also interesting to note that `number_programs` shows a significant negative correlation with `age`: __older GUI members__ attend __less variety of GUI programs__.
+
+- This correlation test did not show significant correlations between __1) frequency and commitment, and 2) Social Cohesion and Nature connection__. This suggests that __Social Cohesion and Nature Connection can be built among GUI members regardless of their duration of commitment and frequency of visits.__ As the focus group discussion with GUI volunteers noted, perhaps GUI members can gain Social Cohesion and Nature Connection immediately through their engagement at GUI. 
+  
+```{r echo=FALSE}
+library(lsr)
+only_gui_scales %>%
+  select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, Self_Est, Self_Eff, CNS) %>%
+  pairs()
+```
+
+```{r include=FALSE}
+only_cor <- only_gui_scales %>%
+  select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, Self_Est, Self_Eff, CNS) %>%
+  correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "none")
+```
+
+```{r include=FALSE}
+pre_pvalue <- round(only_cor$p.value, 2)
+pre_cor <- round(only_cor$correlation, 2)
+
+# Get lower triangle of the correlation matrix
+get_lower_tri <- function(x) {
+  x[upper.tri(x)] <- NA
+  return(x)
+}
+```
+
+```{r include=FALSE}
+library(reshape2)
+# lower_tri <- get_lower_tri(pre_cor)
+# lower_tri_p <- get_lower_tri(pre_pvalue)
+melted_cor_r <- melt(pre_cor, na.rm = TRUE) %>% rename(cor_r = value)
+melted_cor_p <- melt(pre_pvalue, na.rm = TRUE) %>%
+  rename(pvalue = value) %>%
+  select(pvalue)
+
+melted_only_cor <- cbind(melted_cor_r, melted_cor_p)
+# %>% filter(pvalue <= 0.05) # filtering only significant correlations
+```
+
+```{r echo=FALSE}
+# correlation
+ggplot(melted_only_cor, aes(Var2, Var1, fill = cor_r)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(
+    low = "blue", high = "red", mid = "white",
+    midpoint = 0, limit = c(-1, 1), space = "Lab",
+    name = "Correlation"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.x = element_text(
+      angle = 90, vjust = 0.5,
+      size = 8, hjust = 1
+    ),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(title = "Fig 1. Correlation Test R (Spearman)") +
+  geom_text(aes(Var2, Var1, label = cor_r), color = "black", size = 3) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    axis.ticks = element_blank()
+    # legend.justification = c(0, 1),
+    # legend.position = FALSE
+    # legend.direction = "horizontal"
+  )
+# +
+#   guides(fill = guide_colorbar(
+#     barwidth = 6, barheight = 0.5,
+#     title.position = "top", title.hjust = 0.5
+#   ))
+
+# p-value
+ggplot(melted_only_cor, aes(Var2, Var1, fill = pvalue)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(
+    low = "red", high = "white",
+    midpoint = 0.05, limit = c(0, 0.05), space = "Lab",
+    name = "p-value"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.x = element_text(
+      angle = 90, vjust = 0.5,
+      size = 8, hjust = 1
+    ),
+    axis.text.y = element_text(size = 8)
+  ) +
+  labs(title = "Fig 2.Correlation Test with p-value (Spearman)") +
+  geom_text(aes(Var2, Var1, label = cor_r), color = "black", size = 3) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.border = element_blank(),
+    panel.background = element_blank(),
+    axis.ticks = element_blank()
+    # legend.justification = c(0, 1),
+    # legend.position = c(0.6, 0.3),
+    # legend.direction = "horizontal"
+  )
+# +
+#   guides(fill = guide_colorbar(
+#     barwidth = 6, barheight = 0.5,
+#     title.position = "top", title.hjust = 0.5
+#   ))
+```
+
+
+## Regression Analysis
+- As significant correlations were found among frequency, commitment, number of programs attended, Sense of Community, and Intrinsic Motivation, this study conducted a regression analysis on these variables. 
+
+- The below models that try to explain outcome variables, such as Sense of Community, Intrinsic Motivation, and Nature connection, __do not show a significant effect__. Only __the number of program types attended__ show __a significant effect__ in the __Sense of Community and Intrinsic Motivation__. However, it only explains __8%__ of the variance in Sense of Community and Intrinsic Motivation (which is pretty low).
+
+Also, R-squared of each model is __extreamly low__ (only 1~11% of the variance in the outcome was explained by the model). Further investigation is required to examine which are the factors, missed from this study, may have potential effects on the outcome. 
+
+```{r include=FALSE}
+library(broom)
+```
+
+```{r results="hide"}
+model_gui_1 <- lm(SOC ~ number_programs + commitment_coded + frequency_coded, data = only_gui_scales)
+summary(model_gui_1) # Significant only in the number of program types
+
+model_gui_2 <- lm(IMI ~ frequency_coded + commitment_coded + number_programs, data = only_gui_scales)
+summary(model_gui_2) # Significant only in the number of program types
+```
+
+  Since the correlation between nature connection and intrinsic motivation is high, the regression analysis was conducted to see if __the Nature Connection__ can be explained by __Intrinsic Motivation__. 
+  In this model, __Intrinsic Motivation__ shows __a significant effect__ on __the Nature Connection__ ( _p_<.01), __explaining 20%__ of the variance in the Nature Connection (R-squared is 0.2031).
+  
+```{r results="hide"}
+model_gui_3 <- lm(CNS ~ IMI, data = only_gui_scales)
+glance(model_gui_3)
+summary(model_gui_3)
+# Significant model
+```
+
+
+## PCA and Cluster Analysis
+- We applied Principal Component Analysis and Cluster Analysis to divide GUI members into several groups based on variables that describe their relationships with GUI, including `duration of commitment`, `frequency of visits`, and `number of program types attended`. Hopefully, this will illustrate profiles of GUI members better. 
+
+```{r include=FALSE}
+library(factoextra)
+
+# Adding row number
+id_only_gui <- only_gui_scales %>%
+  mutate(
+    id = row_number(),
+    id = as.character(id)
+  ) %>%
+  select(id, everything())
+
+gui_members_data <- id_only_gui %>% select(id, number_programs, frequency_coded, commitment_coded)
+
+# Scaling Data
+gui_members_data_scaled <- scale(
+  gui_members_data %>%
+    select(-id) %>%
+    as.matrix()
+) %>%
+  as_tibble() %>%
+  bind_cols(gui_members_data %>% select(id))
+```
+
+### Determining the number of plots
+Based on the below, elbow plot, we decided to include the first 2 components that explain __82%__ of the variance in the three variables. 
+
+```{r include=FALSE}
+pc <- gui_members_data_scaled %>%
+  column_to_rownames(var = "id") %>%
+  prcomp(., center = T, scale. = T)
+```
+
+```{r echo=FALSE}
+tidy(pc, "pcs")
+tidy(pc, "pcs") %>%
+  ggplot(aes(x = PC, y = cumulative)) +
+  geom_hline(yintercept = 0.9, color = "orange") +
+  geom_line() +
+  geom_text(aes(x = PC, y = cumulative, label = PC), nudge_y = 0.03)
+```
+
+- Component 1 (`RC1`) has large positive directions in `number_programs` and `commitment_coded`. 
+
+- Whereas, component 2 (`RC2`) has more positive direction in `frequency_coded` and some positive directions in `commitment_coded`.
+
+```{r echo=FALSE}
+# PCA through principal function
+fa <- gui_members_data %>%
+  column_to_rownames(var = "id") %>%
+  principal(nfactors = 2, rotate = "varimax")
+
+c1 <- fa[["loadings"]] %>%
+  unclass() %>%
+  as_tibble(rownames = "column") %>% # convert loadings to a tibble or easy plotting
+  gather(key = "component", value = "value", -column) %>%
+  ggplot(aes(x = column, y = value)) +
+  geom_hline(yintercept = 0) +
+  geom_col(aes(fill = (value >= 0)),
+    show.legend = FALSE
+  ) +
+  ylim(0, 1) +
+  coord_flip() +
+  facet_grid(~component) +
+  labs(title = "Directions Plot with the Varimax Method") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+c1
+```
+
+### Determining K
+```{r include=FALSE}
+fa_cluster <-
+  gui_members_data %>%
+  column_to_rownames(var = "id") %>%
+  principal(nfactors = 2, rotate = "varimax") %>%
+  pluck("scores") %>%
+  unclass() %>%
+  as_tibble(rownames = "id")
+
+gui_components <- fa_cluster
+cluster_data <- fa_cluster %>% # remove planning_area column so we are left with only 'data' columns
+  column_to_rownames(var = "id")
+```
+
+A Hierarchical Cluster Analysis was applied to determine the appropriate number of clusters. Based on the below plots, we decided to take `k=4`.
+
+```{r}
+hierarchical_clusters <- hclust(dist(cluster_data))
+fviz_dend(hierarchical_clusters, k = 4, cex = 0.4) # K= the number of clusters in the dendogram
+
+# hierarchical_clusters_k4 <- cutree(hierarchical_clusters, k = 4)
+# fviz_cluster(list(data = cluster_data, cluster = hierarchical_clusters_k4))
+```
+
+### K-mean clustering
+```{r echo=FALSE}
+kmeans_clusters <- kmeans(cluster_data, centers = 4, nstart = 50) # selecting 4 cluters
+
+# Saving and loading cluster data
+# saveRDS(kmeans_clusters, ("4_Survey_Experiment/Data/kmeans_clusters_17Apr2020.rds"))
+kmeans_clusters <- readRDS(here::here("data/kmeans_clusters_17Apr2020.rds"))
+
+fviz_cluster(kmeans_clusters, data = cluster_data)
+```
+
+<!-- ### Density-based clustering -->
+<!-- ```{r} -->
+<!-- library(dbscan) -->
+<!-- kNNdistplot(cluster_data, k =  10) # K= minPoints (minimum numbers of neighbors) -->
+<!-- abline(h=0.8, col = "red", lty=2) -->
+<!-- ``` -->
+
+<!-- Based on the above, 0.6-0.7 was suggested as a good starting point for epsilon -->
+<!-- ```{r} -->
+<!-- dbscan(cluster_data, eps = 0.8, minPts = 10) %>%  -->
+<!--   fviz_cluster(data = cluster_data) -->
+<!-- ``` -->
+
+```{r include=FALSE}
+# t(kmeans_clusters$cluster) %>% as.tibble()
+
+cluster_data_raw <- kmeans_clusters$cluster %>%
+  as.tibble(rownames = "id") %>%
+  rename("clusters" = value)
+
+cluster_data_k_means <- data.frame(cluster_data_raw)
+
+gui_cluster_data <- left_join(id_only_gui, gui_components, by = "id") %>%
+  left_join(., cluster_data_k_means, by = "id") %>%
+  mutate(clusters = as.character(clusters))
+```
+
+```{r include=FALSE, eval=FALSE}
+# saveRDS(gui_cluster_data, ("4_Survey_Experiment/Data/only_gui_cluster_apr16.rds"))
+gui_cluster_data <- readRDS(here::here("/data/only_gui_cluster_apr16.rds"))
+```
+
+### Preliminary Analysis on the clusters
+- To test the validity of the groups identified, a profile analysis was conducted, including running descriptives on each cluster and __ANOVA tests__ on clusters for each variable.
+
+- ANOVA test confirmed that these 4 groups are __significantly different__ ( _p_ <0.001) in terms of the relationships with GUI (`commitment_coded`, `frequency_coded`, and `number_programs`).
+
+- Age is also significantly different among clusters ( _p_ <0.05). 
+
+- Although the ANOVA test did not show any significant differences in the rest of the variables, the table A and the boxplots seem to show some variances among clusters. For example, __Sense of Community__ is very low in the cluster 1.
+
+```{r include=FALSE}
+# numner of programs
+res.aov <- aov(number_programs ~ clusters, data = gui_cluster_data)
+summary(res.aov) # Significant
+
+# Post Hoc Test
+pairwise.t.test(
+  x = gui_cluster_data$number_programs, # outcome variable
+  g = gui_cluster_data$clusters, # grouping variable
+  p.adjust.method = "none" # no correction used
+)
+
+# frequency
+res.aov <- aov(frequency_coded ~ clusters, data = gui_cluster_data)
+summary(res.aov) # Significant
+
+# commitment
+res.aov <- aov(commitment_coded ~ clusters, data = gui_cluster_data)
+summary(res.aov) # Significant
+
+# age
+res.aov <- aov(age ~ clusters, data = gui_cluster_data)
+summary(res.aov)
+
+# SOC
+res.aov <- aov(SOC ~ clusters, data = gui_cluster_data)
+summary(res.aov) # not Significant
+
+pairwise.t.test(
+  x = gui_cluster_data$SOC, # outcome variable
+  g = gui_cluster_data$clusters, # grouping variable
+  p.adjust.method = "none" # no correction used
+) # Cluster 1 and 2 are significantly different
+
+# CNS
+res.aov <- aov(CNS ~ clusters, data = gui_cluster_data)
+summary(res.aov) # not Significant
+
+pairwise.t.test(
+  x = gui_cluster_data$CNS, # outcome variable
+  g = gui_cluster_data$clusters, # grouping variable
+  p.adjust.method = "none" # no correction used
+) # Not significant at all
+
+# SoCoh
+res.aov <- aov(SoCoh ~ clusters, data = gui_cluster_data)
+summary(res.aov) # not Significant
+
+pairwise.t.test(
+  x = gui_cluster_data$SoCoh, # outcome variable
+  g = gui_cluster_data$clusters, # grouping variable
+  p.adjust.method = "none" # no correction used
+) # Not significant at all
+
+```
+
+```{r include=FALSE}
+cluster_wise <- gui_cluster_data %>%
+  select(age, frequency_coded, commitment_coded, number_programs, SoCoh, SOC, IMI, CNS, Self_Est, Self_Eff, clusters) %>%
+  describeBy(., group = "clusters")
+
+group1 <- round(cluster_wise$`1`, 2)
+group1_rev <- group1 %>%
+  select(median) %>%
+  t() %>%
+  data.frame()
+
+group2 <- round(cluster_wise$`2`, 2)
+group2_rev <- group2 %>%
+  select(median) %>%
+  t() %>%
+  data.frame()
+
+group3 <- round(cluster_wise$`3`, 2)
+group3_rev <- group3 %>%
+  select(median) %>%
+  t() %>%
+  data.frame()
+
+group4 <- round(cluster_wise$`4`, 2)
+group4_rev <- group4 %>%
+  select(median) %>%
+  t() %>%
+  data.frame()
+
+median_clusters <- rbind(group1_rev, group2_rev, group3_rev, group4_rev) %>% select(clusters., everything())
+
+gui_cluster_data %>%
+  select(clusters) %>%
+  group_by(clusters) %>%
+  summarise(count = n()) %>%
+  gt()
+
+# Mean Values
+# group11 <- round(cluster_wise$`1`, 2)
+# group11_rev <- group11 %>% select(mean) %>% t() %>% data.frame()
+#
+# group22 <- round(cluster_wise$`2`, 2)
+# group22_rev <- group22 %>% select(mean) %>% t() %>% data.frame()
+#
+# group33 <- round(cluster_wise$`3`, 2)
+# group33_rev <- group33 %>% select(mean) %>% t() %>% data.frame()
+#
+# group44 <- round(cluster_wise$`4`, 2)
+# group44_rev <- group44 %>% select(mean) %>% t() %>% data.frame()
+#
+# mean_clusters<- rbind(group11_rev, group22_rev, group33_rev, group44_rev) %>% select(clusters., everything())
+#
+# mean_clusters %>% gt() %>% tab_header(
+#     title = "Mean Values by Groups"
+#   ) %>%
+#   cols_align(align = "center")
+
+gui_cluster_data %>%
+  filter(clusters == 1) %>%
+  group_by(gender) %>%
+  summarize(count = n())
+
+gui_cluster_data %>%
+  filter(clusters == 4) %>%
+  group_by(gender) %>%
+  summarize(count = n())
+```
+
+```{r echo=FALSE}
+median_clusters %>%
+  mutate(
+    male = c(17, 7, 1, 3),
+    female = c(49, 21, 1, 4),
+    members_n = c(67, 28, 2, 7)
+  ) %>%
+  select(clusters., male, female, members_n, everything()) %>%
+  gt() %>%
+  tab_header(
+    title = "Table A: Median Values by Groups"
+  ) %>%
+  cols_align(align = "center")
+```
+
+```{r echo=FALSE}
+d1 <- gui_cluster_data %>%
+  select(CNS, clusters) %>%
+  ggplot(aes(x = clusters, y = CNS, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+
+d2 <- gui_cluster_data %>%
+  select(SOC, clusters) %>%
+  ggplot(aes(x = clusters, y = SOC, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+d3 <- gui_cluster_data %>%
+  select(SoCoh, clusters) %>%
+  ggplot(aes(x = clusters, y = SoCoh, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+d4 <- gui_cluster_data %>%
+  select(IMI, clusters) %>%
+  ggplot(aes(x = clusters, y = IMI, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+d5 <- gui_cluster_data %>%
+  select(Self_Eff, clusters) %>%
+  ggplot(aes(x = clusters, y = Self_Eff, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+d6 <- gui_cluster_data %>%
+  select(Self_Est, clusters) %>%
+  ggplot(aes(x = clusters, y = Self_Est, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+d7 <- gui_cluster_data %>%
+  select(age, clusters) %>%
+  ggplot(aes(x = clusters, y = age, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+d1 + d2 + d3 + d4 + d5 + d6 + d7
+```
+
+### Interpreting the clusters
+- Based on the below directional plot and the Table A, `X1` or group 1 can be categorized as __fresh members__ of GUI (n=67): those who __recently started coming__ to GUI (on average within 8 months), their __frequency of visits is low__ (only twice a year), and they haven't attended many programs yet. Perhaps, these members are still exploring how to engage with GUI.
+
+- `X2` or group 2 is the most senior (or experienced) members of GUI ( __long-term members__, n=28): those who committed with GUI for __the longest period__ (on average 4 years) and have attended __many different programs (on average 3)__.
+
+- `X3` or group 3 can be refered as __everyday visitors__ (n=2): their engagement with GUI is relatively long (about 4 years) and they visit GUI almost everyday (more than 20 times a month). 
+
+- `X4` or group 4 can be interpreted as __committed frequent visitors__ (n=7): they are relatively long-term members of GUI (on average 2 and half years) and their frequency of visit is high (on average 70 times a year). They seem keep coming to the same program.
+
+- __Group 3 and Group 4__ have much older members and higher frequency of visits, compared to __Group 1 and Group 2__. Therefore, the older members of GUI tend to visit there more frequently.
+
+- The __Connection to Nature__ is __highest__ in the Group 1, suggesting that GUI tends to attract new members who have a high sense of Nature Connection.
+
+
+```{r warning=FALSE, message=FALSE, echo=FALSE}
+## Interpretation of Clusters
+# t(kmeans_clusters$centers) %>% as.tibble(rownames = "components")
+
+kmeans_clusters_table <- t(kmeans_clusters$centers) %>% as.tibble(rownames = "components")
+kmeans_clusters_table <- data.frame(kmeans_clusters_table)
+
+c2 <- kmeans_clusters_table %>%
+  gather(key = "clusters", value = "value", -components) %>%
+  ggplot(aes(x = components, y = value)) +
+  geom_hline(yintercept = 0) +
+  geom_col(aes(fill = (value >= 0)),
+    show.legend = FALSE
+  ) +
+  ylim(-6, 6) +
+  coord_flip() +
+  facet_grid(~clusters) +
+  labs(title = "Components across different clusters") +
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+
+c1 / c2
+```
+
+
+<!-- ## Median Test by Clusters -->
+<!-- - Although the ANOVA test did not find any sigfnificant differences in psychometric scales,  -->
+<!-- - Regardless of types of commitment, members of GUI have a high __Sense of Community__, __Connection to Nature__, and __Social Cohesion__. Therefore, these aspects might be already high among these members even before coming to GUI. -->
+
+<!-- ```{r message=FALSE, warning=FALSE} -->
+<!-- library(RVAideMemoire) -->
+<!-- test1 <- mood.medtest(SOC ~ clusters, -->
+<!--   data = gui_cluster_data, -->
+<!--   exact = FALSE -->
+<!-- ) -->
+
+<!-- test2 <- mood.medtest(commitment_coded ~ clusters, -->
+<!--   data = gui_cluster_data, -->
+<!--   exact = FALSE -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- test1$statistic -->
+<!-- test1$p.value -->
+
+<!-- tbl_clusters_med <- tibble(vars = c(1, 2, 3, 4, 5, 6, 7, 8, 9), -->
+<!--   variables = c("Age", "Frequency", "Commitment", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation", "Self Esteem", "Self Efficacy"), -->
+<!--   male_median = c(35.5, 9, 10, 6.0, 5.125, 5.20, 5.50, 4.50, 5.00), -->
+<!-- ``` -->
+
+## Median Test: Fresh Members VS Long-term Members
+- Although the ANOVA test did not find any sigfnificant differences in the psychometric scales across the groups, the difference in the median of __Sense of Community__ between the __fresh_members__ and __long term members__ is hgih. Hence, we ran the Median Test.
+
+- A __significant__ difference ( _p_ =0.014) was found in __Sense of Community__: hence, the long-term engagement with GUI seems to enhance a __Sense of Community__ of GUI members.
+
+- __Committed frequent visitors__ and __Everyday visitors__ did not show a significant difference in __Sense of Community__ when it's compared with __fresh_members__. Perhaps, this is due to the small number of group size (7 and 2, respectively). 
+
+
+```{r include=FALSE}
+# t test and Effect Size (Gender) for IMI and SOC
+old_new <- gui_cluster_data %>%
+  filter(clusters == 1 | clusters == 2)
+library(agricolae)
+```
+
+```{r results="hide"}
+Median.test(old_new$SOC, old_new$clusters) # Sense of Community is significant
+Median.test(old_new$CNS, old_new$clusters) # CNS is not significant. p=0.374
+Median.test(old_new$IMI, old_new$clusters) # IMI is not significant. p=0.491
+Median.test(old_new$SoCoh, old_new$clusters) # Social Cohesion is not significant. p=0.333
+Median.test(old_new$Self_Est, old_new$clusters) # Self-est is not significant. p=0.433
+Median.test(old_new$Self_Eff, old_new$clusters) # Self-eff is not significant. p=0.494
+```
+
+<!-- ## Regression by Groups -->
+<!-- ```{r} -->
+<!-- model_1 <- lm(SOC ~ clusters, data = gui_cluster_data) -->
+<!-- glance(model_1) -->
+<!-- summary(model_1) #not sifnificant -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- model_1 <- lm(CNS ~ clusters, data = gui_cluster_data) -->
+<!-- glance(model_1) -->
+<!-- summary(model_1) #sifnificant -->
+<!-- ``` -->
+
+
+
+
