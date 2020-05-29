@@ -1,0 +1,2540 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Focus Group Discussion Text Analysis
+
+```{r include=FALSE}
+library(tidyverse)
+library(tidytext)
+library(wordcloud)
+library(RColorBrewer)
+library(gt)
+library(patchwork)
+```
+
+```{r include=FALSE}
+restoration <- read_csv(here::here("data/GUI_NVivo_text_data.csv"))
+
+values <- read_csv(here::here("data/2_GUI_VALUES.csv"))
+
+benefits <- read_csv(here::here("data/2_GUI_BENEFITS.csv"))
+```
+
+```{r include=FALSE}
+library("stopwords")
+data("stop_words")
+to_remove <- c(
+  stopwords(language = "en", source = "smart"),
+  "yeah", "uh", "it’s", "you’re", "there’s", "i’m", "don’t", "i’ve", "you’ve", "that’s", "things", "cos", "er", "erm", "everyone’s", "lo", "lor", "ah", "we’re", "um"
+)
+
+# core_restoration <- restoration %>%
+#   filter(Member=="Core_members") %>%
+#   select(Sentences)
+#
+# vol_restoration <- restoration %>%
+#   filter(Member=="Volunteers") %>%
+#   select(Sentences)
+
+# tidy_core_restoration <- core_restoration %>%
+#   unnest_tokens(word, Sentences) # unesting sentensec into words
+#
+# tidy_vol_restoration <- vol_restoration %>%
+#   unnest_tokens(word, Sentences)# unesting sentensec into words
+#
+# data(stop_words)
+#
+# tidy_core_restoration_revise <- tidy_core_restoration %>%
+#    filter(!word %in% to_remove)
+#   #anti_join(stop_words, by="word")
+#
+# tidy_vol_restoration_revise <- tidy_vol_restoration %>%
+#   filter(!word %in% to_remove)
+#   #anti_join(stop_words, by="word")
+#
+#
+# tidy_core_restoration %>%
+#    filter(!word
+#          %in% to_remove) %>%
+#   count(word, sort = TRUE) #%>% View()
+#
+# tidy_vol_restoration %>%
+#    filter(!word
+#          %in% to_remove) %>%
+#   count(word, sort = TRUE) #%>% View()
+#
+# tidy_core_restoration_revise$member <- "Core Members"
+# tidy_vol_restoration_revise$member <- "Volunteers"
+#
+# tidy_core_restoration$member <- "Core Members"
+# tidy_vol_restoration$member <- "Volunteers"
+#
+# combined_tidy_revise <- rbind(tidy_core_restoration_revise, tidy_vol_restoration_revise)
+# combined_tidy <- rbind(tidy_core_restoration, tidy_vol_restoration)
+```
+
+## Summary
+```{r echo=FALSE}
+tibble(
+  "GUI Benefits" = c(
+    "Restoration", "Nature Connection", "Sense of Community", "Empowerment*", "Environmental Awareness", "Hands-on Experiences", "Mindsets (related to 5G)", "Self-awareness", "Self-Efficacy or Confidence*"
+  ),
+  "Correlation R" = c(0.291, 0.502, 0.521, "-0.0290*", -0.224, -0.818, 0.289, "NA", "-0.288*")
+) %>%
+  gt() %>%
+  tab_header(
+    title = "GUI Benefits: Correlation Test Results"
+  ) %>%
+  tab_source_note(
+    source_note = "* denotes non significant correlation"
+  )
+```
+
+
+```{r echo=FALSE}
+tibble(
+  "GUI Values" = c(
+    "Characteristics of Nature in GUI*", "Sense of Autonomy and Ownership",
+    "Risk-taking but Safe Space", "Connecting people", "Activism", "Non hierarchical Structure", "Sense of Place*"
+  ),
+  "Correlation R" = c("-0.034*", 0.182, 0.276, 0.262, 0.260, -0.612, "0.048*")
+) %>%
+  gt() %>%
+  tab_header(
+    title = "GUI Values: Correlation Test Results"
+  ) %>%
+  tab_source_note(
+    source_note = "* denotes non significant correlation"
+  )
+```
+
+
+<!-- "p-value"=c(0, 0, 0, 0.696, 0.001, 0, 0.001, "NA", 0.580, 0, 0, 0, 0, 0.618)  -->
+
+
+## Benefits
+### Restoration
+
+```{r include=FALSE}
+benefits %>% names()
+
+benefits_core <- benefits %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("H : Restoration at GUI") %>%
+  rename(Sentences = "H : Restoration at GUI")
+
+benefits_vols <- benefits %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("H : Restoration at GUI") %>%
+  rename(Sentences = "H : Restoration at GUI")
+```
+
+```{r include=FALSE}
+tidy_core_restoration <- benefits_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_restoration <- benefits_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_restoration_revise <- tidy_core_restoration %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_restoration_revise <- tidy_vol_restoration %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+
+tidy_core_restoration %>%
+  filter(!word
+  %in% to_remove) %>%
+  count(word, sort = TRUE) # %>% View()
+
+tidy_vol_restoration %>%
+  filter(!word
+  %in% to_remove) %>%
+  count(word, sort = TRUE) # %>% View()
+
+tidy_core_restoration_revise$member <- "Core Members"
+tidy_vol_restoration_revise$member <- "Volunteers"
+
+tidy_core_restoration$member <- "Core Members"
+tidy_vol_restoration$member <- "Volunteers"
+
+combined_tidy_revise <- rbind(tidy_core_restoration_revise, tidy_vol_restoration_revise)
+combined_tidy <- rbind(tidy_core_restoration, tidy_vol_restoration)
+```
+
+#### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_restoration_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_restoration_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+
+```{r include=FALSE}
+freq_gui <- combined_tidy %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+library(tidyr)
+
+freq_gui <- freq_gui %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+```
+
+```{r include=FALSE}
+library(scales)
+ggplot(freq_gui, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Unremoved Words")
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+## Removed list
+freq_gui_removed <- combined_tidy_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+library(tidyr)
+
+freq_gui_removed <- freq_gui_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+library(scales)
+ggplot(freq_gui_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+#### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+na_strings <- c("NA", "n/a")
+frequency_revise <- bind_rows(
+  mutate(tidy_core_restoration_revise, member = "Core Members"),
+  mutate(tidy_vol_restoration_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+# frequency_revise %>% select(`Core Members`) %>% is.na(`Core Members`)
+
+frequency_revise[is.na(frequency_revise)] <- 0
+# glimpse(frequency_2)
+
+frequency_revise %>%
+  select(-word) %>%
+  pairs()
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise,
+  ~ `Core Members` + Volunteers
+)
+# R is 0.291 and significant (p-value =0)
+```
+
+
+#### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 5) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 5, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+### Nature Connection
+
+```{r include=FALSE}
+benefits %>% names()
+
+nature_connection_core <- benefits %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("G : Nature Connection") %>%
+  rename(Sentences = "G : Nature Connection")
+
+nature_connection_vols <- benefits %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("G : Nature Connection") %>%
+  rename(Sentences = "G : Nature Connection")
+```
+
+```{r include=FALSE}
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+#### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+#### Correlation test
+```{r include=FALSE}
+library(tidyr)
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings)
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+## Correlation r is 0.50 and significant (p-value = 0)
+```
+
+
+
+#### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 4) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 5, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Nature Connection: Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+### Sense of Community
+
+```{r include=FALSE}
+benefits %>% names()
+
+nature_connection_core <- benefits %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("I : Sense of Community") %>%
+  rename(Sentences = "I : Sense of Community")
+
+nature_connection_vols <- benefits %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("I : Sense of Community") %>%
+  rename(Sentences = "I : Sense of Community")
+```
+
+```{r include=FALSE}
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+#### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+#### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+## Correlation r is 0.52 and significant (p-value = 0)
+```
+
+
+#### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 4) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 5, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Sense of Community: Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+### Empowerment
+
+```{r include=FALSE}
+benefits %>% names()
+
+nature_connection_core <- benefits %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("A : Empowerment") %>%
+  rename(Sentences = "A : Empowerment")
+
+nature_connection_vols <- benefits %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("A : Empowerment") %>%
+  rename(Sentences = "A : Empowerment")
+
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+#### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+#### Correlation test
+```{r echo=FALSE}
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+## No correlation
+```
+
+
+#### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 2) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 5, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Empowerment: Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+### Environmental Awareness
+
+```{r include=FALSE}
+benefits %>% names()
+values %>% names()
+
+nature_connection_core <- benefits %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("B : Environmental Awareness") %>%
+  rename(Sentences = "B : Environmental Awareness")
+
+nature_connection_vols <- benefits %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("B : Environmental Awareness") %>%
+  rename(Sentences = "B : Environmental Awareness")
+```
+
+```{r include=FALSE}
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+#### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+#### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+# Correlation r is -0.22 and significant (p-value = 0.001)
+# Word usage is opposite? Those words used more in one group are used less in the other group
+```
+
+#### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 1) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 5, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+### Hands-on Experiences
+
+```{r include=FALSE}
+benefits %>% names()
+
+nature_connection_core <- benefits %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("C : Hands-on Experiences") %>%
+  rename(Sentences = "C : Hands-on Experiences")
+
+nature_connection_vols <- benefits %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("C : Hands-on Experiences") %>%
+  rename(Sentences = "C : Hands-on Experiences")
+```
+
+```{r include=FALSE}
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+#### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  ggplot() +
+  geom_jitter(aes(x = `Core Members`, y = Volunteers))
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+# Correlation r is -0.819 and significant (p-value = 0)
+```
+
+### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 1) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 5, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+
+## Mindsets (related to 5G)
+
+```{r include=FALSE}
+benefits %>% names()
+values %>% names()
+
+nature_connection_core <- benefits %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("D : Mindsets (related to 5G)") %>%
+  rename(Sentences = "D : Mindsets (related to 5G)")
+
+nature_connection_vols <- benefits %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("D : Mindsets (related to 5G)") %>%
+  rename(Sentences = "D : Mindsets (related to 5G)")
+```
+
+```{r include=FALSE}
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  ggplot() +
+  geom_jitter(aes(x = `Core Members`, y = Volunteers))
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+# Correlation r is 0.289 and significant (p-value = 0.0016)
+```
+
+### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 2) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 10, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+
+
+## Self-awareness
+No codes for self-awareness among the core members
+
+## Self-Efficacy or Confidence
+```{r include=FALSE}
+benefits %>% names()
+values %>% names()
+
+nature_connection_core <- benefits %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("F : Self-Efficacy or Confidence") %>%
+  rename(Sentences = "F : Self-Efficacy or Confidence")
+
+nature_connection_vols <- benefits %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("F : Self-Efficacy or Confidence") %>%
+  rename(Sentences = "F : Self-Efficacy or Confidence")
+```
+
+```{r include=FALSE}
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  ggplot() +
+  geom_jitter(aes(x = `Core Members`, y = Volunteers))
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+# Correlation r is -0.288 and significant (p-value = 0.0016)
+```
+
+### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 2) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 10, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+
+# Values 
+## 1) Characteristics of Nature in GUI
+
+```{r include=FALSE}
+benefits %>% names()
+values %>% names()
+
+nature_connection_core <- values %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("B : Characteristics of Nature in GUI") %>%
+  rename(Sentences = "B : Characteristics of Nature in GUI")
+
+nature_connection_vols <- values %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("B : Characteristics of Nature in GUI") %>%
+  rename(Sentences = "B : Characteristics of Nature in GUI")
+```
+
+```{r include=FALSE}
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+# Correlation r is -0.03 and not significant (p-value = 0.52)
+```
+
+### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 2) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 5, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+## 2) Sense of Autonomy and Ownership
+
+```{r include=FALSE}
+benefits %>% names()
+values %>% names()
+
+nature_connection_core <- values %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("F : Sense of Autonomy and Ownership") %>%
+  rename(Sentences = "F : Sense of Autonomy and Ownership")
+
+nature_connection_vols <- values %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("F : Sense of Autonomy and Ownership") %>%
+  rename(Sentences = "F : Sense of Autonomy and Ownership")
+```
+
+```{r include=FALSE}
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+
+# frequency_revise_nature %>%
+#   select(-word) %>%
+#   ggplot() +
+#   geom_jitter(aes(x = `Core Members`, y = Volunteers)) +
+#   geom_smooth(aes(x = `Core Members`, y = Volunteers))
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+# Correlation r is 0.18 and significant (p-value = 0)
+```
+
+### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 2) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 10, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+## 3) Risk-taking but Safe Space
+
+```{r include=FALSE}
+benefits %>% names()
+values %>% names()
+
+nature_connection_core <- values %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("E : Risk-taking but Safe Space") %>%
+  rename(Sentences = "E : Risk-taking but Safe Space")
+
+nature_connection_vols <- values %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("E : Risk-taking but Safe Space") %>%
+  rename(Sentences = "E : Risk-taking but Safe Space")
+```
+
+```{r include=FALSE}
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  ggplot() +
+  geom_jitter(aes(x = `Core Members`, y = Volunteers))
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+# Correlation r is 0.277 and significant (p-value = 0)
+```
+
+### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 7) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 10, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+## 4) Connecting people
+
+```{r include=FALSE}
+benefits %>% names()
+values %>% names()
+
+nature_connection_core <- values %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("C : Connecting people") %>%
+  rename(Sentences = "C : Connecting people")
+
+nature_connection_vols <- values %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("C : Connecting people") %>%
+  rename(Sentences = "C : Connecting people")
+```
+
+```{r include=FALSE}
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  ggplot() +
+  geom_jitter(aes(x = `Core Members`, y = Volunteers))
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+# Correlation r is 0.262 and significant (p-value = 0)
+```
+
+### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 7) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 10, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+## 5) Activism
+
+```{r include=FALSE}
+benefits %>% names()
+values %>% names()
+
+nature_connection_core <- values %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("A : Activism") %>%
+  rename(Sentences = "A : Activism")
+
+nature_connection_vols <- values %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("A : Activism") %>%
+  rename(Sentences = "A : Activism")
+```
+
+```{r include=FALSE}
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  ggplot() +
+  geom_jitter(aes(x = `Core Members`, y = Volunteers))
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+# Correlation r is 0.260 and significant (p-value = 0)
+```
+
+### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 5) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 10, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+
+## 6) Non hierarchical Structure
+
+```{r include=FALSE}
+benefits %>% names()
+values %>% names()
+
+nature_connection_core <- values %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("D : Non hierarchical Structure") %>%
+  rename(Sentences = "D : Non hierarchical Structure")
+
+nature_connection_vols <- values %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("D : Non hierarchical Structure") %>%
+  rename(Sentences = "D : Non hierarchical Structure")
+```
+
+```{r include=FALSE}
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  ggplot() +
+  geom_jitter(aes(x = `Core Members`, y = Volunteers))
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+# Correlation r is -0.612 and significant (p-value = 0)
+```
+
+### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 5) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 10, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+## 7) Sense of Place
+
+```{r include=FALSE}
+values %>% names()
+
+nature_connection_core <- values %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("G : Sense of Place") %>%
+  rename(Sentences = "G : Sense of Place")
+
+nature_connection_vols <- values %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("G : Sense of Place") %>%
+  rename(Sentences = "G : Sense of Place")
+```
+
+```{r include=FALSE}
+tidy_core_n_connection <- nature_connection_core %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+tidy_vol_n_connection <- nature_connection_vols %>%
+  unnest_tokens(word, Sentences) # unesting sentensec into words
+
+data(stop_words)
+
+tidy_core_n_connection_revise <- tidy_core_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_vol_n_connection_revise <- tidy_vol_n_connection %>%
+  filter(!word %in% to_remove)
+# anti_join(stop_words, by="word")
+
+tidy_core_n_connection_revise$member <- "Core Members"
+tidy_vol_n_connection_revise$member <- "Volunteers"
+
+combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
+```
+
+### Most Frequently Used Words
+```{r echo=FALSE}
+a1 <- tidy_core_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkgreen") +
+  labs(x = "Words", y = "", title = "By Core Members") +
+  coord_flip() +
+  theme_minimal()
+
+a2 <- tidy_vol_n_connection_revise %>%
+  group_by(word) %>%
+  summarise(count = n()) %>%
+  arrange(-count) %>%
+  head(10) %>%
+  ggplot() +
+  geom_col(aes(x = reorder(word, count), y = count), fill = "darkorange") +
+  labs(x = "Words", y = "", title = "By Volunteers") +
+  coord_flip() +
+  theme_minimal()
+
+a1 | a2
+```
+
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+freq_gui_connect_removed <- combined_tidy_connect_revise %>%
+  group_by(member) %>%
+  count(word, sort = TRUE) %>%
+  left_join(combined_tidy_connect_revise %>%
+    group_by(member) %>%
+    summarise(total = n())) %>%
+  mutate(freq = n / total)
+
+freq_gui_connect_removed <- freq_gui_connect_removed %>%
+  select(member, word, freq) %>%
+  spread(member, freq) %>%
+  arrange(`Core Members`, Volunteers)
+
+ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
+  geom_jitter(alpha = 0.1, size = 2.5, width = 0.25, height = 0.25) +
+  geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+  scale_x_log10(labels = percent_format()) +
+  scale_y_log10(labels = percent_format()) +
+  geom_abline(color = "red") +
+  labs(title = "Comparison of Frequently Used Words")
+```
+
+### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+frequency_revise_nature <- bind_rows(
+  mutate(tidy_core_n_connection_revise, member = "Core Members"),
+  mutate(tidy_vol_n_connection_revise, member = "Volunteers")
+) %>%
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(member, word) %>%
+  group_by(member) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(member, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+frequency_revise_nature[is.na(frequency_revise_nature)] <- 0
+# glimpse(frequency_revise_nature)
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  pairs()
+
+frequency_revise_nature %>%
+  select(-word) %>%
+  ggplot() +
+  geom_jitter(aes(x = `Core Members`, y = Volunteers))
+```
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise_nature,
+  ~ `Core Members` + Volunteers
+)
+
+# Correlation r is 0.045 and not significant (p-value = 0.61)
+```
+
+### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_connect_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 5) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 10, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
