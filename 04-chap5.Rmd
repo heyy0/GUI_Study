@@ -16,7 +16,7 @@ library(patchwork)
 ```
 
 ```{r include=FALSE}
-restoration <- read_csv(here::here("data/GUI_NVivo_text_data.csv"))
+#restoration <- read_csv(here::here("data/GUI_NVivo_text_data.csv"))
 
 values <- read_csv(here::here("data/2_GUI_VALUES.csv"))
 
@@ -1030,7 +1030,7 @@ ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
   labs(title = "Comparison of Frequently Used Words")
 ```
 
-### Correlation test
+#### Correlation test
 ```{r echo=FALSE}
 library(tidyr)
 frequency_revise_nature <- bind_rows(
@@ -1068,7 +1068,7 @@ cor.test(
 # Correlation r is -0.819 and significant (p-value = 0)
 ```
 
-### Frequency–inverse Document Frequency
+#### Frequency–inverse Document Frequency
 This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
 
 ```{r echo=FALSE}
@@ -1100,7 +1100,7 @@ combined_tidy_connect_revise %>%
 ```
 
 
-## Mindsets (related to 5G)
+### Mindsets (related to 5G)
 
 ```{r include=FALSE}
 benefits %>% names()
@@ -1140,7 +1140,7 @@ tidy_vol_n_connection_revise$member <- "Volunteers"
 combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
 ```
 
-### Most Frequently Used Words
+#### Most Frequently Used Words
 ```{r echo=FALSE}
 a1 <- tidy_core_n_connection_revise %>%
   group_by(word) %>%
@@ -1190,7 +1190,7 @@ ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
   labs(title = "Comparison of Frequently Used Words")
 ```
 
-### Correlation test
+#### Correlation test
 ```{r echo=FALSE}
 library(tidyr)
 frequency_revise_nature <- bind_rows(
@@ -1228,7 +1228,7 @@ cor.test(
 # Correlation r is 0.289 and significant (p-value = 0.0016)
 ```
 
-### Frequency–inverse Document Frequency
+#### Frequency–inverse Document Frequency
 This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
 
 ```{r echo=FALSE}
@@ -1261,10 +1261,11 @@ combined_tidy_connect_revise %>%
 
 
 
-## Self-awareness
+### Self-awareness
 No codes for self-awareness among the core members
 
-## Self-Efficacy or Confidence
+
+### Self-Efficacy or Confidence
 ```{r include=FALSE}
 benefits %>% names()
 values %>% names()
@@ -1303,7 +1304,7 @@ tidy_vol_n_connection_revise$member <- "Volunteers"
 combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
 ```
 
-### Most Frequently Used Words
+#### Most Frequently Used Words
 ```{r echo=FALSE}
 a1 <- tidy_core_n_connection_revise %>%
   group_by(word) %>%
@@ -1353,7 +1354,7 @@ ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
   labs(title = "Comparison of Frequently Used Words")
 ```
 
-### Correlation test
+#### Correlation test
 ```{r echo=FALSE}
 library(tidyr)
 frequency_revise_nature <- bind_rows(
@@ -1391,7 +1392,7 @@ cor.test(
 # Correlation r is -0.288 and significant (p-value = 0.0016)
 ```
 
-### Frequency–inverse Document Frequency
+#### Frequency–inverse Document Frequency
 This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
 
 ```{r echo=FALSE}
@@ -1423,8 +1424,8 @@ combined_tidy_connect_revise %>%
 ```
 
 
-# Values 
-## 1) Characteristics of Nature in GUI
+## Values 
+### 1) Characteristics of Nature in GUI
 
 ```{r include=FALSE}
 benefits %>% names()
@@ -1464,7 +1465,7 @@ tidy_vol_n_connection_revise$member <- "Volunteers"
 combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
 ```
 
-### Most Frequently Used Words
+#### Most Frequently Used Words
 ```{r echo=FALSE}
 a1 <- tidy_core_n_connection_revise %>%
   group_by(word) %>%
@@ -1514,7 +1515,7 @@ ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
   labs(title = "Comparison of Frequently Used Words")
 ```
 
-### Correlation test
+#### Correlation test
 ```{r echo=FALSE}
 library(tidyr)
 frequency_revise_nature <- bind_rows(
@@ -1547,7 +1548,7 @@ cor.test(
 # Correlation r is -0.03 and not significant (p-value = 0.52)
 ```
 
-### Frequency–inverse Document Frequency
+#### Frequency–inverse Document Frequency
 This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
 
 ```{r echo=FALSE}
@@ -1578,7 +1579,7 @@ combined_tidy_connect_revise %>%
   )
 ```
 
-## 2) Sense of Autonomy and Ownership
+### 2) Sense of Autonomy and Ownership
 
 ```{r include=FALSE}
 benefits %>% names()
@@ -1618,7 +1619,7 @@ tidy_vol_n_connection_revise$member <- "Volunteers"
 combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
 ```
 
-### Most Frequently Used Words
+#### Most Frequently Used Words
 ```{r echo=FALSE}
 a1 <- tidy_core_n_connection_revise %>%
   group_by(word) %>%
@@ -1669,7 +1670,7 @@ ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
   labs(title = "Comparison of Frequently Used Words")
 ```
 
-### Correlation test
+#### Correlation test
 ```{r echo=FALSE}
 library(tidyr)
 frequency_revise_nature <- bind_rows(
@@ -1708,7 +1709,7 @@ cor.test(
 # Correlation r is 0.18 and significant (p-value = 0)
 ```
 
-### Frequency–inverse Document Frequency
+#### Frequency–inverse Document Frequency
 This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
 
 ```{r echo=FALSE}
@@ -1739,7 +1740,7 @@ combined_tidy_connect_revise %>%
   )
 ```
 
-## 3) Risk-taking but Safe Space
+### 3) Risk-taking but Safe Space
 
 ```{r include=FALSE}
 benefits %>% names()
@@ -1779,7 +1780,7 @@ tidy_vol_n_connection_revise$member <- "Volunteers"
 combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
 ```
 
-### Most Frequently Used Words
+#### Most Frequently Used Words
 ```{r echo=FALSE}
 a1 <- tidy_core_n_connection_revise %>%
   group_by(word) %>%
@@ -1830,7 +1831,7 @@ ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
   labs(title = "Comparison of Frequently Used Words")
 ```
 
-### Correlation test
+#### Correlation test
 ```{r echo=FALSE}
 library(tidyr)
 frequency_revise_nature <- bind_rows(
@@ -1868,7 +1869,7 @@ cor.test(
 # Correlation r is 0.277 and significant (p-value = 0)
 ```
 
-### Frequency–inverse Document Frequency
+#### Frequency–inverse Document Frequency
 This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
 
 ```{r echo=FALSE}
@@ -1899,7 +1900,7 @@ combined_tidy_connect_revise %>%
   )
 ```
 
-## 4) Connecting people
+### 4) Connecting people
 
 ```{r include=FALSE}
 benefits %>% names()
@@ -1939,7 +1940,7 @@ tidy_vol_n_connection_revise$member <- "Volunteers"
 combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
 ```
 
-### Most Frequently Used Words
+#### Most Frequently Used Words
 ```{r echo=FALSE}
 a1 <- tidy_core_n_connection_revise %>%
   group_by(word) %>%
@@ -1990,7 +1991,7 @@ ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
   labs(title = "Comparison of Frequently Used Words")
 ```
 
-### Correlation test
+#### Correlation test
 ```{r echo=FALSE}
 library(tidyr)
 frequency_revise_nature <- bind_rows(
@@ -2028,7 +2029,7 @@ cor.test(
 # Correlation r is 0.262 and significant (p-value = 0)
 ```
 
-### Frequency–inverse Document Frequency
+#### Frequency–inverse Document Frequency
 This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
 
 ```{r echo=FALSE}
@@ -2059,7 +2060,7 @@ combined_tidy_connect_revise %>%
   )
 ```
 
-## 5) Activism
+### 5) Activism
 
 ```{r include=FALSE}
 benefits %>% names()
@@ -2099,7 +2100,7 @@ tidy_vol_n_connection_revise$member <- "Volunteers"
 combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
 ```
 
-### Most Frequently Used Words
+#### Most Frequently Used Words
 ```{r echo=FALSE}
 a1 <- tidy_core_n_connection_revise %>%
   group_by(word) %>%
@@ -2150,7 +2151,7 @@ ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
   labs(title = "Comparison of Frequently Used Words")
 ```
 
-### Correlation test
+#### Correlation test
 ```{r echo=FALSE}
 library(tidyr)
 frequency_revise_nature <- bind_rows(
@@ -2188,7 +2189,7 @@ cor.test(
 # Correlation r is 0.260 and significant (p-value = 0)
 ```
 
-### Frequency–inverse Document Frequency
+#### Frequency–inverse Document Frequency
 This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
 
 ```{r echo=FALSE}
@@ -2220,7 +2221,7 @@ combined_tidy_connect_revise %>%
 ```
 
 
-## 6) Non hierarchical Structure
+### 6) Non hierarchical Structure
 
 ```{r include=FALSE}
 benefits %>% names()
@@ -2260,7 +2261,7 @@ tidy_vol_n_connection_revise$member <- "Volunteers"
 combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
 ```
 
-### Most Frequently Used Words
+#### Most Frequently Used Words
 ```{r echo=FALSE}
 a1 <- tidy_core_n_connection_revise %>%
   group_by(word) %>%
@@ -2311,7 +2312,7 @@ ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
   labs(title = "Comparison of Frequently Used Words")
 ```
 
-### Correlation test
+#### Correlation test
 ```{r echo=FALSE}
 library(tidyr)
 frequency_revise_nature <- bind_rows(
@@ -2349,7 +2350,7 @@ cor.test(
 # Correlation r is -0.612 and significant (p-value = 0)
 ```
 
-### Frequency–inverse Document Frequency
+#### Frequency–inverse Document Frequency
 This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
 
 ```{r echo=FALSE}
@@ -2380,7 +2381,7 @@ combined_tidy_connect_revise %>%
   )
 ```
 
-## 7) Sense of Place
+### 7) Sense of Place
 
 ```{r include=FALSE}
 values %>% names()
@@ -2419,7 +2420,7 @@ tidy_vol_n_connection_revise$member <- "Volunteers"
 combined_tidy_connect_revise <- rbind(tidy_core_n_connection_revise, tidy_vol_n_connection_revise)
 ```
 
-### Most Frequently Used Words
+#### Most Frequently Used Words
 ```{r echo=FALSE}
 a1 <- tidy_core_n_connection_revise %>%
   group_by(word) %>%
@@ -2470,7 +2471,7 @@ ggplot(freq_gui_connect_removed, aes(`Core Members`, Volunteers)) +
   labs(title = "Comparison of Frequently Used Words")
 ```
 
-### Correlation test
+#### Correlation test
 ```{r echo=FALSE}
 library(tidyr)
 frequency_revise_nature <- bind_rows(
@@ -2508,7 +2509,7 @@ cor.test(
 # Correlation r is 0.045 and not significant (p-value = 0.61)
 ```
 
-### Frequency–inverse Document Frequency
+#### Frequency–inverse Document Frequency
 This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
 
 ```{r echo=FALSE}
