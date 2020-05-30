@@ -1425,7 +1425,7 @@ combined_tidy_connect_revise %>%
 
 
 ## Values 
-### 1) Characteristics of Nature in GUI
+### Characteristics of Nature in GUI
 
 ```{r include=FALSE}
 benefits %>% names()
@@ -1579,7 +1579,7 @@ combined_tidy_connect_revise %>%
   )
 ```
 
-### 2) Sense of Autonomy and Ownership
+### Sense of Autonomy and Ownership
 
 ```{r include=FALSE}
 benefits %>% names()
@@ -1740,7 +1740,7 @@ combined_tidy_connect_revise %>%
   )
 ```
 
-### 3) Risk-taking but Safe Space
+### Risk-taking but Safe Space
 
 ```{r include=FALSE}
 benefits %>% names()
@@ -1900,7 +1900,7 @@ combined_tidy_connect_revise %>%
   )
 ```
 
-### 4) Connecting people
+### Connecting people
 
 ```{r include=FALSE}
 benefits %>% names()
@@ -2060,7 +2060,7 @@ combined_tidy_connect_revise %>%
   )
 ```
 
-### 5) Activism
+### Activism
 
 ```{r include=FALSE}
 benefits %>% names()
@@ -2221,7 +2221,7 @@ combined_tidy_connect_revise %>%
 ```
 
 
-### 6) Non hierarchical Structure
+### Non hierarchical Structure
 
 ```{r include=FALSE}
 benefits %>% names()
@@ -2381,7 +2381,7 @@ combined_tidy_connect_revise %>%
   )
 ```
 
-### 7) Sense of Place
+### Sense of Place
 
 ```{r include=FALSE}
 values %>% names()
