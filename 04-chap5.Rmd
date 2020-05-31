@@ -82,11 +82,11 @@ tibble(
   "GUI Benefits" = c(
     "Restoration", "Nature Connection", "Sense of Community", "Empowerment*", "Environmental Awareness", "Hands-on Experiences", "Mindsets (related to 5G)", "Self-awareness", "Self-Efficacy or Confidence*"
   ),
-  "Correlation R" = c(0.291, 0.502, 0.521, "-0.0290*", -0.224, -0.818, 0.289, "NA", "-0.288*")
+  "Correlation r" = c(0.291, 0.502, 0.521, "-0.0290*", -0.224, -0.818, 0.289, "NA", "-0.288*")
 ) %>%
   gt() %>%
   tab_header(
-    title = "GUI Benefits: Correlation Test Results"
+    title = "GUI Benefits: Comparison between Core Members and Volunteers"
   ) %>%
   tab_source_note(
     source_note = "* denotes non significant correlation"
@@ -100,11 +100,11 @@ tibble(
     "Characteristics of Nature in GUI*", "Sense of Autonomy and Ownership",
     "Risk-taking but Safe Space", "Connecting people", "Activism", "Non hierarchical Structure", "Sense of Place*"
   ),
-  "Correlation R" = c("-0.034*", 0.182, 0.276, 0.262, 0.260, -0.612, "0.048*")
+  "Correlation r" = c("-0.034*", 0.182, 0.276, 0.262, 0.260, -0.612, "0.048*")
 ) %>%
   gt() %>%
   tab_header(
-    title = "GUI Values: Correlation Test Results"
+    title = "GUI Values: Comparison between Core Members and Volunteers"
   ) %>%
   tab_source_note(
     source_note = "* denotes non significant correlation"
@@ -2521,6 +2521,117 @@ combined_tidy_connect_revise %>%
   group_by(member) %>%
   # filter(tf_idf>=0.0002149294) %>%
   top_n(n = 10, tf_idf) %>%
+  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
+  geom_col(show.legend = FALSE) +
+  ylab("") +
+  xlab("") +
+  coord_flip() +
+  facet_wrap(~member, ncol = 2, scales = "free_y") +
+  scale_x_reordered() +
+  ggtitle("Unique words used by Core members VS Volunteers") +
+  theme(
+    axis.ticks.y = element_blank(),
+    # text=element_text(family = font),
+    plot.title = element_text(
+      face = "bold",
+      # colour = colortitles,
+      size = 13, hjust = 0.5
+    )
+  )
+```
+
+
+
+## Comparison among Volunteers
+### Restoration
+
+```{r include=FALSE}
+benefits %>% names()
+
+bene_vols <- benefits %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("H : Restoration at GUI") %>%
+  rename(Sentences = "H : Restoration at GUI") %>% 
+  mutate(workshops =row_number()) %>% 
+  select(workshops, everything())
+```
+
+```{r echo=FALSE, fig.width=15, fig.height=25}
+tidy_bene_vols <- bene_vols %>%
+  unnest_tokens(word, Sentences) %>%  # unesting sentensec into words
+  filter(!word %in% to_remove)
+
+tidy_bene_vols %>% 
+  group_by(workshops, word) %>% 
+  summarize(count=n()) %>% 
+  ggplot+
+  geom_col(aes(x=word, y=count)) +
+  coord_flip() +
+  facet_wrap(~workshops, scales="free_x") +
+  theme(axis.text.y = element_text(size=3))
+```
+
+#### Correlation test
+```{r echo=FALSE}
+library(tidyr)
+na_strings <- c("NA", "n/a")
+# frequency_revise <- bind_rows(
+#   mutate(tidy_core_restoration_revise, member = "Core Members"),
+#   mutate(tidy_vol_restoration_revise, member = "Volunteers")
+# ) %>%
+
+tidy_bene_vols <- tidy_bene_vols %>% 
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(workshops, word) %>%
+  group_by(workshops) %>%
+  mutate(proportion = n / sum(n)) %>%
+  select(-n) %>%
+  spread(workshops, proportion) %>%
+  naniar::replace_with_na_all(condition = ~ . %in% na_strings) %>%
+  filter(word != "NA")
+
+# frequency_revise %>% select(`Core Members`) %>% is.na(`Core Members`)
+
+tidy_bene_vols[is.na(tidy_bene_vols)] <- 0
+# glimpse(frequency_2)
+
+tidy_bene_vols %>%
+  select(-word) %>%
+  pairs()
+
+tidy_bene_vols <- data.frame(tidy_bene_vols)
+```
+
+```{r include=FALSE}
+library(lsr)
+tidy_bene_vols %>% 
+  select(-word) %>%
+  correlate(test = TRUE, corr.method = "pearson", p.adjust.method = "none")
+
+```
+
+
+```{r echo=FALSE}
+cor.test(
+  data = frequency_revise,
+  ~ `Core Members` + Volunteers
+)
+# R is 0.291 and significant (p-value =0)
+```
+
+
+#### Frequency–inverse Document Frequency
+This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
+
+```{r echo=FALSE}
+combined_tidy_revise %>%
+  filter(!word %in% to_remove) %>%
+  count(member, word, sort = TRUE) %>%
+  bind_tf_idf(term = word, document = member, n = n) %>%
+  filter(n > 5) %>%
+  group_by(member) %>%
+  # filter(tf_idf>=0.0002149294) %>%
+  top_n(n = 5, tf_idf) %>%
   ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
   geom_col(show.legend = FALSE) +
   ylab("") +
