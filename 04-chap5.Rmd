@@ -2542,6 +2542,7 @@ combined_tidy_connect_revise %>%
 
 
 
+
 ## Comparison among Volunteers
 ### Restoration
 
@@ -2569,7 +2570,20 @@ tidy_bene_vols %>%
   coord_flip() +
   facet_wrap(~workshops, scales="free_x") +
   theme(axis.text.y = element_text(size=3))
+
 ```
+
+```{r echo=FALSE, fig.width=15, fig.height=25}
+tidy_bene_vols %>% 
+  group_by(workshops, word) %>% 
+  summarize(count=n()) %>% 
+  ggplot+
+  geom_col(aes(x=word, y=count)) +
+  coord_flip() +
+  facet_wrap(~workshops, scales="free") +
+  theme(axis.text.y = element_text(size=5))
+```
+
 
 #### Correlation test
 ```{r echo=FALSE}
@@ -2604,49 +2618,139 @@ tidy_bene_vols <- data.frame(tidy_bene_vols)
 
 ```{r include=FALSE}
 library(lsr)
-tidy_bene_vols %>% 
+cor_res <- tidy_bene_vols %>% 
   select(-word) %>%
   correlate(test = TRUE, corr.method = "pearson", p.adjust.method = "none")
-
+#make this to the visual correlation chart and repeat it for all 
 ```
 
+<!-- ```{r eval=FALSE} -->
+<!-- pre_cor <- round(cor_res$correlation, 2) -->
+<!-- pre_pvalue <- round(cor_res$p.value, 2) -->
+
+<!-- # Get lower triangle of the correlation matrix -->
+<!-- get_lower_tri <- function(x) { -->
+<!--   x[upper.tri(x)] <- NA -->
+<!--   return(x) -->
+<!-- } -->
+<!-- ``` -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- library(reshape2) -->
+<!-- lower_tri <- get_lower_tri(pre_cor) -->
+<!-- lower_tri_p <- get_lower_tri(pre_pvalue) -->
+
+<!-- melted_cor_r <- melt(pre_cor, na.rm = TRUE) %>% rename(cor_r = value) -->
+<!-- melted_cor_p <- melt(pre_pvalue, na.rm = TRUE) %>% -->
+<!--   rename(pvalue = value) %>% -->
+<!--   select(pvalue) -->
+
+<!-- melted_only_cor <- cbind(melted_cor_r, melted_cor_p) -->
+<!-- # %>% filter(pvalue <= 0.05) # filtering only significant correlations -->
+<!-- ``` -->
+
+<!-- ```{r eval=FALSE} -->
+<!-- # correlation -->
+<!-- # ggplot(melted_only_cor, aes(Var2, Var1, fill = cor_r)) + -->
+<!-- #   geom_tile(color = "white") + -->
+<!-- #   scale_fill_gradient2( -->
+<!-- #     low = "blue", high = "red", mid = "white", -->
+<!-- #     midpoint = 0, limit = c(-1, 1), space = "Lab", -->
+<!-- #     name = "Correlation" -->
+<!-- #   ) + -->
+<!-- #   theme_minimal() + -->
+<!-- #   theme( -->
+<!-- #     plot.title = element_text(hjust = 0.5, face = "bold"), -->
+<!-- #     axis.text.x = element_text( -->
+<!-- #       angle = 90, vjust = 0.5, -->
+<!-- #       size = 8, hjust = 1 -->
+<!-- #     ), -->
+<!-- #     axis.text.y = element_text(size = 8) -->
+<!-- #   ) + -->
+<!-- #   labs(title = "Fig 1. Correlation Test R (Spearman)") + -->
+<!-- #   geom_text(aes(Var2, Var1, label = cor_r), color = "black", size = 3) + -->
+<!-- #   theme( -->
+<!-- #     axis.title.x = element_blank(), -->
+<!-- #     axis.title.y = element_blank(), -->
+<!-- #     panel.grid.major = element_blank(), -->
+<!-- #     panel.border = element_blank(), -->
+<!-- #     panel.background = element_blank(), -->
+<!-- #     axis.ticks = element_blank() -->
+<!--     # legend.justification = c(0, 1), -->
+<!--     # legend.position = FALSE -->
+<!--     # legend.direction = "horizontal" -->
+<!-- #  ) -->
+<!-- # + -->
+<!-- #   guides(fill = guide_colorbar( -->
+<!-- #     barwidth = 6, barheight = 0.5, -->
+<!-- #     title.position = "top", title.hjust = 0.5 -->
+<!-- #   )) -->
+
+<!-- # p-value -->
+<!-- ggplot(melted_only_cor, aes(Var2, Var1, fill = pvalue)) + -->
+<!--   geom_tile(color = "white") + -->
+<!--   scale_fill_gradient2( -->
+<!--     low = "pink", high = "white", -->
+<!--     midpoint = 0.05, limit = c(0, 0.05), space = "Lab", -->
+<!--     name = "p-value" -->
+<!--   ) + -->
+<!--   theme_minimal() + -->
+<!--   theme( -->
+<!--     plot.title = element_text(hjust = 0.5, face = "bold"), -->
+<!--     axis.text.x = element_text( -->
+<!--       angle = 90, vjust = 0.5, -->
+<!--       size = 8, hjust = 1 -->
+<!--     ), -->
+<!--     axis.text.y = element_text(size = 8) -->
+<!--   ) + -->
+<!--   labs(title = "Correlation Test with p-value (Pearson)") + -->
+<!--   geom_text(aes(Var2, Var1, label = cor_r), color = "black", size = 4) + -->
+<!--   theme( -->
+<!--     axis.title.x = element_blank(), -->
+<!--     axis.title.y = element_blank(), -->
+<!--     panel.grid.major = element_blank(), -->
+<!--     panel.border = element_blank(), -->
+<!--     panel.background = element_blank(), -->
+<!--     axis.ticks = element_blank() -->
+<!--     # legend.justification = c(0, 1), -->
+<!--     # legend.position = c(0.6, 0.3), -->
+<!--     # legend.direction = "horizontal" -->
+<!--   ) -->
+<!-- # + -->
+<!-- #   guides(fill = guide_colorbar( -->
+<!-- #     barwidth = 6, barheight = 0.5, -->
+<!-- #     title.position = "top", title.hjust = 0.5 -->
+<!-- #   )) -->
+<!-- ``` -->
+
+```{r include=FALSE}
+library(corrplot)
+cor_res2 <- data.frame(cor_res$correlation)
+
+cor_M <- tidy_bene_vols %>% 
+  select(-word) %>%
+  cor()
+
+confident_95 <- cor.mtest( tidy_bene_vols %>% select(-word), conf.level = .95)
+
+corrplot(cor_M, p.mat = confident_95$p, 
+         insig = "label_sig",
+         sig.level = c(.001, .01, .05), 
+         pch.cex = 1.5, pch.col = "black", 
+         type = "lower", tl.col = "black", 
+         tl.srt = 15, tl.cex = 0.9)
+
+```
 
 ```{r echo=FALSE}
-cor.test(
-  data = frequency_revise,
-  ~ `Core Members` + Volunteers
-)
-# R is 0.291 and significant (p-value =0)
+col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+corrplot(cor_M, method = "color", col = col(200),
+         type = "upper", number.cex = .7,
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col = "black", tl.srt = 90, # Text label color and rotation
+         # Combine with significance
+         p.mat = confident_95$p, sig.level = 0.05, insig = "blank", 
+         # hide correlation coefficient on the principal diagonal
+         diag = FALSE)
 ```
 
-
-#### Frequency–inverse Document Frequency
-This is to find words that are common within the messages of one author but uncommon in the rest of the messages.
-
-```{r echo=FALSE}
-combined_tidy_revise %>%
-  filter(!word %in% to_remove) %>%
-  count(member, word, sort = TRUE) %>%
-  bind_tf_idf(term = word, document = member, n = n) %>%
-  filter(n > 5) %>%
-  group_by(member) %>%
-  # filter(tf_idf>=0.0002149294) %>%
-  top_n(n = 5, tf_idf) %>%
-  ggplot(aes(x = reorder_within(word, n, member), y = n, fill = member)) +
-  geom_col(show.legend = FALSE) +
-  ylab("") +
-  xlab("") +
-  coord_flip() +
-  facet_wrap(~member, ncol = 2, scales = "free_y") +
-  scale_x_reordered() +
-  ggtitle("Unique words used by Core members VS Volunteers") +
-  theme(
-    axis.ticks.y = element_blank(),
-    # text=element_text(family = font),
-    plot.title = element_text(
-      face = "bold",
-      # colour = colortitles,
-      size = 13, hjust = 0.5
-    )
-  )
-```
