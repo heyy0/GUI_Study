@@ -90,10 +90,38 @@ library(dplyr)
 <!-- ) -->
 <!-- ``` -->
 
+
 <!-- ```{r include=FALSE} -->
 <!-- library(psych) -->
 <!-- my.scales <- scoreItems(scale.list, only_gui) -->
 <!-- ``` -->
+
+
+<!-- ```{r include=FALSE} 
+Breaking down IMI scales -->
+<!-- scale.list <- list( -->
+<!--   IM =c("imi_4_rev_coded", "imi_5", "imi_6", "imi_7"), -->
+<!--   PComp =c("imi_2", "imi_8"), -->
+<!--   PChoice =c("imi_1", "imi_3_rev_coded") -->
+<!-- ) -->
+<!-- ``` -->
+
+
+<!-- ```{r include=FALSE} -->
+<!-- library(psych) -->
+<!-- my.scales <- scoreItems(scale.list, only_gui_scales) -->
+<!-- ``` -->
+
+
+<!-- ```{r include=FALSE} -->
+<!-- my.scores <- my.scales$scores -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- dfscores <- data.frame(my.scores) -->
+<!-- only_gui_scales <- cbind(only_gui_scales, dfscores) -->
+<!-- ``` -->
+
 
 <!-- ```{r include=FALSE} -->
 <!-- ## Cronbach's Alpha -->
@@ -115,15 +143,32 @@ library(dplyr)
 <!-- alpha(dfIMIscore) -->
 <!-- ``` -->
 
+```{r include=FALSE}
+## Cronbach's Alpha
+library(dplyr)
+dfPCompscore <- select(only_gui_scales, "imi_2", "imi_8")
+dfPChoicescore <- select(only_gui_scales, "imi_1", "imi_3_rev_coded")
+dfIMscore <- select(only_gui_scales, "imi_4_rev_coded", "imi_5", "imi_6", "imi_7")
+```
+
+```{r}
+alpha(dfPCompscore)
+alpha(dfPChoicescore)
+alpha(dfIMscore)
+```
+
+
 ## Internal Consistency
 All scales of psychological measures used in the online survey have good Cronbach’s alpha, ranging from .76 to .92 (good internal consistency). Therefore, we will proceed to include all the questions in the respective scales. 
 
 ```{r include=FALSE}
-tbl_1 <- tibble(vars = c(1, 2, 3, 4, 5, 6), scales = c("Social Cohesion", "Sense of Community", "Connection to Nature", "Self Esteem", "Self Efficacy", "Intrinsic Motivation"), Cronbachs_Alpha = c(0.76, 0.92, 0.89, 0.76, 0.91, 0.78))
+tbl_1 <- tibble(vars = c(1, 2, 3, 4, 5, 6, 7, 8, 9), scales = c("Social Cohesion", "Sense of Community", "Connection to Nature", "Self Esteem", "Self Efficacy", "Intrinsic Motivation Inventory", "Intrisic Motivation (Enjoyment and Interests)", "Perceived Competence", "Perceived Choice"), Cronbachs_Alpha = c(0.76, 0.92, 0.89, 0.76, 0.91, 0.78, 0.78, "0.45*", "0.41*"))
 ```
 
 ```{r echo=FALSE}
-tbl_1 %>% gt()
+tbl_1 %>% gt() %>% tab_source_note(
+    source_note = "* Perceived Competence and Perceived Choice have only two items, respectively"
+  )
 ```
 
 
@@ -139,19 +184,19 @@ tbl_1 %>% gt()
 
 ```{r include=FALSE}
 # Saving Data Scales
-#saveRDS(only_gui_scales, ("data/only_gui_mar20_scales.rds"))
+#saveRDS(only_gui_scales, ("data/only_gui_june4_scales.rds"))
 #only_gui_scales <- readRDS("/data/only_gui_mar20_scales.rds") # for coding
-only_gui_scales <- readRDS(here::here("data/only_gui_mar20_scales.rds")) #for knitting
+only_gui_scales <- readRDS(here::here("data/only_gui_june4_scales.rds"))
 ```
 
 ## Descriptive statistics
 ```{r include=FALSE}
 tbl_2 <- only_gui_scales %>%
-  select(age, frequency_coded, commitment_coded, SoCoh, SOC, CNS, IMI, Self_Est, Self_Eff) %>%
+  select(age, frequency_coded, commitment_coded, SoCoh, SOC, CNS, IMI, IM, PComp, PChoice, Self_Est, Self_Eff) %>%
   describe()
 
 tbl_2 <- tbl_2 %>%
-  mutate(variables = c("Age", "Frequency of Visits (per year)", "Total Duration of Commitment (months)", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation", "Self Esteem", "Self Efficacy")) %>%
+  mutate(variables = c("Age", "Frequency of Visits (per year)", "Total Duration of Commitment (months)", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation Inventory", "Intrisic Motivation (Enjoyment and Interests)", "Perceived Competence", "Perceived Choice", "Self Esteem", "Self Efficacy")) %>%
   select(vars, variables, everything())
 ```
 
@@ -177,9 +222,9 @@ tbl_2 %>%
 # Female
 only_gui_scales %>%
   filter(gender == "Female") %>%
-  select(age, frequency_coded, commitment_coded, SoCoh, SOC, CNS, IMI, Self_Est, Self_Eff) %>%
+  select(age, frequency_coded, commitment_coded, SoCoh, SOC, CNS, IMI, IM, PComp, PChoice, Self_Est, Self_Eff) %>%
   describe() %>%
-  mutate(variables = c("Age", "Frequency of Visits (per year)", "Total Duration of Commitment (months)", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation", "Self Esteem", "Self Efficacy")) %>%
+  mutate(variables = c("Age", "Frequency of Visits (per year)", "Total Duration of Commitment (months)", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation Inventory", "Intrisic Motivation (Enjoyment and Interests)", "Perceived Competence", "Perceived Choice", "Self Esteem", "Self Efficacy")) %>%
   select(vars, variables, everything()) %>%
   gt() %>%
   tab_header(
@@ -198,9 +243,9 @@ only_gui_scales %>%
 # Male
 only_gui_scales %>%
   filter(gender == "Male") %>%
-  select(age, frequency_coded, commitment_coded, SoCoh, SOC, CNS, IMI, Self_Est, Self_Eff) %>%
+  select(age, frequency_coded, commitment_coded, SoCoh, SOC, CNS, IMI, IM, PComp, PChoice, Self_Est, Self_Eff) %>%
   describe() %>%
-  mutate(variables = c("Age", "Frequency of Visits (per year)", "Total Duration of Commitment (months)", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation", "Self Esteem", "Self Efficacy")) %>%
+  mutate(variables = c("Age", "Frequency of Visits (per year)", "Total Duration of Commitment (months)", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation Inventory", "Intrisic Motivation (Enjoyment and Interests)", "Perceived Competence", "Perceived Choice", "Self Esteem", "Self Efficacy")) %>%
   select(vars, variables, everything()) %>%
   gt() %>%
   tab_header(
@@ -686,12 +731,19 @@ bing_tidy_gui_reasons %>%
 <!-- ggqqplot(only_gui_scales$number_programs) -->
 <!-- ``` -->
 
+```{r include=FALSE}
+shapiro.test(only_gui_scales$Self_Eff)
+shapiro.test(only_gui_scales$IM)
+shapiro.test(only_gui_scales$PComp)
+shapiro.test(only_gui_scales$PChoice)
+```
+
 
 All the variables below excepts Sense of Community and Intrinsic Motivation do not follow the normal distribution.
 ```{r include=FALSE}
 tbl_normality_2 <- tibble(
-  variables = c("Age", "Frequency of Visits (per year)", "Total Duration of Commitment (months)", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation", "Self Esteem", "Self Efficacy"),
-  shapiro_test = c("p <.001", "p <.001", "p <.001", "p <.001", "0.096*", "p <.001", "0.118*", "p <.001", "p <.001")
+  variables = c("Age", "Frequency of Visits (per year)", "Total Duration of Commitment (months)", "Social Cohesion", "Sense of Community", "Connection to Nature", "Self Esteem", "Self Efficacy", "Intrinsic Motivation Inventory", "Intrisic Motivation (Enjoyment and Interests)", "Perceived Competence", "Perceived Choice"),
+  shapiro_test = c("p <.001", "p <.001", "p <.001", "p <.001", "0.096*", "p <.001", "p <.001", "p <.001", "0.118*", "p <.001", "p <.001", "p <.001")
 )
 ```
 
@@ -719,17 +771,20 @@ Median.test(gui_gender_scales$SoCoh, gui_gender_scales$gender)
 Median.test(gui_gender_scales$SOC, gui_gender_scales$gender)
 Median.test(gui_gender_scales$CNS, gui_gender_scales$gender)
 Median.test(gui_gender_scales$IMI, gui_gender_scales$gender)
+Median.test(gui_gender_scales$IM, gui_gender_scales$gender)
+Median.test(gui_gender_scales$PComp, gui_gender_scales$gender)
+Median.test(gui_gender_scales$PChoice, gui_gender_scales$gender)
 Median.test(gui_gender_scales$Self_Est, gui_gender_scales$gender)
 Median.test(gui_gender_scales$Self_Eff, gui_gender_scales$gender)
 Median.test(gui_gender_scales$number_programs, gui_gender_scales$gender)
 
 # Summary of Table
 tbl_gender <- tibble(
-  vars = c(1, 2, 3, 4, 5, 6, 7, 8, 9),
-  scales = c("Age", "Frequency", "Commitment", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation", "Self Esteem", "Self Efficacy"),
-  male_median = c(35.5, 9, 10, 6.0, 5.125, 5.20, 5.50, 4.50, 5.00),
-  female_median = c(36.0, 4, 16, 6.2, 5.25, 5.70, 5.87, 5.25, 5.5),
-  Median_test_p_value = c("0.64", "0.079", "0.30", "0.40", "0.40", "0.82", "0.25", "0.09", "0.041*")
+  vars = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12),
+  scales = c("Age", "Frequency", "Commitment", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation Inventory", "Intrisic Motivation (Enjoyment and Interests)", "Perceived Competence", "Perceived Choice", "Self Esteem", "Self Efficacy"),
+  male_median = c(35.5, 9, 10, 6.0, 5.125, 5.20, 5.50, 5.88, 5.50, 5.50, 4.50, 5.00),
+  female_median = c(36.0, 4, 16, 6.2, 5.25, 5.70, 5.88, 6.00, 5.00, 5.50, 5.25, 5.50),
+  Median_test_p_value = c("0.64", "0.079", "0.30", "0.40", "0.40", "0.82", "0.25", "0.21", "0.61", "0.72","0.09", "0.041*")
 )
 ```
   
@@ -937,8 +992,8 @@ gui_cluster_data <- left_join(id_only_gui, gui_components, by = "id") %>%
 ```
 
 ```{r include=FALSE, eval=FALSE}
-# saveRDS(gui_cluster_data, ("4_Survey_Experiment/Data/only_gui_cluster_apr16.rds"))
-gui_cluster_data <- readRDS(here::here("/data/only_gui_cluster_apr16.rds"))
+#saveRDS(gui_cluster_data, ("data/only_gui_cluster_June4.rds"))
+gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
 ```
 
 ### Preliminary Analysis on the clusters
@@ -1000,6 +1055,34 @@ summary(res.aov) # not Significant
 
 pairwise.t.test(
   x = gui_cluster_data$SoCoh, # outcome variable
+  g = gui_cluster_data$clusters, # grouping variable
+  p.adjust.method = "none" # no correction used
+) # Not significant at all
+
+# IMI
+res.aov <- aov(IMI ~ clusters, data = gui_cluster_data)
+summary(res.aov) # not Significant
+
+# IM
+res.aov <- aov(IM ~ clusters, data = gui_cluster_data)
+summary(res.aov) # not Significant
+
+# PComp
+res.aov <- aov(PComp ~ clusters, data = gui_cluster_data)
+summary(res.aov) # not Significant
+
+pairwise.t.test(
+  x = gui_cluster_data$PComp, # outcome variable
+  g = gui_cluster_data$clusters, # grouping variable
+  p.adjust.method = "none" # no correction used
+) # Not significant at all
+
+# PChoice
+res.aov <- aov(PChoice ~ clusters, data = gui_cluster_data)
+summary(res.aov) # not Significant
+
+pairwise.t.test(
+  x = gui_cluster_data$PChoice, # outcome variable
   g = gui_cluster_data$clusters, # grouping variable
   p.adjust.method = "none" # no correction used
 ) # Not significant at all
@@ -1230,6 +1313,10 @@ Median.test(old_new$IMI, old_new$clusters) # IMI is not significant. p=0.491
 Median.test(old_new$SoCoh, old_new$clusters) # Social Cohesion is not significant. p=0.333
 Median.test(old_new$Self_Est, old_new$clusters) # Self-est is not significant. p=0.433
 Median.test(old_new$Self_Eff, old_new$clusters) # Self-eff is not significant. p=0.494
+
+Median.test(old_new$IM, old_new$clusters) # IM is not significant. p=0.64
+Median.test(old_new$PComp, old_new$clusters) # PComp is not significant. p=0.947
+Median.test(old_new$PChoice, old_new$clusters) # PChoice is not significant. p=0.739
 ```
 
 <!-- ## Regression by Groups -->
@@ -1246,28 +1333,29 @@ Median.test(old_new$Self_Eff, old_new$clusters) # Self-eff is not significant. p
 <!-- ``` -->
 
 ## Correlation Analysis
-- __Figure 1.__ shows correlation r by the figures and highlights: towards shades of blue mean negative and shades of red mean positive correlation.
-
-- __Figure 2.__ shows the correlation r by __the figures__ and p-value by __the highlights__: the squares highlighted with the shades of red are significant correlations. The squares with grey are non-significant correlations.
+- __`Correlation Test (Spearman's Rank Test)`__ shows correlation r by the figures and highlights: towards __shades of blue__ mean __negative__ and __shades of red__ mean __positive correlations__. Those squares with no highlights (white) are non-significant correlations (p> 0.05).
 
 - It's observed that __Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation (`IMI`)__ show __significant correlations (moderate to strong)__ among them.   
 
-- Frequency (`frequency_coded`) and commitment (`commitment_coded`) also show significant correlations (moderate, r=0.5, Spearman). However, as discussed earlier, __the correlation test with Pearson__ only showed a weak correlation (r=0.23, Pearson).
+- Frequency (`frequency_coded`) and commitment (`commitment_coded`) also show moderate to strong correlations (Spearman). However, as discussed earlier, __the correlation test with Pearson__ only __showed a weak correlation (r=0.23, Pearson)__.
   
-- __1) those who visit GUI frequently__ and __2) those who commit GUI in the long duration__ have __a higher sense of community__ and __a higher Intrinsic Motivation__. Earlier studies from Community Psychology support these findings: __sense of community and intrinsic motivation can be built through frequent interactions over the long term__ (Christens & Peterson, 2010; Bidee, 2013; Oostlander et al., 2013; ).  
-  
-- There is __a strong correlation between Nature Connection and Intrinsic motivation (r=0.465)__, implying that __those who are self-motivated also have a high sense of nature connection.__
-  
-- The number of __program types attended__ (`number_programs`) shows __significant positive correlations__ with __frequency, commitment, Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation (`IMI`)__. Hence, __more committed members__ with __a higher sense of community__ engage in __a variety of programs__. It is also interesting to note that `number_programs` shows a significant negative correlation with `age`: __older GUI members__ attend __less variety of GUI programs__.
+- __1) those who visit GUI frequently__ and __2) those who commit GUI in the long duration__ seem to have __a higher sense of community__ and __a higher Intrinsic Motivation__. Earlier studies from Community Psychology support these findings: __sense of community and intrinsic motivation can be built through frequent interactions over the long term__ (Christens & Peterson, 2010; Bidee, 2013; Oostlander et al., 2013). 
 
-- This correlation test did not show significant correlations between __1) frequency and commitment, and 2) Social Cohesion and Nature connection__. This suggests that __Social Cohesion and Nature Connection can be built among GUI members regardless of their duration of commitment and frequency of visits.__ As the focus group discussion with GUI volunteers noted, perhaps GUI members can gain Social Cohesion and Nature Connection immediately through their engagement at GUI. 
+<!-- Whereas, `SoCoh` (Social Cohesion) does not show any significant correlations with  `Frequency` and `Commitment`, indicating that `SoCoh` does not develop over time through frequent interactions.     -->
   
-```{r echo=FALSE}
+- There is __a strong correlation__ between __Nature Connection (`CNS`)__ and __Intrinsic motivation (`IMI`)__ (r=0.465)__, implying that __those who are self-motivated also have a high sense of nature connection.__
+  
+- The number of __program types attended__ (`# of Programs`) shows __significant positive correlations__ with __`Frequency`, `Commitment`, Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation (`IMI`)__. Hence, __more committed members__ with __a higher sense of community__ engage in __a variety of programs__. It is also interesting to note that `# of Programs` shows a significant negative correlation with `age`: __older GUI members__ attend __less variety of GUI programs__.
+
+- This correlation test did not show significant correlations between __1) frequency and commitment, and 2) Social Cohesion (`SoCoh`)__ and __Nature connection (`CNS`)__. This suggests that __Social Cohesion__ and __Nature Connection__ can be built among GUI members regardless of their duration of commitment and frequency of visits. As the focus group discussion with GUI volunteers noted, perhaps __GUI members__ can gain a sense of Social Cohesion __immediately__ through their engagement at GUI. Regarding the Nature Connection, it seems that __those who visit GUI already have a higher sense of nature connection__. Therefore, it doesn't seem to change so much over time.
+
+  
+```{r include=FALSE}
 gui_cluster_data <- readRDS(here::here("/data/only_gui_cluster_apr16.rds"))
 
 library(lsr)
 gui_cluster_data %>%
-  select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>% mutate(clusters=as.numeric(clusters)) %>% pairs()
+  select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>% mutate(clusters=as.numeric(clusters)) %>% pairs()
 ```
 
 
@@ -1378,7 +1466,7 @@ gui_cluster_data %>%
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=8}
 cor_test_results <- gui_cluster_data %>%
-  select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>% mutate(clusters=as.numeric(clusters)) %>% 
+  select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>% mutate(clusters=as.numeric(clusters)) %>% 
   correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "none")
 
 library(corrplot)
@@ -1417,7 +1505,7 @@ library(broom)
 
 ```{r include=FALSE}
 model_data <- gui_cluster_data %>%
-  select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs)
+  select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs)
 ```
 
 ```{r include=FALSE}
@@ -1441,6 +1529,33 @@ step( object = full.model,     # start at the full model
 
 #IMI
 full.model <- lm(formula = IMI ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
+                   data = model_data  
+ )
+
+step( object = full.model,     # start at the full model
+       direction = "backward"   # allow it remove predictors but not add them
+ )
+
+#IM
+full.model <- lm(formula = IM ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
+                   data = model_data  
+ )
+
+step( object = full.model,     # start at the full model
+       direction = "backward"   # allow it remove predictors but not add them
+ )
+
+#PComp
+full.model <- lm(formula = PComp ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
+                   data = model_data  
+ )
+
+step( object = full.model,     # start at the full model
+       direction = "backward"   # allow it remove predictors but not add them
+ )
+
+#PChoice
+full.model <- lm(formula = PChoice ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
                    data = model_data  
  )
 
@@ -1510,6 +1625,26 @@ model_gui_5 <- lm(Self_Eff ~ age + Frequency + `# of Programs`, data = model_dat
 summary(model_gui_5) # Not significant
 ```
 
+```{r results="hide"}
+model_gui_6 <- lm(formula = IM ~ age + Commitment + `# of Programs` + clusters, 
+    data = model_data)
+summary(model_gui_6) # R-squared is 0.164. Number of programs and cluster 2 are significant
+
+```
+
+```{r results="hide"}
+model_gui_7 <- lm(formula = PComp ~ `# of Programs`, 
+    data = model_data)
+summary(model_gui_7) # R-squared is 0.164. Number of programs and cluster 2 are significant
+```
+
+```{r results="hide"}
+model_gui_7 <- lm(formula = PChoice ~ `# of Programs`, 
+    data = model_data)
+summary(model_gui_7) # R-squared is 0.164. Number of programs and cluster 2 are significant
+```
+
+
 Outcome Variables  | R-squared  | Positive Coefficients| Negative Coefficients| 
 ------------- | ------------- | -------------|-------------|
 Sense of Community  | 0.148 | `# of Programs`, `Frequency` | NA|
@@ -1526,7 +1661,7 @@ Self Efficacy  |  Not significant  | NA |NA|
 
 ```{r include=FALSE}
 #CNS
-full.model <- lm(formula = CNS ~  age + Frequency +Commitment +`# of Programs`+IMI+SOC+SoCoh+Self_Est+Self_Eff+clusters+RC1+RC2,  
+full.model <- lm(formula = CNS ~  age + Frequency +Commitment +`# of Programs`+SOC+SoCoh+Self_Est+Self_Eff+clusters+RC1+RC2+IM+PComp+PChoice,  
                    data = model_data  
  )
 
@@ -1535,7 +1670,7 @@ step( object = full.model,     # start at the full model
  )
 
 #IMI
-full.model <- lm(formula = IMI ~  age + Frequency +Commitment +`# of Programs`+CNS+SOC+SoCoh+Self_Est+Self_Eff+clusters+RC1+RC2,  
+full.model <- lm(formula = IM ~  age + Frequency +Commitment +`# of Programs`+SOC+SoCoh+Self_Est+Self_Eff+clusters+RC1+RC2+PComp+PChoice,  
                    data = model_data  
  )
 
@@ -1544,10 +1679,9 @@ step( object = full.model,     # start at the full model
  )
 
 #EFF
-full.model <- lm(formula = Self_Eff ~  age + Frequency +Commitment +`# of Programs`+CNS+SOC+SoCoh+Self_Est+IMI+clusters+RC1+RC2,  
+full.model <- lm(formula = Self_Eff ~  age + Frequency +Commitment +`# of Programs`+SOC+SoCoh+Self_Est+Self_Eff+clusters+RC1+RC2+PComp+PChoice+IM,  
                    data = model_data  
  )
-
 step( object = full.model,     # start at the full model
        direction = "backward"   # allow it remove predictors but not add them
  )
