@@ -143,19 +143,19 @@ Breaking down IMI scales -->
 <!-- alpha(dfIMIscore) -->
 <!-- ``` -->
 
-```{r include=FALSE}
-## Cronbach's Alpha
-library(dplyr)
-dfPCompscore <- select(only_gui_scales, "imi_2", "imi_8")
-dfPChoicescore <- select(only_gui_scales, "imi_1", "imi_3_rev_coded")
-dfIMscore <- select(only_gui_scales, "imi_4_rev_coded", "imi_5", "imi_6", "imi_7")
-```
+<!-- ```{r include=FALSE} -->
+<!-- ## Cronbach's Alpha -->
+<!-- library(dplyr) -->
+<!-- dfPCompscore <- select(only_gui_scales, "imi_2", "imi_8") -->
+<!-- dfPChoicescore <- select(only_gui_scales, "imi_1", "imi_3_rev_coded") -->
+<!-- dfIMscore <- select(only_gui_scales, "imi_4_rev_coded", "imi_5", "imi_6", "imi_7") -->
+<!-- ``` -->
 
-```{r}
-alpha(dfPCompscore)
-alpha(dfPChoicescore)
-alpha(dfIMscore)
-```
+<!-- ```{r} -->
+<!-- alpha(dfPCompscore) -->
+<!-- alpha(dfPChoicescore) -->
+<!-- alpha(dfIMscore) -->
+<!-- ``` -->
 
 
 ## Internal Consistency
@@ -991,7 +991,7 @@ gui_cluster_data <- left_join(id_only_gui, gui_components, by = "id") %>%
   mutate(clusters = as.character(clusters))
 ```
 
-```{r include=FALSE, eval=FALSE}
+```{r include=FALSE}
 #saveRDS(gui_cluster_data, ("data/only_gui_cluster_June4.rds"))
 gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
 ```
@@ -1300,7 +1300,7 @@ c1 / c2
 
 ```{r include=FALSE}
 # t test and Effect Size (Gender) for IMI and SOC
-#gui_cluster_data <- readRDS(here::here("/data/only_gui_cluster_apr16.rds"))
+gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
 old_new <- gui_cluster_data %>%
   filter(clusters == 1 | clusters == 2)
 library(agricolae)
@@ -1351,7 +1351,7 @@ Median.test(old_new$PChoice, old_new$clusters) # PChoice is not significant. p=0
 
   
 ```{r include=FALSE}
-gui_cluster_data <- readRDS(here::here("/data/only_gui_cluster_apr16.rds"))
+gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
 
 library(lsr)
 gui_cluster_data %>%
