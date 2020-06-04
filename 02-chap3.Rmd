@@ -415,7 +415,7 @@ program_count %>%
   group_by(programs) %>%
   arrange(count) %>%
   ggplot() +
-  geom_col(aes(x = programs, y = count), fill = "darkgreen", alpha = 0.8) +
+  geom_col(aes(x = reorder(programs, count), y = count), fill = "darkgreen", alpha = 0.8) +
   coord_flip() +
   labs(x = "Program Type", y = "Number of People Attended Before") +
   theme_minimal()
@@ -1217,6 +1217,7 @@ c1 / c2
 
 ```{r include=FALSE}
 # t test and Effect Size (Gender) for IMI and SOC
+#gui_cluster_data <- readRDS(here::here("/data/only_gui_cluster_apr16.rds"))
 old_new <- gui_cluster_data %>%
   filter(clusters == 1 | clusters == 2)
 library(agricolae)
@@ -1375,12 +1376,10 @@ gui_cluster_data %>%
 <!-- ``` -->
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=8}
 cor_test_results <- gui_cluster_data %>%
   select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>% mutate(clusters=as.numeric(clusters)) %>% 
   correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "none")
-
-cor_samples %>% cor(method="spearman")
 
 library(corrplot)
 
@@ -1432,7 +1431,7 @@ step( object = full.model,     # start at the full model
  )
 
 #CNS
-full.model <- lm(formula = CNS ~  age + Frequency +Commitment +`# of Programs`,  
+full.model <- lm(formula = CNS ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
                    data = model_data  
  )
 
@@ -1441,7 +1440,7 @@ step( object = full.model,     # start at the full model
  )
 
 #IMI
-full.model <- lm(formula = IMI ~  age + Frequency +Commitment +`# of Programs`,  
+full.model <- lm(formula = IMI ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
                    data = model_data  
  )
 
@@ -1450,8 +1449,8 @@ step( object = full.model,     # start at the full model
  )
 
 #Self_Est
-full.model <- lm(formula = Self_Est ~  age + Frequency +Commitment +`# of Programs`,  
-                   data = model_data  
+full.model <- lm(formula = Self_Est ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
+                   data = model_data
  )
 
 step( object = full.model,     # start at the full model
@@ -1459,8 +1458,8 @@ step( object = full.model,     # start at the full model
  )
 
 #Self_Eff
-full.model <- lm(formula = Self_Eff ~  age + Frequency +Commitment +`# of Programs`,  
-                   data = model_data  
+full.model <- lm(formula = Self_Eff ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
+                   data = model_data
  )
 
 step( object = full.model,     # start at the full model
@@ -1468,8 +1467,8 @@ step( object = full.model,     # start at the full model
  )
 
 #Self_Est
-full.model <- lm(formula = Self_Est ~  age + Frequency +Commitment +`# of Programs`,  
-                   data = model_data  
+full.model <- lm(formula = Self_Est ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
+                   data = model_data
  )
 
 step( object = full.model,     # start at the full model
@@ -1477,8 +1476,8 @@ step( object = full.model,     # start at the full model
  )
 
 #SoCoh
-full.model <- lm(formula = SoCoh ~  age + Frequency +Commitment +`# of Programs`,  
-                   data = model_data  
+full.model <- lm(formula = SoCoh ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
+                   data = model_data
  )
 
 step( object = full.model,     # start at the full model
@@ -1487,8 +1486,8 @@ step( object = full.model,     # start at the full model
 ```
 
 ```{r results="hide"}
-model_gui_1 <- lm(SOC ~ Frequency + `# of Programs`+clusters, data = model_data %>% mutate(clusters=factor(clusters, levels = c("3", "1", "2", "4"))))
-summary(model_gui_1) # R-squared =0.11. Number of programs is Significant
+model_gui_1 <- lm(SOC ~ Frequency + `# of Programs`+clusters, data = model_data %>% mutate(clusters=factor(clusters, levels = c("1", "2", "3", "4"))))
+summary(model_gui_1) # R-squared =0.148. Frequency is Significant
 ```
 
 ```{r results="hide"}
@@ -1513,7 +1512,7 @@ summary(model_gui_5) # Not significant
 
 Outcome Variables  | R-squared  | Positive Coefficients| Negative Coefficients| 
 ------------- | ------------- | -------------|-------------|
-Sense of Community  | 0.12 | `# of Programs` | NA|
+Sense of Community  | 0.148 | `# of Programs`, `Frequency` | NA|
 Nature Connection  | Not significant  | NA | NA |
 Intrinsic Motivation | 0.10  | `# of Programs` | NA |
 Self Esteem  | 0.11  |`age`| `Frequency`|
@@ -1526,8 +1525,26 @@ Self Efficacy  |  Not significant  | NA |NA|
   In this model, __Intrinsic Motivation__ shows __a significant effect__ on __the Nature Connection__ ( _p_<.01), __explaining 20%__ of the variance in the Nature Connection (R-squared is 0.2031).
 
 ```{r include=FALSE}
-#Self_Eff
-full.model <- lm(formula = CNS ~  age + Frequency +Commitment +`# of Programs`+IMI+SOC+SoCoh+Self_Est+Self_Eff,  
+#CNS
+full.model <- lm(formula = CNS ~  age + Frequency +Commitment +`# of Programs`+IMI+SOC+SoCoh+Self_Est+Self_Eff+clusters+RC1+RC2,  
+                   data = model_data  
+ )
+
+step( object = full.model,     # start at the full model
+       direction = "backward"   # allow it remove predictors but not add them
+ )
+
+#IMI
+full.model <- lm(formula = IMI ~  age + Frequency +Commitment +`# of Programs`+CNS+SOC+SoCoh+Self_Est+Self_Eff+clusters+RC1+RC2,  
+                   data = model_data  
+ )
+
+step( object = full.model,     # start at the full model
+       direction = "backward"   # allow it remove predictors but not add them
+ )
+
+#EFF
+full.model <- lm(formula = Self_Eff ~  age + Frequency +Commitment +`# of Programs`+CNS+SOC+SoCoh+Self_Est+IMI+clusters+RC1+RC2,  
                    data = model_data  
  )
 
@@ -1538,17 +1555,22 @@ step( object = full.model,     # start at the full model
 
 
 ```{r results="hide"}
-model_gui_6 <- lm(CNS ~ Commitment + IMI + SOC + Self_Eff, data = model_data)
+model_gui_6 <- lm(IMI ~ SOC + SoCoh + Self_Eff, data = model_data)
 summary(model_gui_6)
+# Significant model
+```
+
+```{r results="hide"}
+model_gui_3 <- lm(CNS ~ Commitment + IMI + SOC + Self_Eff, data = model_data)
+summary(model_gui_3)
 # Significant model
 ```
 
 
 ```{r results="hide"}
-model_gui_3 <- lm(CNS ~ IMI, data = only_gui_scales)
-glance(model_gui_3)
-summary(model_gui_3)
-# Significant model
+model_gui_4 <- lm(Self_Eff ~ CNS + SOC + Self_Est + IMI, data = model_data)
+summary(model_gui_4)
+# R-squared = 0.4893. All coefficients are significant. How to interpret this?
 ```
 
 
