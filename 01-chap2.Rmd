@@ -20,6 +20,7 @@ library(lubridate)
 library(forcats)
 library(zoo)
 library(gt)
+library(psych)
 ```
 
 
@@ -176,7 +177,6 @@ gui_mar20_scales <- readRDS(here::here("data/gui_mar20_scales.rds"))
 
 ## Descriptive statistics
 ```{r echo=FALSE}
-library(psych)
 tbl_var1 <- gui_mar20_scales %>%
   select(age, SoCoh, SOC, CNS, Self_Est, Self_Eff) %>%
   describe()
@@ -313,116 +313,29 @@ tbl_normality %>%
 
 - __Sense of Community (`SOC`)__ and __Social Cohesion (`SoCoh`)__ show the __moderate to strong significant correlation__. It's interesting to note that __Connection to Nature__ shows __small to moderate significant correlations__ with all the __psychological measurements__. This will be examined further with the only GUI dataset.
 
-
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(corrplot)
 library(lsr)
-gui_mar20_scales %>%
-  select(age, SOC, SoCoh, Self_Est, Self_Eff, CNS) %>%
-  pairs()
+
+cor_test_results <- gui_mar20_scales %>%
+  select(age, SOC, SoCoh, Self_Est, Self_Eff, CNS) %>% 
+  correlate(test = TRUE, corr.method = "pearson", p.adjust.method = "none")
+
+confident_95 <- cor_test_results$p.value
+
+cor_M <- cor_test_results$correlation
+
+
+col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+corrplot(cor_M, method = "color", col = col(200),
+         type = "upper", number.cex = .7,
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col = "black", tl.srt = 45, # Text label color and rotation
+         # Combine with significance
+         p.mat = confident_95, sig.level = 0.05, insig = "blank", 
+         # hide correlation coefficient on the principal diagonal
+         diag = FALSE)
 ```
-
-```{r include=FALSE}
-only_cor <- gui_mar20_scales %>%
-  select(age, SOC, SoCoh, Self_Est, Self_Eff, CNS) %>%
-  correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "none")
-
-pre_pvalue <- round(only_cor$p.value, 2)
-pre_cor <- round(only_cor$correlation, 2)
-
-# Get lower triangle of the correlation matrix
-get_lower_tri <- function(x) {
-  x[upper.tri(x)] <- NA
-  return(x)
-}
-```
-
-```{r include=FALSE}
-library(reshape2)
-# lower_tri <- get_lower_tri(pre_cor)
-# lower_tri_p <- get_lower_tri(pre_pvalue)
-melted_cor_r <- melt(pre_cor, na.rm = TRUE) %>% rename(cor_r = value)
-melted_cor_p <- melt(pre_pvalue, na.rm = TRUE) %>%
-  rename(pvalue = value) %>%
-  select(pvalue)
-
-melted_only_cor <- cbind(melted_cor_r, melted_cor_p)
-# %>% filter(pvalue <= 0.05) # filtering only significant correlations
-```
-
-```{r echo=FALSE}
-# correlation
-ggplot(melted_only_cor, aes(Var2, Var1, fill = cor_r)) +
-  geom_tile(color = "white") +
-  scale_fill_gradient2(
-    low = "blue", high = "red", mid = "white",
-    midpoint = 0, limit = c(-1, 1), space = "Lab",
-    name = "Correlation"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    axis.text.x = element_text(
-      angle = 90, vjust = 0.5,
-      size = 8, hjust = 1
-    ),
-    axis.text.y = element_text(size = 8)
-  ) +
-  labs(title = "Fig 1. Correlation Test R (Spearman)") +
-  geom_text(aes(Var2, Var1, label = cor_r), color = "black", size = 3) +
-  theme(
-    axis.title.x = element_blank(),
-    axis.title.y = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.border = element_blank(),
-    panel.background = element_blank(),
-    axis.ticks = element_blank()
-    # legend.justification = c(0, 1),
-    # legend.position = FALSE
-    # legend.direction = "horizontal"
-  )
-# +
-#   guides(fill = guide_colorbar(
-#     barwidth = 6, barheight = 0.5,
-#     title.position = "top", title.hjust = 0.5
-#   ))
-
-# p-value
-ggplot(melted_only_cor, aes(Var2, Var1, fill = pvalue)) +
-  geom_tile(color = "white") +
-  scale_fill_gradient2(
-    low = "pink", high = "white",
-    midpoint = 0.05, limit = c(0, 0.05), space = "Lab",
-    name = "p-value"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    axis.text.x = element_text(
-      angle = 90, vjust = 0.5,
-      size = 8, hjust = 1
-    ),
-    axis.text.y = element_text(size = 8)
-  ) +
-  labs(title = "Fig 2.Correlation Test with p-value (Spearman)") +
-  geom_text(aes(Var2, Var1, label = cor_r), color = "black", size = 4) +
-  theme(
-    axis.title.x = element_blank(),
-    axis.title.y = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.border = element_blank(),
-    panel.background = element_blank(),
-    axis.ticks = element_blank()
-    # legend.justification = c(0, 1),
-    # legend.position = c(0.6, 0.3),
-    # legend.direction = "horizontal"
-  )
-# +
-#   guides(fill = guide_colorbar(
-#     barwidth = 6, barheight = 0.5,
-#     title.position = "top", title.hjust = 0.5
-#   ))
-```
-
 
 ## Significant test (t-test and Wilcoxon Test)
 ```{r include=FALSE}

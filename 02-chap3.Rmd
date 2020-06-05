@@ -23,14 +23,12 @@ library(psych)
 library(dplyr)
 ```
 
-
 <!-- ```{r include=FALSE} -->
 <!-- # loading full GUI data -->
 <!-- gui_df <- readRDS(here::here("data/0_GUI_online_mar20.rds")) -->
 <!-- only_gui <- gui_df %>% -->
-<!--   filter(gui_non_gui == "yes") -->
+<!--   filter(gui_non_gui == "never") -->
 <!-- ``` -->
-
 
 <!-- ```{r include=FALSE} -->
 <!-- # replacing 0 in frequency and commitment -->
@@ -84,9 +82,12 @@ library(dplyr)
 <!--   SoCoh = c("social_cohesion_1", "social_cohesion_2", "social_cohesion_3", "social_cohesion_4_rev_coded", "social_cohesion_5_rev_coded"), -->
 <!--   SOC = c("soc_1", "soc_2", "soc_3", "soc_4", "soc_5", "soc_6", "soc_7", "soc_8"), -->
 <!--   CNS = c("cns_1", "cns_2", "cns_3", "cns_4_rev_coded", "cns_5", "cns_6", "cns_7", "cns_8", "cns_9", "cns_10"), -->
-<!--   IMI = c("imi_1", "imi_2", "imi_3_rev_coded", "imi_4_rev_coded", "imi_5", "imi_6", "imi_7", "imi_8"), -->
+<!--   #IMI = c("imi_1", "imi_2", "imi_3_rev_coded", "imi_4_rev_coded", "imi_5", "imi_6", "imi_7", "imi_8"), -->
 <!--   Self_Est = c("self_est_1", "self_est_2_rev_coded", "self_est_3", "self_est_4_rev_coded"), -->
 <!--   Self_Eff = c("self_eff_1", "self_eff_2", "self_eff_3", "self_eff_4", "self_eff_5", "self_eff_6", "self_eff_7", "self_eff_8") -->
+<!--   #IM =c("imi_4_rev_coded", "imi_5", "imi_6", "imi_7"), -->
+<!--   #PComp =c("imi_2", "imi_8"), -->
+<!--   #PChoice =c("imi_1", "imi_3_rev_coded") -->
 <!-- ) -->
 <!-- ``` -->
 
@@ -94,16 +95,7 @@ library(dplyr)
 <!-- ```{r include=FALSE} -->
 <!-- library(psych) -->
 <!-- my.scales <- scoreItems(scale.list, only_gui) -->
-<!-- ``` -->
 
-
-<!-- ```{r include=FALSE} 
-Breaking down IMI scales -->
-<!-- scale.list <- list( -->
-<!--   IM =c("imi_4_rev_coded", "imi_5", "imi_6", "imi_7"), -->
-<!--   PComp =c("imi_2", "imi_8"), -->
-<!--   PChoice =c("imi_1", "imi_3_rev_coded") -->
-<!-- ) -->
 <!-- ``` -->
 
 
@@ -119,7 +111,11 @@ Breaking down IMI scales -->
 
 <!-- ```{r include=FALSE} -->
 <!-- dfscores <- data.frame(my.scores) -->
-<!-- only_gui_scales <- cbind(only_gui_scales, dfscores) -->
+<!-- only_gui <- cbind(only_gui, dfscores) -->
+
+<!-- non_gui<- only_gui %>% select(gui_non_gui, gender, age, race, SoCoh, SOC, CNS, Self_Est, Self_Eff) -->
+<!-- saveRDS(non_gui, ("data/non_gui_june4_scales.rds")) -->
+
 <!-- ``` -->
 
 
@@ -488,107 +484,33 @@ a <- only_gui_scales %>%
 a / 104
 ```
 
-```{r include=FALSE}
-only_cor <- only_gui_scales %>%
-  select(frequency_coded, commitment_coded, program_percent) %>%
-  correlate(test = TRUE, corr.method = "pearson", p.adjust.method = "none")
-```
-
-```{r include=FALSE}
-pre_pvalue <- round(only_cor$p.value, 2)
-pre_cor <- round(only_cor$correlation, 2)
-
-# Get lower triangle of the correlation matrix
-get_lower_tri <- function(x) {
-  x[upper.tri(x)] <- NA
-  return(x)
-}
-```
-
-```{r include=FALSE}
-library(reshape2)
-lower_tri <- get_lower_tri(pre_cor)
-lower_tri_p <- get_lower_tri(pre_pvalue)
-melted_cor_r <- melt(lower_tri, na.rm = TRUE) %>% rename(cor_r = value)
-melted_cor_p <- melt(lower_tri_p, na.rm = TRUE) %>%
-  rename(pvalue = value) %>%
-  select(pvalue)
-
-melted_only_cor <- cbind(melted_cor_r, melted_cor_p)
-# %>% filter(pvalue <= 0.05) # filtering only significant correlations
-```
-
 ```{r echo=FALSE}
-# correlation
-ggplot(melted_only_cor, aes(Var2, Var1, fill = cor_r)) +
-  geom_tile(color = "white") +
-  scale_fill_gradient2(
-    low = "blue", high = "red", mid = "white",
-    midpoint = 0, limit = c(-1, 1), space = "Lab",
-    name = "Pearson Correlation"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    axis.text.x = element_text(
-      angle = 90, vjust = 0.5,
-      size = 8, hjust = 1
-    ),
-    axis.text.y = element_text(size = 8)
-  ) +
-  labs(title = "Correlation Test (Pearson)") +
-  geom_text(aes(Var2, Var1, label = cor_r), color = "black", size = 5) +
-  theme(
-    axis.title.x = element_blank(),
-    axis.title.y = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.border = element_blank(),
-    panel.background = element_blank(),
-    axis.ticks = element_blank(),
-    legend.justification = c(0, 1),
-    legend.position = c(0.6, 0.3),
-    legend.direction = "horizontal"
-  ) +
-  guides(fill = guide_colorbar(
-    barwidth = 6, barheight = 0.5,
-    title.position = "top", title.hjust = 0.5
-  ))
+library(corrplot)
 
-# p-value
-ggplot(melted_only_cor, aes(Var2, Var1, fill = pvalue)) +
-  geom_tile(color = "white") +
-  scale_fill_gradient2(
-    low = "red", high = "white",
-    midpoint = 0.1, limit = c(0, 0.2), space = "Lab",
-    name = "p-value"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    axis.text.x = element_text(
-      angle = 90, vjust = 0.5,
-      size = 8, hjust = 1
-    ),
-    axis.text.y = element_text(size = 8)
-  ) +
-  labs(title = "Correlation Test (Pearson)") +
-  geom_text(aes(Var2, Var1, label = pvalue), color = "black", size = 5) +
-  theme(
-    axis.title.x = element_blank(),
-    axis.title.y = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.border = element_blank(),
-    panel.background = element_blank(),
-    axis.ticks = element_blank(),
-    legend.justification = c(0, 1),
-    legend.position = c(0.6, 0.3),
-    legend.direction = "horizontal"
-  ) +
-  guides(fill = guide_colorbar(
-    barwidth = 6, barheight = 0.5,
-    title.position = "top", title.hjust = 0.5
-  ))
+cor_test_results <- only_gui_scales %>%
+  select(frequency_coded, commitment_coded, program_percent) %>%
+  rename("Frequency" =frequency_coded,
+         "Program %" = program_percent,
+         "Commitment"= commitment_coded
+         ) %>% 
+  correlate(test = TRUE, corr.method = "pearson", p.adjust.method = "none")
+
+confident_95 <- cor_test_results$p.value
+
+cor_M <- cor_test_results$correlation
+
+
+col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+corrplot(cor_M, method = "color", col = col(200),
+         type = "upper", number.cex = .7,
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col = "black", tl.srt = 45, # Text label color and rotation
+         # Combine with significance
+         p.mat = confident_95, sig.level = 0.05, insig = "blank", 
+         # hide correlation coefficient on the principal diagonal
+         diag = FALSE)
 ```
+
 
 ```{r echo=FALSE}
 only_gui_scales %>%
@@ -788,7 +710,11 @@ tbl_gender <- tibble(
 )
 ```
   
-As the difference in the sample size is large (75 female and 28 male), the median test was conducted to see if there are any significant differences between female and male members in the respective variables. Although the difference in the frequency of visits is large (male members visit GUI more than twice as often as female members do), no significant difference was observed. __Self-efficacy__ is the only variable that shows a significant difference: __female members have a higher sense of self-efficacy__.
+- As the difference in the sample size is large (75 female and 28 male), the median test was conducted to see if there are any significant differences between female and male members in the respective variables. 
+
+- Although the difference in the frequency of visits is large (male members visit GUI more than twice as often as female members do), no significant difference was observed. 
+
+- __Self-efficacy__ is the only variable that shows a significant difference: __female members have a higher sense of self-efficacy__.
 
 ```{r echo=FALSE}
 tbl_gender %>%
@@ -834,6 +760,28 @@ a5 <- gui_gender_scales %>%
   geom_boxplot() +
   theme(legend.position = "None") +
   labs(x = "Gender", y = "Self Esteem")
+
+d5 <- gui_gender_scales %>%
+  select(IM, gender) %>%
+  ggplot(aes(x = gender, y = IM, fill = gender)) +
+  geom_boxplot() +
+  theme(legend.position = "None") +
+  labs(x = "Gender", y = "Intrinsic Motivation")
+
+d6 <- gui_gender_scales %>%
+  select(PComp, gender) %>%
+  ggplot(aes(x = gender, y = PComp, fill = gender)) +
+  geom_boxplot() +
+  theme(legend.position = "None") +
+  labs(x = "Gender", y = "Perceived Competence")
+
+d7 <- gui_gender_scales %>%
+  select(PChoice, gender) %>%
+  ggplot(aes(x = gender, y = PChoice, fill = gender)) +
+  geom_boxplot() +
+  theme(legend.position = "None") +
+  labs(x = "Gender", y = "Perceived Choice")
+
 a6 <- gui_gender_scales %>%
   select(age, gender) %>%
   ggplot(aes(x = gender, y = age, fill = gender)) +
@@ -853,7 +801,8 @@ a8 <- gui_gender_scales %>%
   theme(legend.position = "None") +
   labs(x = "Gender", y = "Duration of Commitment")
 
-(a1 + a2 + a3) / (a4 + a5 + a6) / (a7 + a8)
+
+(a1 + a2 + a3) / (a4 + a5 + a6) / (d5+ d6+d7)/ (a7 + a8)
 ```
 
 
@@ -1091,7 +1040,7 @@ pairwise.t.test(
 
 ```{r include=FALSE}
 cluster_wise <- gui_cluster_data %>%
-  select(age, frequency_coded, commitment_coded, number_programs, SoCoh, SOC, IMI, CNS, Self_Est, Self_Eff, clusters) %>%
+  select(age, frequency_coded, commitment_coded, number_programs, SoCoh, SOC, IMI, IM, PComp, PChoice, CNS, Self_Est, Self_Eff, clusters) %>%
   describeBy(., group = "clusters")
 
 group1 <- round(cluster_wise$`1`, 2)
@@ -1173,7 +1122,7 @@ median_clusters %>%
 ```
 
 ```{r echo=FALSE}
-d1 <- gui_cluster_data %>%
+c1 <- gui_cluster_data %>%
   select(CNS, clusters) %>%
   ggplot(aes(x = clusters, y = CNS, group = clusters, fill = clusters)) +
   geom_boxplot() +
@@ -1181,49 +1130,70 @@ d1 <- gui_cluster_data %>%
   theme(legend.position = "none")
 
 
-d2 <- gui_cluster_data %>%
+c2 <- gui_cluster_data %>%
   select(SOC, clusters) %>%
   ggplot(aes(x = clusters, y = SOC, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
   theme(legend.position = "none")
 
-d3 <- gui_cluster_data %>%
+c3 <- gui_cluster_data %>%
   select(SoCoh, clusters) %>%
   ggplot(aes(x = clusters, y = SoCoh, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
   theme(legend.position = "none")
 
-d4 <- gui_cluster_data %>%
+c4 <- gui_cluster_data %>%
   select(IMI, clusters) %>%
   ggplot(aes(x = clusters, y = IMI, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
   theme(legend.position = "none")
 
-d5 <- gui_cluster_data %>%
+e4 <- gui_cluster_data %>%
+  select(IM, clusters) %>%
+  ggplot(aes(x = clusters, y = IM, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+e5 <- gui_cluster_data %>%
+  select(PComp, clusters) %>%
+  ggplot(aes(x = clusters, y = PComp, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+e6 <- gui_cluster_data %>%
+  select(PChoice, clusters) %>%
+  ggplot(aes(x = clusters, y = PChoice, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+c5 <- gui_cluster_data %>%
   select(Self_Eff, clusters) %>%
   ggplot(aes(x = clusters, y = Self_Eff, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
   theme(legend.position = "none")
 
-d6 <- gui_cluster_data %>%
+c6 <- gui_cluster_data %>%
   select(Self_Est, clusters) %>%
   ggplot(aes(x = clusters, y = Self_Est, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
   theme(legend.position = "none")
 
-d7 <- gui_cluster_data %>%
+c7 <- gui_cluster_data %>%
   select(age, clusters) %>%
   ggplot(aes(x = clusters, y = age, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
   theme(legend.position = "none")
 
-d1 + d2 + d3 + d4 + d5 + d6 + d7
+c1 + c2 + c3 + c4 + e4 + e5 + e6 + c5 + c6 + c7
 ```
 
 ### Interpreting the clusters
@@ -1307,13 +1277,12 @@ library(agricolae)
 ```
 
 ```{r results="hide"}
-Median.test(old_new$SOC, old_new$clusters) # Sense of Community is significant
+Median.test(old_new$SOC, old_new$clusters) # Sense of Community is significant. P=0.014
 Median.test(old_new$CNS, old_new$clusters) # CNS is not significant. p=0.374
 Median.test(old_new$IMI, old_new$clusters) # IMI is not significant. p=0.491
 Median.test(old_new$SoCoh, old_new$clusters) # Social Cohesion is not significant. p=0.333
 Median.test(old_new$Self_Est, old_new$clusters) # Self-est is not significant. p=0.433
 Median.test(old_new$Self_Eff, old_new$clusters) # Self-eff is not significant. p=0.494
-
 Median.test(old_new$IM, old_new$clusters) # IM is not significant. p=0.64
 Median.test(old_new$PComp, old_new$clusters) # PComp is not significant. p=0.947
 Median.test(old_new$PChoice, old_new$clusters) # PChoice is not significant. p=0.739
@@ -1335,15 +1304,19 @@ Median.test(old_new$PChoice, old_new$clusters) # PChoice is not significant. p=0
 ## Correlation Analysis
 - __`Correlation Test (Spearman's Rank Test)`__ shows correlation r by the figures and highlights: towards __shades of blue__ mean __negative__ and __shades of red__ mean __positive correlations__. Those squares with no highlights (white) are non-significant correlations (p> 0.05).
 
-- It's observed that __Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation (`IMI`)__ show __significant correlations (moderate to strong)__ among them.   
+- It's observed that __Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation Inventry (`IMI`)__ show __significant correlations (moderate to strong)__ among them.   
+
+- The subset of __Intrinsic Motivation Inventry (`IMI`)__, including __Intrinsic Motivation (enjoyment/ intetests: `IM`)__, __Perceived Competence (`PComp`)__ and __Perceived Chocie (`PChoice`)__ also __show significant correlations__ with `SOC` and `SoCoh` (however, the correlations are weaker compared to the ones with `IMI`)
 
 - Frequency (`frequency_coded`) and commitment (`commitment_coded`) also show moderate to strong correlations (Spearman). However, as discussed earlier, __the correlation test with Pearson__ only __showed a weak correlation (r=0.23, Pearson)__.
   
-- __1) those who visit GUI frequently__ and __2) those who commit GUI in the long duration__ seem to have __a higher sense of community__ and __a higher Intrinsic Motivation__. Earlier studies from Community Psychology support these findings: __sense of community and intrinsic motivation can be built through frequent interactions over the long term__ (Christens & Peterson, 2010; Bidee, 2013; Oostlander et al., 2013). 
+- __1) those who visit GUI frequently__ and __2) those who commit GUI in the long duration__ seem to have __a higher sense of community__ and __a higher Intrinsic Motivation (`IMI`)__. Earlier studies from Community Psychology support these findings: __sense of community and intrinsic motivation can be built through frequent interactions over the long term__ (Christens & Peterson, 2010; Bidee, 2013; Oostlander et al., 2013). 
+
+- It is interesting to note that Perceived Competence (`PComp`) shows a significant correlation with `Frequency`, whereas Perceived Choice (`PChoice`) is significantly correlated with `Commitment`
 
 <!-- Whereas, `SoCoh` (Social Cohesion) does not show any significant correlations with  `Frequency` and `Commitment`, indicating that `SoCoh` does not develop over time through frequent interactions.     -->
   
-- There is __a strong correlation__ between __Nature Connection (`CNS`)__ and __Intrinsic motivation (`IMI`)__ (r=0.465)__, implying that __those who are self-motivated also have a high sense of nature connection.__
+- There is __a strong correlation__ between __Nature Connection (`CNS`)__ and __Intrinsic Motivation (`IMI`)__ (r=0.465)__, implying that __those who are self-motivated also have a high sense of nature connection.__
   
 - The number of __program types attended__ (`# of Programs`) shows __significant positive correlations__ with __`Frequency`, `Commitment`, Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation (`IMI`)__. Hence, __more committed members__ with __a higher sense of community__ engage in __a variety of programs__. It is also interesting to note that `# of Programs` shows a significant negative correlation with `age`: __older GUI members__ attend __less variety of GUI programs__.
 
@@ -1357,112 +1330,6 @@ library(lsr)
 gui_cluster_data %>%
   select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>% mutate(clusters=as.numeric(clusters)) %>% pairs()
 ```
-
-
-<!-- ```{r include=FALSE} -->
-<!-- only_cor <- only_gui_scales %>% -->
-<!--   select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, Self_Est, Self_Eff, CNS) %>% -->
-<!--   correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "none") -->
-<!-- ``` -->
-
-<!-- ```{r include=FALSE} -->
-<!-- pre_pvalue <- round(only_cor$p.value, 2) -->
-<!-- pre_cor <- round(only_cor$correlation, 2) -->
-
-<!-- # Get lower triangle of the correlation matrix -->
-<!-- get_lower_tri <- function(x) { -->
-<!--   x[upper.tri(x)] <- NA -->
-<!--   return(x) -->
-<!-- } -->
-<!-- ``` -->
-
-<!-- ```{r include=FALSE} -->
-<!-- library(reshape2) -->
-<!-- # lower_tri <- get_lower_tri(pre_cor) -->
-<!-- # lower_tri_p <- get_lower_tri(pre_pvalue) -->
-<!-- melted_cor_r <- melt(pre_cor, na.rm = TRUE) %>% rename(cor_r = value) -->
-<!-- melted_cor_p <- melt(pre_pvalue, na.rm = TRUE) %>% -->
-<!--   rename(pvalue = value) %>% -->
-<!--   select(pvalue) -->
-
-<!-- melted_only_cor <- cbind(melted_cor_r, melted_cor_p) -->
-<!-- # %>% filter(pvalue <= 0.05) # filtering only significant correlations -->
-<!-- ``` -->
-
-<!-- ```{r include=FALSE} -->
-<!-- # correlation -->
-<!-- ggplot(melted_only_cor, aes(Var2, Var1, fill = cor_r)) + -->
-<!--   geom_tile(color = "white") + -->
-<!--   scale_fill_gradient2( -->
-<!--     low = "blue", high = "red", mid = "white", -->
-<!--     midpoint = 0, limit = c(-1, 1), space = "Lab", -->
-<!--     name = "Correlation" -->
-<!--   ) + -->
-<!--   theme_minimal() + -->
-<!--   theme( -->
-<!--     plot.title = element_text(hjust = 0.5, face = "bold"), -->
-<!--     axis.text.x = element_text( -->
-<!--       angle = 90, vjust = 0.5, -->
-<!--       size = 8, hjust = 1 -->
-<!--     ), -->
-<!--     axis.text.y = element_text(size = 8) -->
-<!--   ) + -->
-<!--   labs(title = "Fig 1. Correlation Test R (Spearman)") + -->
-<!--   geom_text(aes(Var2, Var1, label = cor_r), color = "black", size = 3) + -->
-<!--   theme( -->
-<!--     axis.title.x = element_blank(), -->
-<!--     axis.title.y = element_blank(), -->
-<!--     panel.grid.major = element_blank(), -->
-<!--     panel.border = element_blank(), -->
-<!--     panel.background = element_blank(), -->
-<!--     axis.ticks = element_blank() -->
-<!--     # legend.justification = c(0, 1), -->
-<!--     # legend.position = FALSE -->
-<!--     # legend.direction = "horizontal" -->
-<!--   ) -->
-<!-- # + -->
-<!-- #   guides(fill = guide_colorbar( -->
-<!-- #     barwidth = 6, barheight = 0.5, -->
-<!-- #     title.position = "top", title.hjust = 0.5 -->
-<!-- #   )) -->
-
-<!-- # p-value -->
-<!-- ggplot(melted_only_cor, aes(Var2, Var1, fill = pvalue)) + -->
-<!--   geom_tile(color = "white") + -->
-<!--   scale_fill_gradient2( -->
-<!--     low = "red", high = "white", -->
-<!--     midpoint = 0.05, limit = c(0, 0.05), space = "Lab", -->
-<!--     name = "p-value" -->
-<!--   ) + -->
-<!--   theme_minimal() + -->
-<!--   theme( -->
-<!--     plot.title = element_text(hjust = 0.5, face = "bold"), -->
-<!--     axis.text.x = element_text( -->
-<!--       angle = 90, vjust = 0.5, -->
-<!--       size = 8, hjust = 1 -->
-<!--     ), -->
-<!--     axis.text.y = element_text(size = 8) -->
-<!--   ) + -->
-<!--   labs(title = "Fig 2.Correlation Test with p-value (Spearman)") + -->
-<!--   geom_text(aes(Var2, Var1, label = cor_r), color = "black", size = 3) + -->
-<!--   theme( -->
-<!--     axis.title.x = element_blank(), -->
-<!--     axis.title.y = element_blank(), -->
-<!--     panel.grid.major = element_blank(), -->
-<!--     panel.border = element_blank(), -->
-<!--     panel.background = element_blank(), -->
-<!--     axis.ticks = element_blank() -->
-<!--     # legend.justification = c(0, 1), -->
-<!--     # legend.position = c(0.6, 0.3), -->
-<!--     # legend.direction = "horizontal" -->
-<!--   ) -->
-<!-- # + -->
-<!-- #   guides(fill = guide_colorbar( -->
-<!-- #     barwidth = 6, barheight = 0.5, -->
-<!-- #     title.position = "top", title.hjust = 0.5 -->
-<!-- #   )) -->
-<!-- ``` -->
-
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=8}
 cor_test_results <- gui_cluster_data %>%
@@ -1495,15 +1362,18 @@ corrplot(cor_M, method = "color", col = col(200),
 ### Frequency, Commitment, and Number of Programs as Inputs
 - As significant correlations were found among frequency, commitment, number of programs attended, Sense of Community, and Intrinsic Motivation, this study conducted a regression analysis on these variables. 
 
-- The below models that try to explain outcome variables, such as Sense of Community, Intrinsic Motivation, and Nature connection, __do not show a significant effect__. Only __the number of program types attended__ show __a significant effect__ in the __Sense of Community and Intrinsic Motivation__. However, it only explains __8%__ of the variance in Sense of Community and Intrinsic Motivation (which is pretty low).
+- Among the several models, the models with `SOC`, `IMI`, and `Self_Est` are the significant models:
+Higher values in `Frequency` and `# of Programs` will lead to higher `SOC`. Similary, __higher values in `# of Programs`__ will lead to higher __Intrinsic Motivation (`IMI`)__ and __Enjoyments/ interests (`IM`)__. 
 
-Also, R-squared of each model is __extreamly low__ (only 1~11% of the variance in the outcome was explained by the model). Further investigation is required to examine which are the factors, missed from this study, may have potential effects on the outcome. 
+- However, these models have __relatively low R-squared (0.10 to 0.164)__: these models __explain 10 to 16% of the outcome variables__. Further investigation is required to examine which are the factors, missed out from this study, may have potential effects on the outcomes.
+
+<!-- - The below models that try to explain outcome variables, such as Sense of Community, Intrinsic Motivation, and Nature connection, __do not show a significant effect__. Only __the number of program types attended__ show __a significant effect__ in the __Sense of Community and Intrinsic Motivation__. However, it only explains __8%__ of the variance in Sense of Community and Intrinsic Motivation (which is pretty low). -->
+
+<!-- Also, R-squared of each model is __extreamly low__ (only 1~11% of the variance in the outcome was explained by the model). Further investigation is required to examine which are the factors, missed from this study, may have potential effects on the outcome.  -->
 
 ```{r include=FALSE}
 library(broom)
-```
 
-```{r include=FALSE}
 model_data <- gui_cluster_data %>%
   select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs)
 ```
@@ -1600,86 +1470,126 @@ step( object = full.model,     # start at the full model
  )
 ```
 
-```{r results="hide"}
-model_gui_1 <- lm(SOC ~ Frequency + `# of Programs`+clusters, data = model_data %>% mutate(clusters=factor(clusters, levels = c("1", "2", "3", "4"))))
-summary(model_gui_1) # R-squared =0.148. Frequency is Significant
-```
+<!-- ```{r results="hide"} -->
+<!-- model_gui_1 <- lm(SOC ~ Frequency + `# of Programs`+clusters, data = model_data %>% mutate(clusters=factor(clusters, levels = c("1", "2", "3", "4")))) -->
+<!-- summary(model_gui_1) # R-squared =0.148. Frequency is Significant -->
+<!-- ``` -->
 
-```{r results="hide"}
-model_gui_2 <- lm(CNS ~ Commitment, data = model_data)
-summary(model_gui_2) #Not significant
-```
+<!-- ```{r eval=FALSE, include=FALSE} -->
+<!-- shapiro.test(residuals(model_gui_1)) #Non significant. normal distribution -->
+<!-- AIC(model_gui_1) -->
 
-```{r results="hide"}
-model_gui_3 <- lm(IMI ~ `# of Programs`, data = model_data)
-summary(model_gui_3) # R-squared =0.10. Number of programs is Significant
-```
+<!-- ## Assumption check -->
+<!-- library(car) -->
+<!-- residualPlots(model = model_gui_1)  -->
+<!-- #If it comes up significant, it implies that there is some nonlinear relationship between the variable and the residuals. Tukey test returns non significance. Assumptions of linearlity was met -->
+<!-- ncvTest(model_gui_1) #Non significant means no violations of homogeneity of variance in this data. -->
+<!-- vif(model_gui_1) #colinearlity check. Not too highly correlated with each other. -->
+<!-- #A value of 1 means that the predictor is not correlated with other variables. The higher the value, the greater the correlation of the variable with other variables -->
+<!-- ``` -->
 
-```{r results="hide"}
-model_gui_4 <- lm(Self_Est ~ age + Frequency + `# of Programs`, data = model_data)
-summary(model_gui_4) # R-squared =0.11. Age and Frequency are Significant
-```
 
-```{r results="hide"}
-model_gui_5 <- lm(Self_Eff ~ age + Frequency + `# of Programs`, data = model_data)
-summary(model_gui_5) # Not significant
-```
+<!-- ```{r results="hide"} -->
+<!-- model_gui_2 <- lm(CNS ~ Commitment, data = model_data) -->
+<!-- summary(model_gui_2) #Not significant -->
+<!-- ``` -->
 
-```{r results="hide"}
-model_gui_6 <- lm(formula = IM ~ age + Commitment + `# of Programs` + clusters, 
-    data = model_data)
-summary(model_gui_6) # R-squared is 0.164. Number of programs and cluster 2 are significant
+<!-- ```{r results="hide"} -->
+<!-- model_gui_3 <- lm(IMI ~ `# of Programs`, data = model_data) -->
+<!-- summary(model_gui_3) # R-squared =0.10. Number of programs is Significant -->
+<!-- ``` -->
 
-```
+<!-- ```{r eval=FALSE, include=FALSE} -->
+<!-- shapiro.test(residuals(model_gui_3)) #Non significant. normal distribution -->
+<!-- AIC(model_gui_3) -->
 
-```{r results="hide"}
-model_gui_7 <- lm(formula = PComp ~ `# of Programs`, 
-    data = model_data)
-summary(model_gui_7) # R-squared is 0.164. Number of programs and cluster 2 are significant
-```
+<!-- ## Assumption check -->
+<!-- library(car) -->
+<!-- residualPlots(model = model_gui_3)  -->
+<!-- #If it comes up significant, it implies that there is some nonlinear relationship between the variable and the residuals. Tukey test returns non significance. Assumptions of linearlity was met -->
+<!-- ncvTest(model_gui_3) #Non significant means no violations of homogeneity of variance in this data. -->
+<!-- vif(model_gui_3) #colinearlity check. Not too highly correlated with each other. -->
+<!-- #A value of 1 means that the predictor is not correlated with other variables. The higher the value, the greater the correlation of the variable with other variables -->
+<!-- ``` -->
 
-```{r results="hide"}
-model_gui_7 <- lm(formula = PChoice ~ `# of Programs`, 
-    data = model_data)
-summary(model_gui_7) # R-squared is 0.164. Number of programs and cluster 2 are significant
-```
+<!-- ```{r results="hide"} -->
+<!-- model_gui_4 <- lm(Self_Est ~ age + Frequency + `# of Programs`, data = model_data) -->
+<!-- summary(model_gui_4) # R-squared =0.11. Age and Frequency are Significant -->
+<!-- ``` -->
+
+<!-- ```{r results="hide"} -->
+<!-- model_gui_5 <- lm(Self_Eff ~ age + Frequency + `# of Programs`, data = model_data) -->
+<!-- summary(model_gui_5) # Not significant -->
+<!-- ``` -->
+
+<!-- ```{r results="hide"} -->
+<!-- model_gui_6 <- lm(formula = IM ~ age + Commitment + `# of Programs` + clusters,  -->
+<!--     data = model_data) -->
+<!-- summary(model_gui_6) # R-squared is 0.164. Number of programs and cluster 2 are significant -->
+
+<!-- ``` -->
+
+<!-- ```{r results="hide"} -->
+<!-- model_gui_7 <- lm(formula = PComp ~ `# of Programs`,  -->
+<!--     data = model_data) -->
+<!-- summary(model_gui_7) # R-squared is 0.065. Number of programs is significant -->
+<!-- ``` -->
+
+<!-- ```{r results="hide"} -->
+<!-- model_gui_8 <- lm(formula = PChoice ~ `# of Programs`,  -->
+<!--     data = model_data) -->
+<!-- summary(model_gui_8) # R-squared is 0.039. Number of programs is significant -->
+<!-- ``` -->
 
 
 Outcome Variables  | R-squared  | Positive Coefficients| Negative Coefficients| 
 ------------- | ------------- | -------------|-------------|
 Sense of Community  | 0.148 | `# of Programs`, `Frequency` | NA|
 Nature Connection  | Not significant  | NA | NA |
-Intrinsic Motivation | 0.10  | `# of Programs` | NA |
+Intrinsic Motivation Inventory | 0.10  | `# of Programs` | NA |
+Intrinsic Motivation (Enjoyment/ Interests) | 0.164  | `# of Programs` | Cluster 2 (compared to cluster 1) |
+Perceived Competence | 0.065  | `# of Programs` | NA |
+Perceived Choice | 0.039  | `# of Programs` | NA |
 Self Esteem  | 0.11  |`age`| `Frequency`|
 Self Efficacy  |  Not significant  | NA |NA|
 
 
 ### Other Psychometric Scales as Inputs
 
-  Since the correlation between nature connection and intrinsic motivation is high, the regression analysis was conducted to see if __the Nature Connection__ can be explained by __Intrinsic Motivation__. 
-  In this model, __Intrinsic Motivation__ shows __a significant effect__ on __the Nature Connection__ ( _p_<.01), __explaining 20%__ of the variance in the Nature Connection (R-squared is 0.2031).
+- `model_gui_9` shows the highest R-squared among all the models. The model __explains 53%__ of variance in the Intrinsic Motivation (Enjoyment/ Interests): __Higher `SoCoh` and `SOC`__ will lead to __higer levels of enjoyment/ interests__ among the GUI members. 
+
+- `model_gui_10` explains __46% of the variance__ in the __Self Efficacy (`Sef_Eff`)__: __higher Perceived Competence (`PComp`)__ and __lower Sense of Community__ will lead to higher sense of Self Efficacy.
+
+  <!-- Since the correlation between nature connection and intrinsic motivation is high, the regression analysis was conducted to see if __the Nature Connection__ can be explained by __Intrinsic Motivation__.  -->
+  <!-- In this model, __Intrinsic Motivation__ shows __a significant effect__ on __the Nature Connection__ ( _p_<.01), __explaining 20%__ of the variance in the Nature Connection (R-squared is 0.2031). -->
 
 ```{r include=FALSE}
 #CNS
 full.model <- lm(formula = CNS ~  age + Frequency +Commitment +`# of Programs`+SOC+SoCoh+Self_Est+Self_Eff+clusters+RC1+RC2+IM+PComp+PChoice,  
                    data = model_data  
  )
-
 step( object = full.model,     # start at the full model
        direction = "backward"   # allow it remove predictors but not add them
  )
 
-#IMI
-full.model <- lm(formula = IM ~  age + Frequency +Commitment +`# of Programs`+SOC+SoCoh+Self_Est+Self_Eff+clusters+RC1+RC2+PComp+PChoice,  
+#IM
+full.model <- lm(formula = IM ~ SoCoh+ Frequency +Commitment +`# of Programs`+SOC+Self_Est+Self_Eff+clusters+RC1+RC2+PComp+PChoice,  
                    data = model_data  
  )
-
 step( object = full.model,     # start at the full model
        direction = "backward"   # allow it remove predictors but not add them
  )
 
 #EFF
-full.model <- lm(formula = Self_Eff ~  age + Frequency +Commitment +`# of Programs`+SOC+SoCoh+Self_Est+Self_Eff+clusters+RC1+RC2+PComp+PChoice+IM,  
+full.model <- lm(formula = Self_Eff ~  Frequency +Commitment +`# of Programs`+SOC+SoCoh+Self_Est+Self_Eff+clusters+RC1+RC2+PComp+PChoice+IM,  
+                   data = model_data  
+ )
+step( object = full.model,     # start at the full model
+       direction = "backward"   # allow it remove predictors but not add them
+ )
+
+#NUmber of Programs
+full.model <- lm(formula = `# of Programs` ~  age + Frequency +Commitment +SOC+SoCoh+Self_Est+Self_Eff+PComp+PChoice+IM,  
                    data = model_data  
  )
 step( object = full.model,     # start at the full model
@@ -1687,26 +1597,99 @@ step( object = full.model,     # start at the full model
  )
 ```
 
-
 ```{r results="hide"}
-model_gui_6 <- lm(IMI ~ SOC + SoCoh + Self_Eff, data = model_data)
-summary(model_gui_6)
-# Significant model
+model_gui_9 <- lm(IM ~ SoCoh + SOC + Self_Eff + PChoice, data = model_data)
+summary(model_gui_9)
+# Significant model. R-squared is 0.528. SOC and SoCoh are significant
 ```
 
 ```{r results="hide"}
-model_gui_3 <- lm(CNS ~ Commitment + IMI + SOC + Self_Eff, data = model_data)
-summary(model_gui_3)
-# Significant model
+model_gui_10 <- lm(Self_Eff ~ SOC + PComp + PChoice, data = model_data)
+summary(model_gui_10)
+# R-squared = 0.459. SOC, Self_Est, and PComp are significant. But SOC is negative
 ```
 
 
-```{r results="hide"}
-model_gui_4 <- lm(Self_Eff ~ CNS + SOC + Self_Est + IMI, data = model_data)
-summary(model_gui_4)
-# R-squared = 0.4893. All coefficients are significant. How to interpret this?
+
+## Comparing The Long-term Members and The General Public
+
+- Results of ANOVA test shows significant differences only in the __Nature Connection (`CNS`)__ (P =0.035)
+
+- Post hoc test shows that the __significance difference__ was observed between __cluster 1 (fresh members)__ and __cluster 5 (non GUI members)__.
+
+- To see the differences between the __non GUI members__ and __Long-term members__, median test was conducted:
+no significance differences were observed in the `CNS`, `Self_Est`, and `Self_Eff`. It implies that __non GUI members__ are __not significantly different__ from __Long-term GUI Members__ in terms of their sense of nature connection, self-esteem, and self-efficacy.
+
+
+```{r include=FALSE}
+# non_gui <- readRDS(here::here("data/non_gui_june4_scales.rds"))
+# non_gui$clusters <- 5
+# gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
+# 
+# cluster_comp <- gui_cluster_data %>% select(gui_non_gui, gender, age, race, SoCoh, SOC, CNS, Self_Est, Self_Eff, clusters)
+# 
+# cluster_comp_gui <- rbind(cluster_comp, non_gui)
+# saveRDS(cluster_comp_gui, ("data/cluster_comp_gui_june5_scales.rds"))
+cluster_comp_gui <- readRDS(here::here("data/cluster_comp_gui_june5_scales.rds"))
+
 ```
 
+```{r include=FALSE}
+# Anova
+# CNS
+res.aov <- aov(CNS ~ clusters, data = cluster_comp_gui)
+summary(res.aov) # Significant
+
+# Post Hoc Test
+pairwise.t.test(
+  x = cluster_comp_gui$CNS, # outcome variable
+  g = cluster_comp_gui$clusters, # grouping variable
+  p.adjust.method = "none" # no correction used
+)
+
+# Self_Est
+res.aov <- aov(Self_Est ~ clusters, data = cluster_comp_gui)
+summary(res.aov) # Non significant
+
+# Post Hoc Test
+pairwise.t.test(
+  x = cluster_comp_gui$Self_Est, # outcome variable
+  g = cluster_comp_gui$clusters, # grouping variable
+  p.adjust.method = "none" # no correction used
+)
+
+# Self_Eff
+res.aov <- aov(Self_Eff ~ clusters, data = cluster_comp_gui)
+summary(res.aov) # Non significant
+
+# Post Hoc Test
+pairwise.t.test(
+  x = cluster_comp_gui$Self_Eff, # outcome variable
+  g = cluster_comp_gui$clusters, # grouping variable
+  p.adjust.method = "none" # no correction used
+)
+```
+
+```{r include=FALSE}
+non_old_members <- cluster_comp_gui %>%
+  filter(clusters == "2" | clusters == "5")
+  
+# Median Test
+library(agricolae)
+Median.test(non_old_members$CNS, non_old_members$clusters)
+Median.test(non_old_members$Self_Est, non_old_members$clusters)
+Median.test(non_old_members$Self_Eff, non_old_members$clusters)
+```
+
+```{r echo=FALSE}
+tibble("Variables" = c("Nature Connection", "Self Esteem", "Self Efficacy"),
+          "Median of Non GUI" =c(5.1, 4.75, 5.25),
+          "Median of Long-term GUI" =c(5.5, 5.25, 5.36),
+          "p Value" =c(0.14, 0.22, 0.76)) %>% gt() %>% 
+   tab_header(
+    title = "Median Test Results: Non GUI and Long-term GUI Members"
+  ) %>% cols_align(align = "center")
+```
 
 
 

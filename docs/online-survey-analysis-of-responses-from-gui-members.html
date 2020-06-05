@@ -170,6 +170,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.9.1" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#frequency-commitment-and-number-of-programs-as-inputs"><i class="fa fa-check"></i><b>3.9.1</b> Frequency, Commitment, and Number of Programs as Inputs</a></li>
 <li class="chapter" data-level="3.9.2" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#other-psychometric-scales-as-inputs"><i class="fa fa-check"></i><b>3.9.2</b> Other Psychometric Scales as Inputs</a></li>
 </ul></li>
+<li class="chapter" data-level="3.10" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#comparing-the-long-term-members-and-the-general-public"><i class="fa fa-check"></i><b>3.10</b> Comparing The Long-term Members and The General Public</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="pre-and-post-assessment.html"><a href="pre-and-post-assessment.html"><i class="fa fa-check"></i><b>4</b> Pre- and Post-Assessment</a>
 <ul>
@@ -255,7 +256,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!-- # loading full GUI data -->
 <!-- gui_df <- readRDS(here::here("data/0_GUI_online_mar20.rds")) -->
 <!-- only_gui <- gui_df %>% -->
-<!--   filter(gui_non_gui == "yes") -->
+<!--   filter(gui_non_gui == "never") -->
 <!-- ``` -->
 <!-- ```{r include=FALSE} -->
 <!-- # replacing 0 in frequency and commitment -->
@@ -308,22 +309,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <!--   SoCoh = c("social_cohesion_1", "social_cohesion_2", "social_cohesion_3", "social_cohesion_4_rev_coded", "social_cohesion_5_rev_coded"), -->
 <!--   SOC = c("soc_1", "soc_2", "soc_3", "soc_4", "soc_5", "soc_6", "soc_7", "soc_8"), -->
 <!--   CNS = c("cns_1", "cns_2", "cns_3", "cns_4_rev_coded", "cns_5", "cns_6", "cns_7", "cns_8", "cns_9", "cns_10"), -->
-<!--   IMI = c("imi_1", "imi_2", "imi_3_rev_coded", "imi_4_rev_coded", "imi_5", "imi_6", "imi_7", "imi_8"), -->
+<!--   #IMI = c("imi_1", "imi_2", "imi_3_rev_coded", "imi_4_rev_coded", "imi_5", "imi_6", "imi_7", "imi_8"), -->
 <!--   Self_Est = c("self_est_1", "self_est_2_rev_coded", "self_est_3", "self_est_4_rev_coded"), -->
 <!--   Self_Eff = c("self_eff_1", "self_eff_2", "self_eff_3", "self_eff_4", "self_eff_5", "self_eff_6", "self_eff_7", "self_eff_8") -->
+<!--   #IM =c("imi_4_rev_coded", "imi_5", "imi_6", "imi_7"), -->
+<!--   #PComp =c("imi_2", "imi_8"), -->
+<!--   #PChoice =c("imi_1", "imi_3_rev_coded") -->
 <!-- ) -->
 <!-- ``` -->
 <!-- ```{r include=FALSE} -->
 <!-- library(psych) -->
 <!-- my.scales <- scoreItems(scale.list, only_gui) -->
-<!-- ``` -->
-<!-- ```{r include=FALSE} 
-Breaking down IMI scales -->
-<!-- scale.list <- list( -->
-<!--   IM =c("imi_4_rev_coded", "imi_5", "imi_6", "imi_7"), -->
-<!--   PComp =c("imi_2", "imi_8"), -->
-<!--   PChoice =c("imi_1", "imi_3_rev_coded") -->
-<!-- ) -->
 <!-- ``` -->
 <!-- ```{r include=FALSE} -->
 <!-- library(psych) -->
@@ -334,7 +330,9 @@ Breaking down IMI scales -->
 <!-- ``` -->
 <!-- ```{r include=FALSE} -->
 <!-- dfscores <- data.frame(my.scores) -->
-<!-- only_gui_scales <- cbind(only_gui_scales, dfscores) -->
+<!-- only_gui <- cbind(only_gui, dfscores) -->
+<!-- non_gui<- only_gui %>% select(gui_non_gui, gender, age, race, SoCoh, SOC, CNS, Self_Est, Self_Eff) -->
+<!-- saveRDS(non_gui, ("data/non_gui_june4_scales.rds")) -->
 <!-- ``` -->
 <!-- ```{r include=FALSE} -->
 <!-- ## Cronbach's Alpha -->
@@ -373,7 +371,7 @@ Breaking down IMI scales -->
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#sdzqhtnvxw .gt_table {
+#cjagpbrhaz .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -396,7 +394,7 @@ Breaking down IMI scales -->
   border-left-color: #D3D3D3;
 }
 
-#sdzqhtnvxw .gt_heading {
+#cjagpbrhaz .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -408,7 +406,7 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#sdzqhtnvxw .gt_title {
+#cjagpbrhaz .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -418,7 +416,7 @@ Breaking down IMI scales -->
   border-bottom-width: 0;
 }
 
-#sdzqhtnvxw .gt_subtitle {
+#cjagpbrhaz .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -428,13 +426,13 @@ Breaking down IMI scales -->
   border-top-width: 0;
 }
 
-#sdzqhtnvxw .gt_bottom_border {
+#cjagpbrhaz .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#sdzqhtnvxw .gt_col_headings {
+#cjagpbrhaz .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -449,7 +447,7 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#sdzqhtnvxw .gt_col_heading {
+#cjagpbrhaz .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -469,7 +467,7 @@ Breaking down IMI scales -->
   overflow-x: hidden;
 }
 
-#sdzqhtnvxw .gt_column_spanner_outer {
+#cjagpbrhaz .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -481,15 +479,15 @@ Breaking down IMI scales -->
   padding-right: 4px;
 }
 
-#sdzqhtnvxw .gt_column_spanner_outer:first-child {
+#cjagpbrhaz .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#sdzqhtnvxw .gt_column_spanner_outer:last-child {
+#cjagpbrhaz .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#sdzqhtnvxw .gt_column_spanner {
+#cjagpbrhaz .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -501,7 +499,7 @@ Breaking down IMI scales -->
   width: 100%;
 }
 
-#sdzqhtnvxw .gt_group_heading {
+#cjagpbrhaz .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -523,7 +521,7 @@ Breaking down IMI scales -->
   vertical-align: middle;
 }
 
-#sdzqhtnvxw .gt_empty_group_heading {
+#cjagpbrhaz .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -538,19 +536,19 @@ Breaking down IMI scales -->
   vertical-align: middle;
 }
 
-#sdzqhtnvxw .gt_striped {
+#cjagpbrhaz .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#sdzqhtnvxw .gt_from_md > :first-child {
+#cjagpbrhaz .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#sdzqhtnvxw .gt_from_md > :last-child {
+#cjagpbrhaz .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#sdzqhtnvxw .gt_row {
+#cjagpbrhaz .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -569,7 +567,7 @@ Breaking down IMI scales -->
   overflow-x: hidden;
 }
 
-#sdzqhtnvxw .gt_stub {
+#cjagpbrhaz .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -581,7 +579,7 @@ Breaking down IMI scales -->
   padding-left: 12px;
 }
 
-#sdzqhtnvxw .gt_summary_row {
+#cjagpbrhaz .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -591,7 +589,7 @@ Breaking down IMI scales -->
   padding-right: 5px;
 }
 
-#sdzqhtnvxw .gt_first_summary_row {
+#cjagpbrhaz .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -601,7 +599,7 @@ Breaking down IMI scales -->
   border-top-color: #D3D3D3;
 }
 
-#sdzqhtnvxw .gt_grand_summary_row {
+#cjagpbrhaz .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -611,7 +609,7 @@ Breaking down IMI scales -->
   padding-right: 5px;
 }
 
-#sdzqhtnvxw .gt_first_grand_summary_row {
+#cjagpbrhaz .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -621,7 +619,7 @@ Breaking down IMI scales -->
   border-top-color: #D3D3D3;
 }
 
-#sdzqhtnvxw .gt_table_body {
+#cjagpbrhaz .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -630,7 +628,7 @@ Breaking down IMI scales -->
   border-bottom-color: #D3D3D3;
 }
 
-#sdzqhtnvxw .gt_footnotes {
+#cjagpbrhaz .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -644,13 +642,13 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#sdzqhtnvxw .gt_footnote {
+#cjagpbrhaz .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#sdzqhtnvxw .gt_sourcenotes {
+#cjagpbrhaz .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -664,46 +662,46 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#sdzqhtnvxw .gt_sourcenote {
+#cjagpbrhaz .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#sdzqhtnvxw .gt_left {
+#cjagpbrhaz .gt_left {
   text-align: left;
 }
 
-#sdzqhtnvxw .gt_center {
+#cjagpbrhaz .gt_center {
   text-align: center;
 }
 
-#sdzqhtnvxw .gt_right {
+#cjagpbrhaz .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#sdzqhtnvxw .gt_font_normal {
+#cjagpbrhaz .gt_font_normal {
   font-weight: normal;
 }
 
-#sdzqhtnvxw .gt_font_bold {
+#cjagpbrhaz .gt_font_bold {
   font-weight: bold;
 }
 
-#sdzqhtnvxw .gt_font_italic {
+#cjagpbrhaz .gt_font_italic {
   font-style: italic;
 }
 
-#sdzqhtnvxw .gt_super {
+#cjagpbrhaz .gt_super {
   font-size: 65%;
 }
 
-#sdzqhtnvxw .gt_footnote_marks {
+#cjagpbrhaz .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="sdzqhtnvxw" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="cjagpbrhaz" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   
   <thead class="gt_col_headings">
     <tr>
@@ -780,7 +778,7 @@ Breaking down IMI scales -->
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#sgxcrdghzj .gt_table {
+#vtjyuicnuv .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -803,7 +801,7 @@ Breaking down IMI scales -->
   border-left-color: #D3D3D3;
 }
 
-#sgxcrdghzj .gt_heading {
+#vtjyuicnuv .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -815,7 +813,7 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#sgxcrdghzj .gt_title {
+#vtjyuicnuv .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -825,7 +823,7 @@ Breaking down IMI scales -->
   border-bottom-width: 0;
 }
 
-#sgxcrdghzj .gt_subtitle {
+#vtjyuicnuv .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -835,13 +833,13 @@ Breaking down IMI scales -->
   border-top-width: 0;
 }
 
-#sgxcrdghzj .gt_bottom_border {
+#vtjyuicnuv .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#sgxcrdghzj .gt_col_headings {
+#vtjyuicnuv .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -856,7 +854,7 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#sgxcrdghzj .gt_col_heading {
+#vtjyuicnuv .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -876,7 +874,7 @@ Breaking down IMI scales -->
   overflow-x: hidden;
 }
 
-#sgxcrdghzj .gt_column_spanner_outer {
+#vtjyuicnuv .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -888,15 +886,15 @@ Breaking down IMI scales -->
   padding-right: 4px;
 }
 
-#sgxcrdghzj .gt_column_spanner_outer:first-child {
+#vtjyuicnuv .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#sgxcrdghzj .gt_column_spanner_outer:last-child {
+#vtjyuicnuv .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#sgxcrdghzj .gt_column_spanner {
+#vtjyuicnuv .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -908,7 +906,7 @@ Breaking down IMI scales -->
   width: 100%;
 }
 
-#sgxcrdghzj .gt_group_heading {
+#vtjyuicnuv .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -930,7 +928,7 @@ Breaking down IMI scales -->
   vertical-align: middle;
 }
 
-#sgxcrdghzj .gt_empty_group_heading {
+#vtjyuicnuv .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -945,19 +943,19 @@ Breaking down IMI scales -->
   vertical-align: middle;
 }
 
-#sgxcrdghzj .gt_striped {
+#vtjyuicnuv .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#sgxcrdghzj .gt_from_md > :first-child {
+#vtjyuicnuv .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#sgxcrdghzj .gt_from_md > :last-child {
+#vtjyuicnuv .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#sgxcrdghzj .gt_row {
+#vtjyuicnuv .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -976,7 +974,7 @@ Breaking down IMI scales -->
   overflow-x: hidden;
 }
 
-#sgxcrdghzj .gt_stub {
+#vtjyuicnuv .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -988,7 +986,7 @@ Breaking down IMI scales -->
   padding-left: 12px;
 }
 
-#sgxcrdghzj .gt_summary_row {
+#vtjyuicnuv .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -998,7 +996,7 @@ Breaking down IMI scales -->
   padding-right: 5px;
 }
 
-#sgxcrdghzj .gt_first_summary_row {
+#vtjyuicnuv .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1008,7 +1006,7 @@ Breaking down IMI scales -->
   border-top-color: #D3D3D3;
 }
 
-#sgxcrdghzj .gt_grand_summary_row {
+#vtjyuicnuv .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1018,7 +1016,7 @@ Breaking down IMI scales -->
   padding-right: 5px;
 }
 
-#sgxcrdghzj .gt_first_grand_summary_row {
+#vtjyuicnuv .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1028,7 +1026,7 @@ Breaking down IMI scales -->
   border-top-color: #D3D3D3;
 }
 
-#sgxcrdghzj .gt_table_body {
+#vtjyuicnuv .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1037,7 +1035,7 @@ Breaking down IMI scales -->
   border-bottom-color: #D3D3D3;
 }
 
-#sgxcrdghzj .gt_footnotes {
+#vtjyuicnuv .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1051,13 +1049,13 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#sgxcrdghzj .gt_footnote {
+#vtjyuicnuv .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#sgxcrdghzj .gt_sourcenotes {
+#vtjyuicnuv .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1071,46 +1069,46 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#sgxcrdghzj .gt_sourcenote {
+#vtjyuicnuv .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#sgxcrdghzj .gt_left {
+#vtjyuicnuv .gt_left {
   text-align: left;
 }
 
-#sgxcrdghzj .gt_center {
+#vtjyuicnuv .gt_center {
   text-align: center;
 }
 
-#sgxcrdghzj .gt_right {
+#vtjyuicnuv .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#sgxcrdghzj .gt_font_normal {
+#vtjyuicnuv .gt_font_normal {
   font-weight: normal;
 }
 
-#sgxcrdghzj .gt_font_bold {
+#vtjyuicnuv .gt_font_bold {
   font-weight: bold;
 }
 
-#sgxcrdghzj .gt_font_italic {
+#vtjyuicnuv .gt_font_italic {
   font-style: italic;
 }
 
-#sgxcrdghzj .gt_super {
+#vtjyuicnuv .gt_super {
   font-size: 65%;
 }
 
-#sgxcrdghzj .gt_footnote_marks {
+#vtjyuicnuv .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="sgxcrdghzj" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="vtjyuicnuv" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   <thead class="gt_header">
     <tr>
       <th colspan="14" class="gt_heading gt_title gt_font_normal" style>Descriptive Statistics of Major Variables (only GUI Members)</th>
@@ -1338,7 +1336,7 @@ Breaking down IMI scales -->
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#vzdzlagiqy .gt_table {
+#acxopcfjef .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1361,7 +1359,7 @@ Breaking down IMI scales -->
   border-left-color: #D3D3D3;
 }
 
-#vzdzlagiqy .gt_heading {
+#acxopcfjef .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1373,7 +1371,7 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#vzdzlagiqy .gt_title {
+#acxopcfjef .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1383,7 +1381,7 @@ Breaking down IMI scales -->
   border-bottom-width: 0;
 }
 
-#vzdzlagiqy .gt_subtitle {
+#acxopcfjef .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1393,13 +1391,13 @@ Breaking down IMI scales -->
   border-top-width: 0;
 }
 
-#vzdzlagiqy .gt_bottom_border {
+#acxopcfjef .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#vzdzlagiqy .gt_col_headings {
+#acxopcfjef .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1414,7 +1412,7 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#vzdzlagiqy .gt_col_heading {
+#acxopcfjef .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1434,7 +1432,7 @@ Breaking down IMI scales -->
   overflow-x: hidden;
 }
 
-#vzdzlagiqy .gt_column_spanner_outer {
+#acxopcfjef .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1446,15 +1444,15 @@ Breaking down IMI scales -->
   padding-right: 4px;
 }
 
-#vzdzlagiqy .gt_column_spanner_outer:first-child {
+#acxopcfjef .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#vzdzlagiqy .gt_column_spanner_outer:last-child {
+#acxopcfjef .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#vzdzlagiqy .gt_column_spanner {
+#acxopcfjef .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1466,7 +1464,7 @@ Breaking down IMI scales -->
   width: 100%;
 }
 
-#vzdzlagiqy .gt_group_heading {
+#acxopcfjef .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1488,7 +1486,7 @@ Breaking down IMI scales -->
   vertical-align: middle;
 }
 
-#vzdzlagiqy .gt_empty_group_heading {
+#acxopcfjef .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1503,19 +1501,19 @@ Breaking down IMI scales -->
   vertical-align: middle;
 }
 
-#vzdzlagiqy .gt_striped {
+#acxopcfjef .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#vzdzlagiqy .gt_from_md > :first-child {
+#acxopcfjef .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#vzdzlagiqy .gt_from_md > :last-child {
+#acxopcfjef .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#vzdzlagiqy .gt_row {
+#acxopcfjef .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1534,7 +1532,7 @@ Breaking down IMI scales -->
   overflow-x: hidden;
 }
 
-#vzdzlagiqy .gt_stub {
+#acxopcfjef .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1546,7 +1544,7 @@ Breaking down IMI scales -->
   padding-left: 12px;
 }
 
-#vzdzlagiqy .gt_summary_row {
+#acxopcfjef .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1556,7 +1554,7 @@ Breaking down IMI scales -->
   padding-right: 5px;
 }
 
-#vzdzlagiqy .gt_first_summary_row {
+#acxopcfjef .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1566,7 +1564,7 @@ Breaking down IMI scales -->
   border-top-color: #D3D3D3;
 }
 
-#vzdzlagiqy .gt_grand_summary_row {
+#acxopcfjef .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1576,7 +1574,7 @@ Breaking down IMI scales -->
   padding-right: 5px;
 }
 
-#vzdzlagiqy .gt_first_grand_summary_row {
+#acxopcfjef .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1586,7 +1584,7 @@ Breaking down IMI scales -->
   border-top-color: #D3D3D3;
 }
 
-#vzdzlagiqy .gt_table_body {
+#acxopcfjef .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1595,7 +1593,7 @@ Breaking down IMI scales -->
   border-bottom-color: #D3D3D3;
 }
 
-#vzdzlagiqy .gt_footnotes {
+#acxopcfjef .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1609,13 +1607,13 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#vzdzlagiqy .gt_footnote {
+#acxopcfjef .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#vzdzlagiqy .gt_sourcenotes {
+#acxopcfjef .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1629,46 +1627,46 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#vzdzlagiqy .gt_sourcenote {
+#acxopcfjef .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#vzdzlagiqy .gt_left {
+#acxopcfjef .gt_left {
   text-align: left;
 }
 
-#vzdzlagiqy .gt_center {
+#acxopcfjef .gt_center {
   text-align: center;
 }
 
-#vzdzlagiqy .gt_right {
+#acxopcfjef .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#vzdzlagiqy .gt_font_normal {
+#acxopcfjef .gt_font_normal {
   font-weight: normal;
 }
 
-#vzdzlagiqy .gt_font_bold {
+#acxopcfjef .gt_font_bold {
   font-weight: bold;
 }
 
-#vzdzlagiqy .gt_font_italic {
+#acxopcfjef .gt_font_italic {
   font-style: italic;
 }
 
-#vzdzlagiqy .gt_super {
+#acxopcfjef .gt_super {
   font-size: 65%;
 }
 
-#vzdzlagiqy .gt_footnote_marks {
+#acxopcfjef .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="vzdzlagiqy" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="acxopcfjef" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   <thead class="gt_header">
     <tr>
       <th colspan="14" class="gt_heading gt_title gt_font_normal" style>Descriptive Statistics of Major Variables (Only Female Members)</th>
@@ -1895,7 +1893,7 @@ Breaking down IMI scales -->
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#iltqflmfwx .gt_table {
+#rihktqoiyg .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1918,7 +1916,7 @@ Breaking down IMI scales -->
   border-left-color: #D3D3D3;
 }
 
-#iltqflmfwx .gt_heading {
+#rihktqoiyg .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1930,7 +1928,7 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#iltqflmfwx .gt_title {
+#rihktqoiyg .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1940,7 +1938,7 @@ Breaking down IMI scales -->
   border-bottom-width: 0;
 }
 
-#iltqflmfwx .gt_subtitle {
+#rihktqoiyg .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1950,13 +1948,13 @@ Breaking down IMI scales -->
   border-top-width: 0;
 }
 
-#iltqflmfwx .gt_bottom_border {
+#rihktqoiyg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#iltqflmfwx .gt_col_headings {
+#rihktqoiyg .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1971,7 +1969,7 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#iltqflmfwx .gt_col_heading {
+#rihktqoiyg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1991,7 +1989,7 @@ Breaking down IMI scales -->
   overflow-x: hidden;
 }
 
-#iltqflmfwx .gt_column_spanner_outer {
+#rihktqoiyg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2003,15 +2001,15 @@ Breaking down IMI scales -->
   padding-right: 4px;
 }
 
-#iltqflmfwx .gt_column_spanner_outer:first-child {
+#rihktqoiyg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#iltqflmfwx .gt_column_spanner_outer:last-child {
+#rihktqoiyg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#iltqflmfwx .gt_column_spanner {
+#rihktqoiyg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2023,7 +2021,7 @@ Breaking down IMI scales -->
   width: 100%;
 }
 
-#iltqflmfwx .gt_group_heading {
+#rihktqoiyg .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2045,7 +2043,7 @@ Breaking down IMI scales -->
   vertical-align: middle;
 }
 
-#iltqflmfwx .gt_empty_group_heading {
+#rihktqoiyg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2060,19 +2058,19 @@ Breaking down IMI scales -->
   vertical-align: middle;
 }
 
-#iltqflmfwx .gt_striped {
+#rihktqoiyg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#iltqflmfwx .gt_from_md > :first-child {
+#rihktqoiyg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#iltqflmfwx .gt_from_md > :last-child {
+#rihktqoiyg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#iltqflmfwx .gt_row {
+#rihktqoiyg .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2091,7 +2089,7 @@ Breaking down IMI scales -->
   overflow-x: hidden;
 }
 
-#iltqflmfwx .gt_stub {
+#rihktqoiyg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2103,7 +2101,7 @@ Breaking down IMI scales -->
   padding-left: 12px;
 }
 
-#iltqflmfwx .gt_summary_row {
+#rihktqoiyg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2113,7 +2111,7 @@ Breaking down IMI scales -->
   padding-right: 5px;
 }
 
-#iltqflmfwx .gt_first_summary_row {
+#rihktqoiyg .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2123,7 +2121,7 @@ Breaking down IMI scales -->
   border-top-color: #D3D3D3;
 }
 
-#iltqflmfwx .gt_grand_summary_row {
+#rihktqoiyg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2133,7 +2131,7 @@ Breaking down IMI scales -->
   padding-right: 5px;
 }
 
-#iltqflmfwx .gt_first_grand_summary_row {
+#rihktqoiyg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2143,7 +2141,7 @@ Breaking down IMI scales -->
   border-top-color: #D3D3D3;
 }
 
-#iltqflmfwx .gt_table_body {
+#rihktqoiyg .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2152,7 +2150,7 @@ Breaking down IMI scales -->
   border-bottom-color: #D3D3D3;
 }
 
-#iltqflmfwx .gt_footnotes {
+#rihktqoiyg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2166,13 +2164,13 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#iltqflmfwx .gt_footnote {
+#rihktqoiyg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#iltqflmfwx .gt_sourcenotes {
+#rihktqoiyg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2186,46 +2184,46 @@ Breaking down IMI scales -->
   border-right-color: #D3D3D3;
 }
 
-#iltqflmfwx .gt_sourcenote {
+#rihktqoiyg .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#iltqflmfwx .gt_left {
+#rihktqoiyg .gt_left {
   text-align: left;
 }
 
-#iltqflmfwx .gt_center {
+#rihktqoiyg .gt_center {
   text-align: center;
 }
 
-#iltqflmfwx .gt_right {
+#rihktqoiyg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#iltqflmfwx .gt_font_normal {
+#rihktqoiyg .gt_font_normal {
   font-weight: normal;
 }
 
-#iltqflmfwx .gt_font_bold {
+#rihktqoiyg .gt_font_bold {
   font-weight: bold;
 }
 
-#iltqflmfwx .gt_font_italic {
+#rihktqoiyg .gt_font_italic {
   font-style: italic;
 }
 
-#iltqflmfwx .gt_super {
+#rihktqoiyg .gt_super {
   font-size: 65%;
 }
 
-#iltqflmfwx .gt_footnote_marks {
+#rihktqoiyg .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="iltqflmfwx" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="rihktqoiyg" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   <thead class="gt_header">
     <tr>
       <th colspan="14" class="gt_heading gt_title gt_font_normal" style>Descriptive Statistics of Major Variables (Only Male Members)</th>
@@ -2455,7 +2453,7 @@ Breaking down IMI scales -->
 <p>###Frequency of Visits (per year)
 The maximum number of the frequency visits is <strong>300</strong>- there is one member who visits GUI almost everyday. The mean and median values for the frequency of visits are 20.4 and 5, respectively. From the below chart, it’s observed that the frequency of visits is skewed to the left (small numbers of visits)-<strong>30% of respondents</strong> in this study visit GUI on average <strong>once a year</strong>, and <strong>66% of respondents</strong> visit GUI <strong>less than 12 times a year</strong> (on average less than once a month).</p>
 <table>
-<caption><span id="tab:unnamed-chunk-8">Table 3.1: </span>Data summary</caption>
+<caption><span id="tab:unnamed-chunk-30">Table 3.1: </span>Data summary</caption>
 <tbody>
 <tr class="odd">
 <td align="left">Name</td>
@@ -2524,12 +2522,12 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
 </tr>
 </tbody>
 </table>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 <div id="total-duration-of-commitment-month" class="section level3" number="3.3.1">
 <h3><span class="header-section-number">3.3.1</span> Total Duration of Commitment (month)</h3>
 <p>The maximum number of durations of commitment is <strong>136</strong>- there is one respondent who has been visiting GUI <strong>more than 11 years</strong>. The mean and median values for the commitment are 25.5 and 15, respectively. From the below chart, it’s observed that the commitment is also skewed towards the shorter durations of commitment-44% of respondents in this study engaged with GUI less than or equal to 1 year(12 months), and 76% of respondents engaged with GUI less than or equal to 3 years (36 months).</p>
 <table>
-<caption><span id="tab:unnamed-chunk-13">Table 3.2: </span>Data summary</caption>
+<caption><span id="tab:unnamed-chunk-35">Table 3.2: </span>Data summary</caption>
 <tbody>
 <tr class="odd">
 <td align="left">Name</td>
@@ -2567,7 +2565,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
 </table>
 <p><strong>Variable type: Date</strong></p>
 <table>
-<caption><span id="tab:unnamed-chunk-15">Table 3.3: </span>Data summary</caption>
+<caption><span id="tab:unnamed-chunk-37">Table 3.3: </span>Data summary</caption>
 <thead>
 <tr class="header">
 <th align="left">skim_variable</th>
@@ -2660,12 +2658,12 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
 </tr>
 </tbody>
 </table>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
 </div>
 <div id="frequency-and-commitment" class="section level3" number="3.3.2">
 <h3><span class="header-section-number">3.3.2</span> Frequency and Commitment</h3>
 <p>The below chart suggests that many of the respondents in this study (36%) are <strong>newer members of GUI (less than or equal to 15 months)</strong> who visit GUI <strong>less than or equal to 5 times per year</strong>. Also, the below chart and the result of the correlation test between the two variables indicate that the correlation between <strong>frequency and commitment is weak</strong> (r=0.235, Pearson): it seems that the longer commitment with GUI does not necessarily lead to a higher frequency of visits.</p>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-40-1.png" width="672" /></p>
 </div>
 <div id="genger-race-and-age" class="section level3" number="3.3.3">
 <h3><span class="header-section-number">3.3.3</span> Genger, Race, and Age</h3>
@@ -2676,7 +2674,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#umjsitqxrz .gt_table {
+#vijqruzopp .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -2699,7 +2697,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-left-color: #D3D3D3;
 }
 
-#umjsitqxrz .gt_heading {
+#vijqruzopp .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2711,7 +2709,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-right-color: #D3D3D3;
 }
 
-#umjsitqxrz .gt_title {
+#vijqruzopp .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2721,7 +2719,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-bottom-width: 0;
 }
 
-#umjsitqxrz .gt_subtitle {
+#vijqruzopp .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2731,13 +2729,13 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-top-width: 0;
 }
 
-#umjsitqxrz .gt_bottom_border {
+#vijqruzopp .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#umjsitqxrz .gt_col_headings {
+#vijqruzopp .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2752,7 +2750,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-right-color: #D3D3D3;
 }
 
-#umjsitqxrz .gt_col_heading {
+#vijqruzopp .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2772,7 +2770,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   overflow-x: hidden;
 }
 
-#umjsitqxrz .gt_column_spanner_outer {
+#vijqruzopp .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2784,15 +2782,15 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   padding-right: 4px;
 }
 
-#umjsitqxrz .gt_column_spanner_outer:first-child {
+#vijqruzopp .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#umjsitqxrz .gt_column_spanner_outer:last-child {
+#vijqruzopp .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#umjsitqxrz .gt_column_spanner {
+#vijqruzopp .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2804,7 +2802,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   width: 100%;
 }
 
-#umjsitqxrz .gt_group_heading {
+#vijqruzopp .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2826,7 +2824,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   vertical-align: middle;
 }
 
-#umjsitqxrz .gt_empty_group_heading {
+#vijqruzopp .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2841,19 +2839,19 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   vertical-align: middle;
 }
 
-#umjsitqxrz .gt_striped {
+#vijqruzopp .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#umjsitqxrz .gt_from_md > :first-child {
+#vijqruzopp .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#umjsitqxrz .gt_from_md > :last-child {
+#vijqruzopp .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#umjsitqxrz .gt_row {
+#vijqruzopp .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2872,7 +2870,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   overflow-x: hidden;
 }
 
-#umjsitqxrz .gt_stub {
+#vijqruzopp .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2884,7 +2882,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   padding-left: 12px;
 }
 
-#umjsitqxrz .gt_summary_row {
+#vijqruzopp .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2894,7 +2892,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   padding-right: 5px;
 }
 
-#umjsitqxrz .gt_first_summary_row {
+#vijqruzopp .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2904,7 +2902,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-top-color: #D3D3D3;
 }
 
-#umjsitqxrz .gt_grand_summary_row {
+#vijqruzopp .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2914,7 +2912,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   padding-right: 5px;
 }
 
-#umjsitqxrz .gt_first_grand_summary_row {
+#vijqruzopp .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2924,7 +2922,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-top-color: #D3D3D3;
 }
 
-#umjsitqxrz .gt_table_body {
+#vijqruzopp .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2933,7 +2931,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-bottom-color: #D3D3D3;
 }
 
-#umjsitqxrz .gt_footnotes {
+#vijqruzopp .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2947,13 +2945,13 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-right-color: #D3D3D3;
 }
 
-#umjsitqxrz .gt_footnote {
+#vijqruzopp .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#umjsitqxrz .gt_sourcenotes {
+#vijqruzopp .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2967,46 +2965,46 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-right-color: #D3D3D3;
 }
 
-#umjsitqxrz .gt_sourcenote {
+#vijqruzopp .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#umjsitqxrz .gt_left {
+#vijqruzopp .gt_left {
   text-align: left;
 }
 
-#umjsitqxrz .gt_center {
+#vijqruzopp .gt_center {
   text-align: center;
 }
 
-#umjsitqxrz .gt_right {
+#vijqruzopp .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#umjsitqxrz .gt_font_normal {
+#vijqruzopp .gt_font_normal {
   font-weight: normal;
 }
 
-#umjsitqxrz .gt_font_bold {
+#vijqruzopp .gt_font_bold {
   font-weight: bold;
 }
 
-#umjsitqxrz .gt_font_italic {
+#vijqruzopp .gt_font_italic {
   font-style: italic;
 }
 
-#umjsitqxrz .gt_super {
+#vijqruzopp .gt_super {
   font-size: 65%;
 }
 
-#umjsitqxrz .gt_footnote_marks {
+#vijqruzopp .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="umjsitqxrz" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="vijqruzopp" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   
   <thead class="gt_col_headings">
     <tr>
@@ -3035,7 +3033,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#bcavcdihgs .gt_table {
+#valfquliys .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -3058,7 +3056,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-left-color: #D3D3D3;
 }
 
-#bcavcdihgs .gt_heading {
+#valfquliys .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3070,7 +3068,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-right-color: #D3D3D3;
 }
 
-#bcavcdihgs .gt_title {
+#valfquliys .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3080,7 +3078,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-bottom-width: 0;
 }
 
-#bcavcdihgs .gt_subtitle {
+#valfquliys .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3090,13 +3088,13 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-top-width: 0;
 }
 
-#bcavcdihgs .gt_bottom_border {
+#valfquliys .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#bcavcdihgs .gt_col_headings {
+#valfquliys .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3111,7 +3109,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-right-color: #D3D3D3;
 }
 
-#bcavcdihgs .gt_col_heading {
+#valfquliys .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3131,7 +3129,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   overflow-x: hidden;
 }
 
-#bcavcdihgs .gt_column_spanner_outer {
+#valfquliys .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3143,15 +3141,15 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   padding-right: 4px;
 }
 
-#bcavcdihgs .gt_column_spanner_outer:first-child {
+#valfquliys .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#bcavcdihgs .gt_column_spanner_outer:last-child {
+#valfquliys .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#bcavcdihgs .gt_column_spanner {
+#valfquliys .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3163,7 +3161,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   width: 100%;
 }
 
-#bcavcdihgs .gt_group_heading {
+#valfquliys .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3185,7 +3183,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   vertical-align: middle;
 }
 
-#bcavcdihgs .gt_empty_group_heading {
+#valfquliys .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3200,19 +3198,19 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   vertical-align: middle;
 }
 
-#bcavcdihgs .gt_striped {
+#valfquliys .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#bcavcdihgs .gt_from_md > :first-child {
+#valfquliys .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#bcavcdihgs .gt_from_md > :last-child {
+#valfquliys .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#bcavcdihgs .gt_row {
+#valfquliys .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3231,7 +3229,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   overflow-x: hidden;
 }
 
-#bcavcdihgs .gt_stub {
+#valfquliys .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3243,7 +3241,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   padding-left: 12px;
 }
 
-#bcavcdihgs .gt_summary_row {
+#valfquliys .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3253,7 +3251,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   padding-right: 5px;
 }
 
-#bcavcdihgs .gt_first_summary_row {
+#valfquliys .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3263,7 +3261,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-top-color: #D3D3D3;
 }
 
-#bcavcdihgs .gt_grand_summary_row {
+#valfquliys .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3273,7 +3271,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   padding-right: 5px;
 }
 
-#bcavcdihgs .gt_first_grand_summary_row {
+#valfquliys .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3283,7 +3281,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-top-color: #D3D3D3;
 }
 
-#bcavcdihgs .gt_table_body {
+#valfquliys .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3292,7 +3290,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-bottom-color: #D3D3D3;
 }
 
-#bcavcdihgs .gt_footnotes {
+#valfquliys .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3306,13 +3304,13 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-right-color: #D3D3D3;
 }
 
-#bcavcdihgs .gt_footnote {
+#valfquliys .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#bcavcdihgs .gt_sourcenotes {
+#valfquliys .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3326,46 +3324,46 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-right-color: #D3D3D3;
 }
 
-#bcavcdihgs .gt_sourcenote {
+#valfquliys .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#bcavcdihgs .gt_left {
+#valfquliys .gt_left {
   text-align: left;
 }
 
-#bcavcdihgs .gt_center {
+#valfquliys .gt_center {
   text-align: center;
 }
 
-#bcavcdihgs .gt_right {
+#valfquliys .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#bcavcdihgs .gt_font_normal {
+#valfquliys .gt_font_normal {
   font-weight: normal;
 }
 
-#bcavcdihgs .gt_font_bold {
+#valfquliys .gt_font_bold {
   font-weight: bold;
 }
 
-#bcavcdihgs .gt_font_italic {
+#valfquliys .gt_font_italic {
   font-style: italic;
 }
 
-#bcavcdihgs .gt_super {
+#valfquliys .gt_super {
   font-size: 65%;
 }
 
-#bcavcdihgs .gt_footnote_marks {
+#valfquliys .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="bcavcdihgs" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="valfquliys" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   
   <thead class="gt_col_headings">
     <tr>
@@ -3409,7 +3407,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
 <h4><span class="header-section-number">3.3.3.2</span> Age</h4>
 <p>The age of respondents seems to be well-distributed-it’s slightly skewed to the left (towards the younger age) but there are still 20% of the respondents who are between the age of 50 and 72.</p>
 <table>
-<caption><span id="tab:unnamed-chunk-22">Table 3.4: </span>Data summary</caption>
+<caption><span id="tab:unnamed-chunk-44">Table 3.4: </span>Data summary</caption>
 <tbody>
 <tr class="odd">
 <td align="left">Name</td>
@@ -3478,7 +3476,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
 </tr>
 </tbody>
 </table>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
 </div>
 </div>
 <div id="types-of-programs-engaged" class="section level3" number="3.3.4">
@@ -3488,7 +3486,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#xljayojmha .gt_table {
+#njrfoedigu .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -3511,7 +3509,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-left-color: #D3D3D3;
 }
 
-#xljayojmha .gt_heading {
+#njrfoedigu .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3523,7 +3521,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-right-color: #D3D3D3;
 }
 
-#xljayojmha .gt_title {
+#njrfoedigu .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3533,7 +3531,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-bottom-width: 0;
 }
 
-#xljayojmha .gt_subtitle {
+#njrfoedigu .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3543,13 +3541,13 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-top-width: 0;
 }
 
-#xljayojmha .gt_bottom_border {
+#njrfoedigu .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#xljayojmha .gt_col_headings {
+#njrfoedigu .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3564,7 +3562,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-right-color: #D3D3D3;
 }
 
-#xljayojmha .gt_col_heading {
+#njrfoedigu .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3584,7 +3582,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   overflow-x: hidden;
 }
 
-#xljayojmha .gt_column_spanner_outer {
+#njrfoedigu .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3596,15 +3594,15 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   padding-right: 4px;
 }
 
-#xljayojmha .gt_column_spanner_outer:first-child {
+#njrfoedigu .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#xljayojmha .gt_column_spanner_outer:last-child {
+#njrfoedigu .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#xljayojmha .gt_column_spanner {
+#njrfoedigu .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3616,7 +3614,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   width: 100%;
 }
 
-#xljayojmha .gt_group_heading {
+#njrfoedigu .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3638,7 +3636,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   vertical-align: middle;
 }
 
-#xljayojmha .gt_empty_group_heading {
+#njrfoedigu .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3653,19 +3651,19 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   vertical-align: middle;
 }
 
-#xljayojmha .gt_striped {
+#njrfoedigu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#xljayojmha .gt_from_md > :first-child {
+#njrfoedigu .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#xljayojmha .gt_from_md > :last-child {
+#njrfoedigu .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#xljayojmha .gt_row {
+#njrfoedigu .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3684,7 +3682,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   overflow-x: hidden;
 }
 
-#xljayojmha .gt_stub {
+#njrfoedigu .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3696,7 +3694,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   padding-left: 12px;
 }
 
-#xljayojmha .gt_summary_row {
+#njrfoedigu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3706,7 +3704,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   padding-right: 5px;
 }
 
-#xljayojmha .gt_first_summary_row {
+#njrfoedigu .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3716,7 +3714,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-top-color: #D3D3D3;
 }
 
-#xljayojmha .gt_grand_summary_row {
+#njrfoedigu .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3726,7 +3724,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   padding-right: 5px;
 }
 
-#xljayojmha .gt_first_grand_summary_row {
+#njrfoedigu .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3736,7 +3734,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-top-color: #D3D3D3;
 }
 
-#xljayojmha .gt_table_body {
+#njrfoedigu .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3745,7 +3743,7 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-bottom-color: #D3D3D3;
 }
 
-#xljayojmha .gt_footnotes {
+#njrfoedigu .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3759,13 +3757,13 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-right-color: #D3D3D3;
 }
 
-#xljayojmha .gt_footnote {
+#njrfoedigu .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#xljayojmha .gt_sourcenotes {
+#njrfoedigu .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3779,46 +3777,46 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   border-right-color: #D3D3D3;
 }
 
-#xljayojmha .gt_sourcenote {
+#njrfoedigu .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#xljayojmha .gt_left {
+#njrfoedigu .gt_left {
   text-align: left;
 }
 
-#xljayojmha .gt_center {
+#njrfoedigu .gt_center {
   text-align: center;
 }
 
-#xljayojmha .gt_right {
+#njrfoedigu .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xljayojmha .gt_font_normal {
+#njrfoedigu .gt_font_normal {
   font-weight: normal;
 }
 
-#xljayojmha .gt_font_bold {
+#njrfoedigu .gt_font_bold {
   font-weight: bold;
 }
 
-#xljayojmha .gt_font_italic {
+#njrfoedigu .gt_font_italic {
   font-style: italic;
 }
 
-#xljayojmha .gt_super {
+#njrfoedigu .gt_super {
   font-size: 65%;
 }
 
-#xljayojmha .gt_footnote_marks {
+#njrfoedigu .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="xljayojmha" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="njrfoedigu" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   
   <thead class="gt_col_headings">
     <tr>
@@ -3854,18 +3852,18 @@ The maximum number of the frequency visits is <strong>300</strong>- there is one
   </tbody>
   
   
-</table></div><img src="GUI-Study_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+</table></div><img src="GUI-Study_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
 <p>The below chart indicates that <strong>most of the respondents (53%) attended only one of the GUI’s programs</strong>. Those who attended any 2 of GUI’s programs are 28%.
 The below correlation test and scatterplot show that those who engage with GUI in the longer duration attend more number of program types ( <strong>r=0.464</strong>, Pearson). This means that <strong>the longer the member commits on GUI, the more number of types of programs they attend</strong>.</p>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-32-1.png" width="672" /><img src="GUI-Study_files/figure-html/unnamed-chunk-32-2.png" width="672" /></p>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-49-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-51-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-52-1.png" width="672" /></p>
 </div>
 <div id="reasons-to-visit-gui" class="section level3" number="3.3.5">
 <h3><span class="header-section-number">3.3.5</span> Reasons to visit GUI</h3>
 <p>The most common word used to explain reasons to visit GUI is <strong>“Nature”</strong> followed by <strong>support, community, volunteer, people, activities, and farming</strong>. Most of the words listed in the below charts are also mentioned frequently during the focus group discussions.</p>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-55-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-56-1.png" width="672" /></p>
 </div>
 </div>
 <div id="normality-check-1" class="section level2" number="3.4">
@@ -3925,7 +3923,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#hvblprhhhw .gt_table {
+#rtxxdsohik .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -3948,7 +3946,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-left-color: #D3D3D3;
 }
 
-#hvblprhhhw .gt_heading {
+#rtxxdsohik .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3960,7 +3958,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-right-color: #D3D3D3;
 }
 
-#hvblprhhhw .gt_title {
+#rtxxdsohik .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3970,7 +3968,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-bottom-width: 0;
 }
 
-#hvblprhhhw .gt_subtitle {
+#rtxxdsohik .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3980,13 +3978,13 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-top-width: 0;
 }
 
-#hvblprhhhw .gt_bottom_border {
+#rtxxdsohik .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#hvblprhhhw .gt_col_headings {
+#rtxxdsohik .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4001,7 +3999,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-right-color: #D3D3D3;
 }
 
-#hvblprhhhw .gt_col_heading {
+#rtxxdsohik .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4021,7 +4019,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   overflow-x: hidden;
 }
 
-#hvblprhhhw .gt_column_spanner_outer {
+#rtxxdsohik .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4033,15 +4031,15 @@ The below correlation test and scatterplot show that those who engage with GUI i
   padding-right: 4px;
 }
 
-#hvblprhhhw .gt_column_spanner_outer:first-child {
+#rtxxdsohik .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#hvblprhhhw .gt_column_spanner_outer:last-child {
+#rtxxdsohik .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#hvblprhhhw .gt_column_spanner {
+#rtxxdsohik .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -4053,7 +4051,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   width: 100%;
 }
 
-#hvblprhhhw .gt_group_heading {
+#rtxxdsohik .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4075,7 +4073,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   vertical-align: middle;
 }
 
-#hvblprhhhw .gt_empty_group_heading {
+#rtxxdsohik .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4090,19 +4088,19 @@ The below correlation test and scatterplot show that those who engage with GUI i
   vertical-align: middle;
 }
 
-#hvblprhhhw .gt_striped {
+#rtxxdsohik .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#hvblprhhhw .gt_from_md > :first-child {
+#rtxxdsohik .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#hvblprhhhw .gt_from_md > :last-child {
+#rtxxdsohik .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#hvblprhhhw .gt_row {
+#rtxxdsohik .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4121,7 +4119,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   overflow-x: hidden;
 }
 
-#hvblprhhhw .gt_stub {
+#rtxxdsohik .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4133,7 +4131,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   padding-left: 12px;
 }
 
-#hvblprhhhw .gt_summary_row {
+#rtxxdsohik .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4143,7 +4141,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   padding-right: 5px;
 }
 
-#hvblprhhhw .gt_first_summary_row {
+#rtxxdsohik .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4153,7 +4151,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-top-color: #D3D3D3;
 }
 
-#hvblprhhhw .gt_grand_summary_row {
+#rtxxdsohik .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4163,7 +4161,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   padding-right: 5px;
 }
 
-#hvblprhhhw .gt_first_grand_summary_row {
+#rtxxdsohik .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4173,7 +4171,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-top-color: #D3D3D3;
 }
 
-#hvblprhhhw .gt_table_body {
+#rtxxdsohik .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4182,7 +4180,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-bottom-color: #D3D3D3;
 }
 
-#hvblprhhhw .gt_footnotes {
+#rtxxdsohik .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4196,13 +4194,13 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-right-color: #D3D3D3;
 }
 
-#hvblprhhhw .gt_footnote {
+#rtxxdsohik .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#hvblprhhhw .gt_sourcenotes {
+#rtxxdsohik .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4216,46 +4214,46 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-right-color: #D3D3D3;
 }
 
-#hvblprhhhw .gt_sourcenote {
+#rtxxdsohik .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#hvblprhhhw .gt_left {
+#rtxxdsohik .gt_left {
   text-align: left;
 }
 
-#hvblprhhhw .gt_center {
+#rtxxdsohik .gt_center {
   text-align: center;
 }
 
-#hvblprhhhw .gt_right {
+#rtxxdsohik .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#hvblprhhhw .gt_font_normal {
+#rtxxdsohik .gt_font_normal {
   font-weight: normal;
 }
 
-#hvblprhhhw .gt_font_bold {
+#rtxxdsohik .gt_font_bold {
   font-weight: bold;
 }
 
-#hvblprhhhw .gt_font_italic {
+#rtxxdsohik .gt_font_italic {
   font-style: italic;
 }
 
-#hvblprhhhw .gt_super {
+#rtxxdsohik .gt_super {
   font-size: 65%;
 }
 
-#hvblprhhhw .gt_footnote_marks {
+#rtxxdsohik .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="hvblprhhhw" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="rtxxdsohik" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   
   <thead class="gt_col_headings">
     <tr>
@@ -4323,12 +4321,16 @@ The below correlation test and scatterplot show that those who engage with GUI i
 </div>
 <div id="gender-wise-analysis" class="section level2" number="3.5">
 <h2><span class="header-section-number">3.5</span> Gender-wise Analysis</h2>
-<p>As the difference in the sample size is large (75 female and 28 male), the median test was conducted to see if there are any significant differences between female and male members in the respective variables. Although the difference in the frequency of visits is large (male members visit GUI more than twice as often as female members do), no significant difference was observed. <strong>Self-efficacy</strong> is the only variable that shows a significant difference: <strong>female members have a higher sense of self-efficacy</strong>.</p>
+<ul>
+<li><p>As the difference in the sample size is large (75 female and 28 male), the median test was conducted to see if there are any significant differences between female and male members in the respective variables.</p></li>
+<li><p>Although the difference in the frequency of visits is large (male members visit GUI more than twice as often as female members do), no significant difference was observed.</p></li>
+<li><p><strong>Self-efficacy</strong> is the only variable that shows a significant difference: <strong>female members have a higher sense of self-efficacy</strong>.</p></li>
+</ul>
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#cjrrcobbvs .gt_table {
+#pvqzkrpqtj .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -4351,7 +4353,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-left-color: #D3D3D3;
 }
 
-#cjrrcobbvs .gt_heading {
+#pvqzkrpqtj .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -4363,7 +4365,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-right-color: #D3D3D3;
 }
 
-#cjrrcobbvs .gt_title {
+#pvqzkrpqtj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -4373,7 +4375,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-bottom-width: 0;
 }
 
-#cjrrcobbvs .gt_subtitle {
+#pvqzkrpqtj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -4383,13 +4385,13 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-top-width: 0;
 }
 
-#cjrrcobbvs .gt_bottom_border {
+#pvqzkrpqtj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#cjrrcobbvs .gt_col_headings {
+#pvqzkrpqtj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4404,7 +4406,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-right-color: #D3D3D3;
 }
 
-#cjrrcobbvs .gt_col_heading {
+#pvqzkrpqtj .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4424,7 +4426,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   overflow-x: hidden;
 }
 
-#cjrrcobbvs .gt_column_spanner_outer {
+#pvqzkrpqtj .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4436,15 +4438,15 @@ The below correlation test and scatterplot show that those who engage with GUI i
   padding-right: 4px;
 }
 
-#cjrrcobbvs .gt_column_spanner_outer:first-child {
+#pvqzkrpqtj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#cjrrcobbvs .gt_column_spanner_outer:last-child {
+#pvqzkrpqtj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#cjrrcobbvs .gt_column_spanner {
+#pvqzkrpqtj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -4456,7 +4458,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   width: 100%;
 }
 
-#cjrrcobbvs .gt_group_heading {
+#pvqzkrpqtj .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4478,7 +4480,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   vertical-align: middle;
 }
 
-#cjrrcobbvs .gt_empty_group_heading {
+#pvqzkrpqtj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4493,19 +4495,19 @@ The below correlation test and scatterplot show that those who engage with GUI i
   vertical-align: middle;
 }
 
-#cjrrcobbvs .gt_striped {
+#pvqzkrpqtj .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#cjrrcobbvs .gt_from_md > :first-child {
+#pvqzkrpqtj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#cjrrcobbvs .gt_from_md > :last-child {
+#pvqzkrpqtj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#cjrrcobbvs .gt_row {
+#pvqzkrpqtj .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4524,7 +4526,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   overflow-x: hidden;
 }
 
-#cjrrcobbvs .gt_stub {
+#pvqzkrpqtj .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4536,7 +4538,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   padding-left: 12px;
 }
 
-#cjrrcobbvs .gt_summary_row {
+#pvqzkrpqtj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4546,7 +4548,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   padding-right: 5px;
 }
 
-#cjrrcobbvs .gt_first_summary_row {
+#pvqzkrpqtj .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4556,7 +4558,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-top-color: #D3D3D3;
 }
 
-#cjrrcobbvs .gt_grand_summary_row {
+#pvqzkrpqtj .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4566,7 +4568,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   padding-right: 5px;
 }
 
-#cjrrcobbvs .gt_first_grand_summary_row {
+#pvqzkrpqtj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4576,7 +4578,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-top-color: #D3D3D3;
 }
 
-#cjrrcobbvs .gt_table_body {
+#pvqzkrpqtj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4585,7 +4587,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-bottom-color: #D3D3D3;
 }
 
-#cjrrcobbvs .gt_footnotes {
+#pvqzkrpqtj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4599,13 +4601,13 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-right-color: #D3D3D3;
 }
 
-#cjrrcobbvs .gt_footnote {
+#pvqzkrpqtj .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#cjrrcobbvs .gt_sourcenotes {
+#pvqzkrpqtj .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4619,46 +4621,46 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-right-color: #D3D3D3;
 }
 
-#cjrrcobbvs .gt_sourcenote {
+#pvqzkrpqtj .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#cjrrcobbvs .gt_left {
+#pvqzkrpqtj .gt_left {
   text-align: left;
 }
 
-#cjrrcobbvs .gt_center {
+#pvqzkrpqtj .gt_center {
   text-align: center;
 }
 
-#cjrrcobbvs .gt_right {
+#pvqzkrpqtj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#cjrrcobbvs .gt_font_normal {
+#pvqzkrpqtj .gt_font_normal {
   font-weight: normal;
 }
 
-#cjrrcobbvs .gt_font_bold {
+#pvqzkrpqtj .gt_font_bold {
   font-weight: bold;
 }
 
-#cjrrcobbvs .gt_font_italic {
+#pvqzkrpqtj .gt_font_italic {
   font-style: italic;
 }
 
-#cjrrcobbvs .gt_super {
+#pvqzkrpqtj .gt_super {
   font-size: 65%;
 }
 
-#cjrrcobbvs .gt_footnote_marks {
+#pvqzkrpqtj .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="cjrrcobbvs" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="pvqzkrpqtj" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   <thead class="gt_header">
     <tr>
       <th colspan="5" class="gt_heading gt_title gt_font_normal" style>Test Statistics: Male vs Female</th>
@@ -4765,7 +4767,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   
   
 </table></div>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-63-1.png" width="672" /></p>
 </div>
 <div id="pca-and-cluster-analysis" class="section level2" number="3.6">
 <h2><span class="header-section-number">3.6</span> PCA and Cluster Analysis</h2>
@@ -4781,25 +4783,25 @@ The below correlation test and scatterplot show that those who engage with GUI i
 ## 1     1   1.26    0.532      0.532
 ## 2     2   0.936   0.292      0.824
 ## 3     3   0.727   0.176      1</code></pre>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-47-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-66-1.png" width="672" /></p>
 <ul>
 <li><p>Component 1 (<code>RC1</code>) has large positive directions in <code>number_programs</code> and <code>commitment_coded</code>.</p></li>
 <li><p>Whereas, component 2 (<code>RC2</code>) has more positive direction in <code>frequency_coded</code> and some positive directions in <code>commitment_coded</code>.</p></li>
 </ul>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-48-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-67-1.png" width="672" /></p>
 </div>
 <div id="determining-k" class="section level3" number="3.6.2">
 <h3><span class="header-section-number">3.6.2</span> Determining K</h3>
 <p>A Hierarchical Cluster Analysis was applied to determine the appropriate number of clusters. Based on the below plots, we decided to take <code>k=4</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb2-1"></a>hierarchical_clusters &lt;-<span class="st"> </span><span class="kw">hclust</span>(<span class="kw">dist</span>(cluster_data))</span>
 <span id="cb2-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb2-2"></a><span class="kw">fviz_dend</span>(hierarchical_clusters, <span class="dt">k =</span> <span class="dv">4</span>, <span class="dt">cex =</span> <span class="fl">0.4</span>) <span class="co"># K= the number of clusters in the dendogram</span></span></code></pre></div>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-50-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-69-1.png" width="672" /></p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb3-1"></a><span class="co"># hierarchical_clusters_k4 &lt;- cutree(hierarchical_clusters, k = 4)</span></span>
 <span id="cb3-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb3-2"></a><span class="co"># fviz_cluster(list(data = cluster_data, cluster = hierarchical_clusters_k4))</span></span></code></pre></div>
 </div>
 <div id="k-mean-clustering" class="section level3" number="3.6.3">
 <h3><span class="header-section-number">3.6.3</span> K-mean clustering</h3>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-51-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-70-1.png" width="672" /></p>
 <!-- ### Density-based clustering -->
 <!-- ```{r} -->
 <!-- library(dbscan) -->
@@ -4824,7 +4826,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#toeuefipws .gt_table {
+#rhryniwukx .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -4847,7 +4849,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-left-color: #D3D3D3;
 }
 
-#toeuefipws .gt_heading {
+#rhryniwukx .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -4859,7 +4861,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-right-color: #D3D3D3;
 }
 
-#toeuefipws .gt_title {
+#rhryniwukx .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -4869,7 +4871,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-bottom-width: 0;
 }
 
-#toeuefipws .gt_subtitle {
+#rhryniwukx .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -4879,13 +4881,13 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-top-width: 0;
 }
 
-#toeuefipws .gt_bottom_border {
+#rhryniwukx .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#toeuefipws .gt_col_headings {
+#rhryniwukx .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4900,7 +4902,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-right-color: #D3D3D3;
 }
 
-#toeuefipws .gt_col_heading {
+#rhryniwukx .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4920,7 +4922,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   overflow-x: hidden;
 }
 
-#toeuefipws .gt_column_spanner_outer {
+#rhryniwukx .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4932,15 +4934,15 @@ The below correlation test and scatterplot show that those who engage with GUI i
   padding-right: 4px;
 }
 
-#toeuefipws .gt_column_spanner_outer:first-child {
+#rhryniwukx .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#toeuefipws .gt_column_spanner_outer:last-child {
+#rhryniwukx .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#toeuefipws .gt_column_spanner {
+#rhryniwukx .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -4952,7 +4954,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   width: 100%;
 }
 
-#toeuefipws .gt_group_heading {
+#rhryniwukx .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4974,7 +4976,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   vertical-align: middle;
 }
 
-#toeuefipws .gt_empty_group_heading {
+#rhryniwukx .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4989,19 +4991,19 @@ The below correlation test and scatterplot show that those who engage with GUI i
   vertical-align: middle;
 }
 
-#toeuefipws .gt_striped {
+#rhryniwukx .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#toeuefipws .gt_from_md > :first-child {
+#rhryniwukx .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#toeuefipws .gt_from_md > :last-child {
+#rhryniwukx .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#toeuefipws .gt_row {
+#rhryniwukx .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5020,7 +5022,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   overflow-x: hidden;
 }
 
-#toeuefipws .gt_stub {
+#rhryniwukx .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5032,7 +5034,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   padding-left: 12px;
 }
 
-#toeuefipws .gt_summary_row {
+#rhryniwukx .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -5042,7 +5044,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   padding-right: 5px;
 }
 
-#toeuefipws .gt_first_summary_row {
+#rhryniwukx .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5052,7 +5054,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-top-color: #D3D3D3;
 }
 
-#toeuefipws .gt_grand_summary_row {
+#rhryniwukx .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -5062,7 +5064,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   padding-right: 5px;
 }
 
-#toeuefipws .gt_first_grand_summary_row {
+#rhryniwukx .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5072,7 +5074,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-top-color: #D3D3D3;
 }
 
-#toeuefipws .gt_table_body {
+#rhryniwukx .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -5081,7 +5083,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-bottom-color: #D3D3D3;
 }
 
-#toeuefipws .gt_footnotes {
+#rhryniwukx .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -5095,13 +5097,13 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-right-color: #D3D3D3;
 }
 
-#toeuefipws .gt_footnote {
+#rhryniwukx .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#toeuefipws .gt_sourcenotes {
+#rhryniwukx .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -5115,52 +5117,52 @@ The below correlation test and scatterplot show that those who engage with GUI i
   border-right-color: #D3D3D3;
 }
 
-#toeuefipws .gt_sourcenote {
+#rhryniwukx .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#toeuefipws .gt_left {
+#rhryniwukx .gt_left {
   text-align: left;
 }
 
-#toeuefipws .gt_center {
+#rhryniwukx .gt_center {
   text-align: center;
 }
 
-#toeuefipws .gt_right {
+#rhryniwukx .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#toeuefipws .gt_font_normal {
+#rhryniwukx .gt_font_normal {
   font-weight: normal;
 }
 
-#toeuefipws .gt_font_bold {
+#rhryniwukx .gt_font_bold {
   font-weight: bold;
 }
 
-#toeuefipws .gt_font_italic {
+#rhryniwukx .gt_font_italic {
   font-style: italic;
 }
 
-#toeuefipws .gt_super {
+#rhryniwukx .gt_super {
   font-size: 65%;
 }
 
-#toeuefipws .gt_footnote_marks {
+#rhryniwukx .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="toeuefipws" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="rhryniwukx" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   <thead class="gt_header">
     <tr>
-      <th colspan="14" class="gt_heading gt_title gt_font_normal" style>Table A: Median Values by Groups</th>
+      <th colspan="17" class="gt_heading gt_title gt_font_normal" style>Table A: Median Values by Groups</th>
     </tr>
     <tr>
-      <th colspan="14" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style></th>
+      <th colspan="17" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style></th>
     </tr>
   </thead>
   <thead class="gt_col_headings">
@@ -5176,6 +5178,9 @@ The below correlation test and scatterplot show that those who engage with GUI i
       <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">SoCoh</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">SOC</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">IMI</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">IM</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">PComp</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">PChoice</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">CNS</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">Self_Est</th>
       <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">Self_Eff</th>
@@ -5194,6 +5199,9 @@ The below correlation test and scatterplot show that those who engage with GUI i
       <td class="gt_row gt_center">6.0</td>
       <td class="gt_row gt_center">4.88</td>
       <td class="gt_row gt_center">5.75</td>
+      <td class="gt_row gt_center">6.00</td>
+      <td class="gt_row gt_center">5.00</td>
+      <td class="gt_row gt_center">5.50</td>
       <td class="gt_row gt_center">5.7</td>
       <td class="gt_row gt_center">5.00</td>
       <td class="gt_row gt_center">5.50</td>
@@ -5210,6 +5218,9 @@ The below correlation test and scatterplot show that those who engage with GUI i
       <td class="gt_row gt_center">6.2</td>
       <td class="gt_row gt_center">5.69</td>
       <td class="gt_row gt_center">5.88</td>
+      <td class="gt_row gt_center">6.12</td>
+      <td class="gt_row gt_center">5.25</td>
+      <td class="gt_row gt_center">5.75</td>
       <td class="gt_row gt_center">5.5</td>
       <td class="gt_row gt_center">5.25</td>
       <td class="gt_row gt_center">5.38</td>
@@ -5226,6 +5237,9 @@ The below correlation test and scatterplot show that those who engage with GUI i
       <td class="gt_row gt_center">5.5</td>
       <td class="gt_row gt_center">5.44</td>
       <td class="gt_row gt_center">5.38</td>
+      <td class="gt_row gt_center">5.38</td>
+      <td class="gt_row gt_center">5.75</td>
+      <td class="gt_row gt_center">5.00</td>
       <td class="gt_row gt_center">5.6</td>
       <td class="gt_row gt_center">4.38</td>
       <td class="gt_row gt_center">5.44</td>
@@ -5242,6 +5256,9 @@ The below correlation test and scatterplot show that those who engage with GUI i
       <td class="gt_row gt_center">6.0</td>
       <td class="gt_row gt_center">5.25</td>
       <td class="gt_row gt_center">5.50</td>
+      <td class="gt_row gt_center">6.25</td>
+      <td class="gt_row gt_center">5.00</td>
+      <td class="gt_row gt_center">5.50</td>
       <td class="gt_row gt_center">5.4</td>
       <td class="gt_row gt_center">4.50</td>
       <td class="gt_row gt_center">5.00</td>
@@ -5250,7 +5267,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
   
   
 </table></div>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-57-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-76-1.png" width="672" /></p>
 </div>
 <div id="interpreting-the-clusters" class="section level3" number="3.6.5">
 <h3><span class="header-section-number">3.6.5</span> Interpreting the clusters</h3>
@@ -5262,7 +5279,7 @@ The below correlation test and scatterplot show that those who engage with GUI i
 <li><p><strong>Group 3 and Group 4</strong> have much older members and higher frequency of visits, compared to <strong>Group 1 and Group 2</strong>. Therefore, the older members of GUI tend to visit there more frequently.</p></li>
 <li><p>The <strong>Connection to Nature</strong> is <strong>highest</strong> in the Group 1, suggesting that GUI tends to attract new members who have a high sense of Nature Connection.</p></li>
 </ul>
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-58-1.png" width="672" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-77-1.png" width="672" /></p>
 <!-- ## Median Test by Clusters -->
 <!-- - Although the ANOVA test did not find any sigfnificant differences in psychometric scales,  -->
 <!-- - Regardless of types of commitment, members of GUI have a high __Sense of Community__, __Connection to Nature__, and __Social Cohesion__. Therefore, these aspects might be already high among these members even before coming to GUI. -->
@@ -5293,16 +5310,15 @@ The below correlation test and scatterplot show that those who engage with GUI i
 <li><p>A <strong>significant</strong> difference ( <em>p</em> =0.014) was found in <strong>Sense of Community</strong>: hence, the long-term engagement with GUI seems to enhance a <strong>Sense of Community</strong> of GUI members.</p></li>
 <li><p><strong>Committed frequent visitors</strong> and <strong>Everyday visitors</strong> did not show a significant difference in <strong>Sense of Community</strong> when it’s compared with <strong>fresh_members</strong>. Perhaps, this is due to the small number of group size (7 and 2, respectively).</p></li>
 </ul>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-1"></a><span class="kw">Median.test</span>(old_new<span class="op">$</span>SOC, old_new<span class="op">$</span>clusters) <span class="co"># Sense of Community is significant</span></span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-1"></a><span class="kw">Median.test</span>(old_new<span class="op">$</span>SOC, old_new<span class="op">$</span>clusters) <span class="co"># Sense of Community is significant. P=0.014</span></span>
 <span id="cb4-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-2"></a><span class="kw">Median.test</span>(old_new<span class="op">$</span>CNS, old_new<span class="op">$</span>clusters) <span class="co"># CNS is not significant. p=0.374</span></span>
 <span id="cb4-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-3"></a><span class="kw">Median.test</span>(old_new<span class="op">$</span>IMI, old_new<span class="op">$</span>clusters) <span class="co"># IMI is not significant. p=0.491</span></span>
 <span id="cb4-4"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-4"></a><span class="kw">Median.test</span>(old_new<span class="op">$</span>SoCoh, old_new<span class="op">$</span>clusters) <span class="co"># Social Cohesion is not significant. p=0.333</span></span>
 <span id="cb4-5"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-5"></a><span class="kw">Median.test</span>(old_new<span class="op">$</span>Self_Est, old_new<span class="op">$</span>clusters) <span class="co"># Self-est is not significant. p=0.433</span></span>
 <span id="cb4-6"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-6"></a><span class="kw">Median.test</span>(old_new<span class="op">$</span>Self_Eff, old_new<span class="op">$</span>clusters) <span class="co"># Self-eff is not significant. p=0.494</span></span>
-<span id="cb4-7"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-7"></a></span>
-<span id="cb4-8"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-8"></a><span class="kw">Median.test</span>(old_new<span class="op">$</span>IM, old_new<span class="op">$</span>clusters) <span class="co"># IM is not significant. p=0.64</span></span>
-<span id="cb4-9"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-9"></a><span class="kw">Median.test</span>(old_new<span class="op">$</span>PComp, old_new<span class="op">$</span>clusters) <span class="co"># PComp is not significant. p=0.947</span></span>
-<span id="cb4-10"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-10"></a><span class="kw">Median.test</span>(old_new<span class="op">$</span>PChoice, old_new<span class="op">$</span>clusters) <span class="co"># PChoice is not significant. p=0.739</span></span></code></pre></div>
+<span id="cb4-7"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-7"></a><span class="kw">Median.test</span>(old_new<span class="op">$</span>IM, old_new<span class="op">$</span>clusters) <span class="co"># IM is not significant. p=0.64</span></span>
+<span id="cb4-8"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-8"></a><span class="kw">Median.test</span>(old_new<span class="op">$</span>PComp, old_new<span class="op">$</span>clusters) <span class="co"># PComp is not significant. p=0.947</span></span>
+<span id="cb4-9"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb4-9"></a><span class="kw">Median.test</span>(old_new<span class="op">$</span>PChoice, old_new<span class="op">$</span>clusters) <span class="co"># PChoice is not significant. p=0.739</span></span></code></pre></div>
 <!-- ## Regression by Groups -->
 <!-- ```{r} -->
 <!-- model_1 <- lm(SOC ~ clusters, data = gui_cluster_data) -->
@@ -5319,114 +5335,19 @@ The below correlation test and scatterplot show that those who engage with GUI i
 <h2><span class="header-section-number">3.8</span> Correlation Analysis</h2>
 <ul>
 <li><p><strong><code>Correlation Test (Spearman's Rank Test)</code></strong> shows correlation r by the figures and highlights: towards <strong>shades of blue</strong> mean <strong>negative</strong> and <strong>shades of red</strong> mean <strong>positive correlations</strong>. Those squares with no highlights (white) are non-significant correlations (p&gt; 0.05).</p></li>
-<li><p>It’s observed that <strong>Sense of Community (<code>SOC</code>), Social Cohesion (<code>SoCoh</code>), and Intrinsic Motivation (<code>IMI</code>)</strong> show <strong>significant correlations (moderate to strong)</strong> among them.</p></li>
+<li><p>It’s observed that <strong>Sense of Community (<code>SOC</code>), Social Cohesion (<code>SoCoh</code>), and Intrinsic Motivation Inventry (<code>IMI</code>)</strong> show <strong>significant correlations (moderate to strong)</strong> among them.</p></li>
+<li><p>The subset of <strong>Intrinsic Motivation Inventry (<code>IMI</code>)</strong>, including <strong>Intrinsic Motivation (enjoyment/ intetests: <code>IM</code>)</strong>, <strong>Perceived Competence (<code>PComp</code>)</strong> and <strong>Perceived Chocie (<code>PChoice</code>)</strong> also <strong>show significant correlations</strong> with <code>SOC</code> and <code>SoCoh</code> (however, the correlations are weaker compared to the ones with <code>IMI</code>)</p></li>
 <li><p>Frequency (<code>frequency_coded</code>) and commitment (<code>commitment_coded</code>) also show moderate to strong correlations (Spearman). However, as discussed earlier, <strong>the correlation test with Pearson</strong> only <strong>showed a weak correlation (r=0.23, Pearson)</strong>.</p></li>
-<li><p><strong>1) those who visit GUI frequently</strong> and <strong>2) those who commit GUI in the long duration</strong> seem to have <strong>a higher sense of community</strong> and <strong>a higher Intrinsic Motivation</strong>. Earlier studies from Community Psychology support these findings: <strong>sense of community and intrinsic motivation can be built through frequent interactions over the long term</strong> (Christens &amp; Peterson, 2010; Bidee, 2013; Oostlander et al., 2013).</p></li>
+<li><p><strong>1) those who visit GUI frequently</strong> and <strong>2) those who commit GUI in the long duration</strong> seem to have <strong>a higher sense of community</strong> and <strong>a higher Intrinsic Motivation (<code>IMI</code>)</strong>. Earlier studies from Community Psychology support these findings: <strong>sense of community and intrinsic motivation can be built through frequent interactions over the long term</strong> (Christens &amp; Peterson, 2010; Bidee, 2013; Oostlander et al., 2013).</p></li>
+<li><p>It is interesting to note that Perceived Competence (<code>PComp</code>) shows a significant correlation with <code>Frequency</code>, whereas Perceived Choice (<code>PChoice</code>) is significantly correlated with <code>Commitment</code></p></li>
 </ul>
 <!-- Whereas, `SoCoh` (Social Cohesion) does not show any significant correlations with  `Frequency` and `Commitment`, indicating that `SoCoh` does not develop over time through frequent interactions.     -->
 <ul>
-<li><p>There is <strong>a strong correlation</strong> between <strong>Nature Connection (<code>CNS</code>)</strong> and <strong>Intrinsic motivation (<code>IMI</code>)</strong> (r=0.465)__, implying that <strong>those who are self-motivated also have a high sense of nature connection.</strong></p></li>
+<li><p>There is <strong>a strong correlation</strong> between <strong>Nature Connection (<code>CNS</code>)</strong> and <strong>Intrinsic Motivation (<code>IMI</code>)</strong> (r=0.465)__, implying that <strong>those who are self-motivated also have a high sense of nature connection.</strong></p></li>
 <li><p>The number of <strong>program types attended</strong> (<code># of Programs</code>) shows <strong>significant positive correlations</strong> with <strong><code>Frequency</code>, <code>Commitment</code>, Sense of Community (<code>SOC</code>), Social Cohesion (<code>SoCoh</code>), and Intrinsic Motivation (<code>IMI</code>)</strong>. Hence, <strong>more committed members</strong> with <strong>a higher sense of community</strong> engage in <strong>a variety of programs</strong>. It is also interesting to note that <code># of Programs</code> shows a significant negative correlation with <code>age</code>: <strong>older GUI members</strong> attend <strong>less variety of GUI programs</strong>.</p></li>
 <li><p>This correlation test did not show significant correlations between <strong>1) frequency and commitment, and 2) Social Cohesion (<code>SoCoh</code>)</strong> and <strong>Nature connection (<code>CNS</code>)</strong>. This suggests that <strong>Social Cohesion</strong> and <strong>Nature Connection</strong> can be built among GUI members regardless of their duration of commitment and frequency of visits. As the focus group discussion with GUI volunteers noted, perhaps <strong>GUI members</strong> can gain a sense of Social Cohesion <strong>immediately</strong> through their engagement at GUI. Regarding the Nature Connection, it seems that <strong>those who visit GUI already have a higher sense of nature connection</strong>. Therefore, it doesn’t seem to change so much over time.</p></li>
 </ul>
-<!-- ```{r include=FALSE} -->
-<!-- only_cor <- only_gui_scales %>% -->
-<!--   select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, Self_Est, Self_Eff, CNS) %>% -->
-<!--   correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "none") -->
-<!-- ``` -->
-<!-- ```{r include=FALSE} -->
-<!-- pre_pvalue <- round(only_cor$p.value, 2) -->
-<!-- pre_cor <- round(only_cor$correlation, 2) -->
-<!-- # Get lower triangle of the correlation matrix -->
-<!-- get_lower_tri <- function(x) { -->
-<!--   x[upper.tri(x)] <- NA -->
-<!--   return(x) -->
-<!-- } -->
-<!-- ``` -->
-<!-- ```{r include=FALSE} -->
-<!-- library(reshape2) -->
-<!-- # lower_tri <- get_lower_tri(pre_cor) -->
-<!-- # lower_tri_p <- get_lower_tri(pre_pvalue) -->
-<!-- melted_cor_r <- melt(pre_cor, na.rm = TRUE) %>% rename(cor_r = value) -->
-<!-- melted_cor_p <- melt(pre_pvalue, na.rm = TRUE) %>% -->
-<!--   rename(pvalue = value) %>% -->
-<!--   select(pvalue) -->
-<!-- melted_only_cor <- cbind(melted_cor_r, melted_cor_p) -->
-<!-- # %>% filter(pvalue <= 0.05) # filtering only significant correlations -->
-<!-- ``` -->
-<!-- ```{r include=FALSE} -->
-<!-- # correlation -->
-<!-- ggplot(melted_only_cor, aes(Var2, Var1, fill = cor_r)) + -->
-<!--   geom_tile(color = "white") + -->
-<!--   scale_fill_gradient2( -->
-<!--     low = "blue", high = "red", mid = "white", -->
-<!--     midpoint = 0, limit = c(-1, 1), space = "Lab", -->
-<!--     name = "Correlation" -->
-<!--   ) + -->
-<!--   theme_minimal() + -->
-<!--   theme( -->
-<!--     plot.title = element_text(hjust = 0.5, face = "bold"), -->
-<!--     axis.text.x = element_text( -->
-<!--       angle = 90, vjust = 0.5, -->
-<!--       size = 8, hjust = 1 -->
-<!--     ), -->
-<!--     axis.text.y = element_text(size = 8) -->
-<!--   ) + -->
-<!--   labs(title = "Fig 1. Correlation Test R (Spearman)") + -->
-<!--   geom_text(aes(Var2, Var1, label = cor_r), color = "black", size = 3) + -->
-<!--   theme( -->
-<!--     axis.title.x = element_blank(), -->
-<!--     axis.title.y = element_blank(), -->
-<!--     panel.grid.major = element_blank(), -->
-<!--     panel.border = element_blank(), -->
-<!--     panel.background = element_blank(), -->
-<!--     axis.ticks = element_blank() -->
-<!--     # legend.justification = c(0, 1), -->
-<!--     # legend.position = FALSE -->
-<!--     # legend.direction = "horizontal" -->
-<!--   ) -->
-<!-- # + -->
-<!-- #   guides(fill = guide_colorbar( -->
-<!-- #     barwidth = 6, barheight = 0.5, -->
-<!-- #     title.position = "top", title.hjust = 0.5 -->
-<!-- #   )) -->
-<!-- # p-value -->
-<!-- ggplot(melted_only_cor, aes(Var2, Var1, fill = pvalue)) + -->
-<!--   geom_tile(color = "white") + -->
-<!--   scale_fill_gradient2( -->
-<!--     low = "red", high = "white", -->
-<!--     midpoint = 0.05, limit = c(0, 0.05), space = "Lab", -->
-<!--     name = "p-value" -->
-<!--   ) + -->
-<!--   theme_minimal() + -->
-<!--   theme( -->
-<!--     plot.title = element_text(hjust = 0.5, face = "bold"), -->
-<!--     axis.text.x = element_text( -->
-<!--       angle = 90, vjust = 0.5, -->
-<!--       size = 8, hjust = 1 -->
-<!--     ), -->
-<!--     axis.text.y = element_text(size = 8) -->
-<!--   ) + -->
-<!--   labs(title = "Fig 2.Correlation Test with p-value (Spearman)") + -->
-<!--   geom_text(aes(Var2, Var1, label = cor_r), color = "black", size = 3) + -->
-<!--   theme( -->
-<!--     axis.title.x = element_blank(), -->
-<!--     axis.title.y = element_blank(), -->
-<!--     panel.grid.major = element_blank(), -->
-<!--     panel.border = element_blank(), -->
-<!--     panel.background = element_blank(), -->
-<!--     axis.ticks = element_blank() -->
-<!--     # legend.justification = c(0, 1), -->
-<!--     # legend.position = c(0.6, 0.3), -->
-<!--     # legend.direction = "horizontal" -->
-<!--   ) -->
-<!-- # + -->
-<!-- #   guides(fill = guide_colorbar( -->
-<!-- #     barwidth = 6, barheight = 0.5, -->
-<!-- #     title.position = "top", title.hjust = 0.5 -->
-<!-- #   )) -->
-<!-- ``` -->
-<p><img src="GUI-Study_files/figure-html/unnamed-chunk-62-1.png" width="768" /></p>
+<p><img src="GUI-Study_files/figure-html/unnamed-chunk-81-1.png" width="768" /></p>
 </div>
 <div id="regression-analysis" class="section level2" number="3.9">
 <h2><span class="header-section-number">3.9</span> Regression Analysis</h2>
@@ -5434,29 +5355,58 @@ The below correlation test and scatterplot show that those who engage with GUI i
 <h3><span class="header-section-number">3.9.1</span> Frequency, Commitment, and Number of Programs as Inputs</h3>
 <ul>
 <li><p>As significant correlations were found among frequency, commitment, number of programs attended, Sense of Community, and Intrinsic Motivation, this study conducted a regression analysis on these variables.</p></li>
-<li><p>The below models that try to explain outcome variables, such as Sense of Community, Intrinsic Motivation, and Nature connection, <strong>do not show a significant effect</strong>. Only <strong>the number of program types attended</strong> show <strong>a significant effect</strong> in the <strong>Sense of Community and Intrinsic Motivation</strong>. However, it only explains <strong>8%</strong> of the variance in Sense of Community and Intrinsic Motivation (which is pretty low).</p></li>
+<li><p>Among the several models, the models with <code>SOC</code>, <code>IMI</code>, and <code>Self_Est</code> are the significant models:
+Higher values in <code>Frequency</code> and <code># of Programs</code> will lead to higher <code>SOC</code>. Similary, <strong>higher values in <code># of Programs</code></strong> will lead to higher <strong>Intrinsic Motivation (<code>IMI</code>)</strong> and <strong>Enjoyments/ interests (<code>IM</code>)</strong>.</p></li>
+<li><p>However, these models have <strong>relatively low R-squared (0.10 to 0.164)</strong>: these models <strong>explain 10 to 16% of the outcome variables</strong>. Further investigation is required to examine which are the factors, missed out from this study, may have potential effects on the outcomes.</p></li>
 </ul>
-<p>Also, R-squared of each model is <strong>extreamly low</strong> (only 1~11% of the variance in the outcome was explained by the model). Further investigation is required to examine which are the factors, missed from this study, may have potential effects on the outcome.</p>
+<!-- - The below models that try to explain outcome variables, such as Sense of Community, Intrinsic Motivation, and Nature connection, __do not show a significant effect__. Only __the number of program types attended__ show __a significant effect__ in the __Sense of Community and Intrinsic Motivation__. However, it only explains __8%__ of the variance in Sense of Community and Intrinsic Motivation (which is pretty low). -->
+<!-- Also, R-squared of each model is __extreamly low__ (only 1~11% of the variance in the outcome was explained by the model). Further investigation is required to examine which are the factors, missed from this study, may have potential effects on the outcome.  -->
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb5-1"></a>model_gui_<span class="dv">1</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(SOC <span class="op">~</span><span class="st"> </span>Frequency <span class="op">+</span><span class="st"> `</span><span class="dt"># of Programs</span><span class="st">`</span><span class="op">+</span>clusters, <span class="dt">data =</span> model_data <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">mutate</span>(<span class="dt">clusters=</span><span class="kw">factor</span>(clusters, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;1&quot;</span>, <span class="st">&quot;2&quot;</span>, <span class="st">&quot;3&quot;</span>, <span class="st">&quot;4&quot;</span>))))</span>
 <span id="cb5-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb5-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">1</span>) <span class="co"># R-squared =0.148. Frequency is Significant</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb6-1"></a>model_gui_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(CNS <span class="op">~</span><span class="st"> </span>Commitment, <span class="dt">data =</span> model_data)</span>
-<span id="cb6-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb6-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">2</span>) <span class="co">#Not significant</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb7-1"></a>model_gui_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(IMI <span class="op">~</span><span class="st"> `</span><span class="dt"># of Programs</span><span class="st">`</span>, <span class="dt">data =</span> model_data)</span>
-<span id="cb7-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb7-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">3</span>) <span class="co"># R-squared =0.10. Number of programs is Significant</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb8-1"></a>model_gui_<span class="dv">4</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(Self_Est <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>Frequency <span class="op">+</span><span class="st"> `</span><span class="dt"># of Programs</span><span class="st">`</span>, <span class="dt">data =</span> model_data)</span>
-<span id="cb8-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb8-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">4</span>) <span class="co"># R-squared =0.11. Age and Frequency are Significant</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb9-1"></a>model_gui_<span class="dv">5</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(Self_Eff <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>Frequency <span class="op">+</span><span class="st"> `</span><span class="dt"># of Programs</span><span class="st">`</span>, <span class="dt">data =</span> model_data)</span>
-<span id="cb9-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb9-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">5</span>) <span class="co"># Not significant</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb10-1"></a>model_gui_<span class="dv">6</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">formula =</span> IM <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>Commitment <span class="op">+</span><span class="st"> `</span><span class="dt"># of Programs</span><span class="st">`</span> <span class="op">+</span><span class="st"> </span>clusters, </span>
-<span id="cb10-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb10-2"></a>    <span class="dt">data =</span> model_data)</span>
-<span id="cb10-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb10-3"></a><span class="kw">summary</span>(model_gui_<span class="dv">6</span>) <span class="co"># R-squared is 0.164. Number of programs and cluster 2 are significant</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb11-1"></a>model_gui_<span class="dv">7</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">formula =</span> PComp <span class="op">~</span><span class="st"> `</span><span class="dt"># of Programs</span><span class="st">`</span>, </span>
-<span id="cb11-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb11-2"></a>    <span class="dt">data =</span> model_data)</span>
-<span id="cb11-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb11-3"></a><span class="kw">summary</span>(model_gui_<span class="dv">7</span>) <span class="co"># R-squared is 0.164. Number of programs and cluster 2 are significant</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb12-1"></a>model_gui_<span class="dv">7</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">formula =</span> PChoice <span class="op">~</span><span class="st"> `</span><span class="dt"># of Programs</span><span class="st">`</span>, </span>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb6-1"></a><span class="kw">shapiro.test</span>(<span class="kw">residuals</span>(model_gui_<span class="dv">1</span>)) <span class="co">#Non significant. normal distribution</span></span>
+<span id="cb6-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb6-2"></a><span class="kw">AIC</span>(model_gui_<span class="dv">1</span>)</span>
+<span id="cb6-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb6-3"></a></span>
+<span id="cb6-4"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb6-4"></a><span class="co">## Assumption check</span></span>
+<span id="cb6-5"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb6-5"></a><span class="kw">library</span>(car)</span>
+<span id="cb6-6"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb6-6"></a><span class="kw">residualPlots</span>(<span class="dt">model =</span> model_gui_<span class="dv">1</span>) </span>
+<span id="cb6-7"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb6-7"></a><span class="co">#If it comes up significant, it implies that there is some nonlinear relationship between the variable and the residuals. Tukey test returns non significance. Assumptions of linearlity was met</span></span>
+<span id="cb6-8"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb6-8"></a><span class="kw">ncvTest</span>(model_gui_<span class="dv">1</span>) <span class="co">#Non significant means no violations of homogeneity of variance in this data.</span></span>
+<span id="cb6-9"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb6-9"></a><span class="kw">vif</span>(model_gui_<span class="dv">1</span>) <span class="co">#colinearlity check. Not too highly correlated with each other.</span></span>
+<span id="cb6-10"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb6-10"></a><span class="co">#A value of 1 means that the predictor is not correlated with other variables. The higher the value, the greater the correlation of the variable with other variables</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb7-1"></a>model_gui_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(CNS <span class="op">~</span><span class="st"> </span>Commitment, <span class="dt">data =</span> model_data)</span>
+<span id="cb7-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb7-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">2</span>) <span class="co">#Not significant</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb8-1"></a>model_gui_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(IMI <span class="op">~</span><span class="st"> `</span><span class="dt"># of Programs</span><span class="st">`</span>, <span class="dt">data =</span> model_data)</span>
+<span id="cb8-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb8-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">3</span>) <span class="co"># R-squared =0.10. Number of programs is Significant</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb9-1"></a><span class="kw">shapiro.test</span>(<span class="kw">residuals</span>(model_gui_<span class="dv">3</span>)) <span class="co">#Non significant. normal distribution</span></span>
+<span id="cb9-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb9-2"></a><span class="kw">AIC</span>(model_gui_<span class="dv">3</span>)</span>
+<span id="cb9-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb9-3"></a></span>
+<span id="cb9-4"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb9-4"></a><span class="co">## Assumption check</span></span>
+<span id="cb9-5"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb9-5"></a><span class="kw">library</span>(car)</span>
+<span id="cb9-6"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb9-6"></a><span class="kw">residualPlots</span>(<span class="dt">model =</span> model_gui_<span class="dv">3</span>) </span>
+<span id="cb9-7"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb9-7"></a><span class="co">#If it comes up significant, it implies that there is some nonlinear relationship between the variable and the residuals. Tukey test returns non significance. Assumptions of linearlity was met</span></span>
+<span id="cb9-8"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb9-8"></a><span class="kw">ncvTest</span>(model_gui_<span class="dv">3</span>) <span class="co">#Non significant means no violations of homogeneity of variance in this data.</span></span>
+<span id="cb9-9"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb9-9"></a><span class="kw">vif</span>(model_gui_<span class="dv">3</span>) <span class="co">#colinearlity check. Not too highly correlated with each other.</span></span>
+<span id="cb9-10"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb9-10"></a><span class="co">#A value of 1 means that the predictor is not correlated with other variables. The higher the value, the greater the correlation of the variable with other variables</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb10-1"></a>model_gui_<span class="dv">4</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(Self_Est <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>Frequency <span class="op">+</span><span class="st"> `</span><span class="dt"># of Programs</span><span class="st">`</span>, <span class="dt">data =</span> model_data)</span>
+<span id="cb10-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb10-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">4</span>) <span class="co"># R-squared =0.11. Age and Frequency are Significant</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb11-1"></a>model_gui_<span class="dv">5</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(Self_Eff <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>Frequency <span class="op">+</span><span class="st"> `</span><span class="dt"># of Programs</span><span class="st">`</span>, <span class="dt">data =</span> model_data)</span>
+<span id="cb11-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb11-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">5</span>) <span class="co"># Not significant</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb12-1"></a>model_gui_<span class="dv">6</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">formula =</span> IM <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>Commitment <span class="op">+</span><span class="st"> `</span><span class="dt"># of Programs</span><span class="st">`</span> <span class="op">+</span><span class="st"> </span>clusters, </span>
 <span id="cb12-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb12-2"></a>    <span class="dt">data =</span> model_data)</span>
-<span id="cb12-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb12-3"></a><span class="kw">summary</span>(model_gui_<span class="dv">7</span>) <span class="co"># R-squared is 0.164. Number of programs and cluster 2 are significant</span></span></code></pre></div>
+<span id="cb12-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb12-3"></a><span class="kw">summary</span>(model_gui_<span class="dv">6</span>) <span class="co"># R-squared is 0.164. Number of programs and cluster 2 are significant</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb13-1"></a>model_gui_<span class="dv">7</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">formula =</span> PComp <span class="op">~</span><span class="st"> `</span><span class="dt"># of Programs</span><span class="st">`</span>, </span>
+<span id="cb13-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb13-2"></a>    <span class="dt">data =</span> model_data)</span>
+<span id="cb13-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb13-3"></a><span class="kw">summary</span>(model_gui_<span class="dv">7</span>) <span class="co"># R-squared is 0.065. Number of programs is significant</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb14-1"></a>model_gui_<span class="dv">8</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(<span class="dt">formula =</span> PChoice <span class="op">~</span><span class="st"> `</span><span class="dt"># of Programs</span><span class="st">`</span>, </span>
+<span id="cb14-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb14-2"></a>    <span class="dt">data =</span> model_data)</span>
+<span id="cb14-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb14-3"></a><span class="kw">summary</span>(model_gui_<span class="dv">8</span>) <span class="co"># R-squared is 0.039. Number of programs is significant</span></span></code></pre></div>
 <table>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th>Outcome Variables</th>
@@ -5479,18 +5429,36 @@ The below correlation test and scatterplot show that those who engage with GUI i
 <td>NA</td>
 </tr>
 <tr class="odd">
-<td>Intrinsic Motivation</td>
+<td>Intrinsic Motivation Inventory</td>
 <td>0.10</td>
 <td><code># of Programs</code></td>
 <td>NA</td>
 </tr>
 <tr class="even">
+<td>Intrinsic Motivation (Enjoyment/ Interests)</td>
+<td>0.164</td>
+<td><code># of Programs</code></td>
+<td>Cluster 2 (compared to cluster 1)</td>
+</tr>
+<tr class="odd">
+<td>Perceived Competence</td>
+<td>0.065</td>
+<td><code># of Programs</code></td>
+<td>NA</td>
+</tr>
+<tr class="even">
+<td>Perceived Choice</td>
+<td>0.039</td>
+<td><code># of Programs</code></td>
+<td>NA</td>
+</tr>
+<tr class="odd">
 <td>Self Esteem</td>
 <td>0.11</td>
 <td><code>age</code></td>
 <td><code>Frequency</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Self Efficacy</td>
 <td>Not significant</td>
 <td>NA</td>
@@ -5501,19 +5469,403 @@ The below correlation test and scatterplot show that those who engage with GUI i
 </div>
 <div id="other-psychometric-scales-as-inputs" class="section level3" number="3.9.2">
 <h3><span class="header-section-number">3.9.2</span> Other Psychometric Scales as Inputs</h3>
-<p>Since the correlation between nature connection and intrinsic motivation is high, the regression analysis was conducted to see if <strong>the Nature Connection</strong> can be explained by <strong>Intrinsic Motivation</strong>.
-In this model, <strong>Intrinsic Motivation</strong> shows <strong>a significant effect</strong> on <strong>the Nature Connection</strong> ( <em>p</em>&lt;.01), <strong>explaining 20%</strong> of the variance in the Nature Connection (R-squared is 0.2031).</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb13-1"></a>model_gui_<span class="dv">6</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(IMI <span class="op">~</span><span class="st"> </span>SOC <span class="op">+</span><span class="st"> </span>SoCoh <span class="op">+</span><span class="st"> </span>Self_Eff, <span class="dt">data =</span> model_data)</span>
-<span id="cb13-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb13-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">6</span>)</span>
-<span id="cb13-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb13-3"></a><span class="co"># Significant model</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb14-1"></a>model_gui_<span class="dv">3</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(CNS <span class="op">~</span><span class="st"> </span>Commitment <span class="op">+</span><span class="st"> </span>IMI <span class="op">+</span><span class="st"> </span>SOC <span class="op">+</span><span class="st"> </span>Self_Eff, <span class="dt">data =</span> model_data)</span>
-<span id="cb14-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb14-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">3</span>)</span>
-<span id="cb14-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb14-3"></a><span class="co"># Significant model</span></span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb15-1"></a>model_gui_<span class="dv">4</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(Self_Eff <span class="op">~</span><span class="st"> </span>CNS <span class="op">+</span><span class="st"> </span>SOC <span class="op">+</span><span class="st"> </span>Self_Est <span class="op">+</span><span class="st"> </span>IMI, <span class="dt">data =</span> model_data)</span>
-<span id="cb15-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb15-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">4</span>)</span>
-<span id="cb15-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb15-3"></a><span class="co"># R-squared = 0.4893. All coefficients are significant. How to interpret this?</span></span></code></pre></div>
-
+<ul>
+<li><p><code>model_gui_9</code> shows the highest R-squared among all the models. The model <strong>explains 53%</strong> of variance in the Intrinsic Motivation (Enjoyment/ Interests): <strong>Higher <code>SoCoh</code> and <code>SOC</code></strong> will lead to <strong>higer levels of enjoyment/ interests</strong> among the GUI members.</p></li>
+<li><p><code>model_gui_10</code> explains <strong>46% of the variance</strong> in the <strong>Self Efficacy (<code>Sef_Eff</code>)</strong>: <strong>higher Perceived Competence (<code>PComp</code>)</strong> and <strong>lower Sense of Community</strong> will lead to higher sense of Self Efficacy.</p>
+<!-- Since the correlation between nature connection and intrinsic motivation is high, the regression analysis was conducted to see if __the Nature Connection__ can be explained by __Intrinsic Motivation__.  -->
+<!-- In this model, __Intrinsic Motivation__ shows __a significant effect__ on __the Nature Connection__ ( _p_<.01), __explaining 20%__ of the variance in the Nature Connection (R-squared is 0.2031). --></li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb15-1"></a>model_gui_<span class="dv">9</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(IM <span class="op">~</span><span class="st"> </span>SoCoh <span class="op">+</span><span class="st"> </span>SOC <span class="op">+</span><span class="st"> </span>Self_Eff <span class="op">+</span><span class="st"> </span>PChoice, <span class="dt">data =</span> model_data)</span>
+<span id="cb15-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb15-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">9</span>)</span>
+<span id="cb15-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb15-3"></a><span class="co"># Significant model. R-squared is 0.528. SOC and SoCoh are significant</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb16-1"></a>model_gui_<span class="dv">10</span> &lt;-<span class="st"> </span><span class="kw">lm</span>(Self_Eff <span class="op">~</span><span class="st"> </span>SOC <span class="op">+</span><span class="st"> </span>PComp <span class="op">+</span><span class="st"> </span>PChoice, <span class="dt">data =</span> model_data)</span>
+<span id="cb16-2"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb16-2"></a><span class="kw">summary</span>(model_gui_<span class="dv">10</span>)</span>
+<span id="cb16-3"><a href="online-survey-analysis-of-responses-from-gui-members.html#cb16-3"></a><span class="co"># R-squared = 0.459. SOC, Self_Est, and PComp are significant. But SOC is negative</span></span></code></pre></div>
 </div>
+</div>
+<div id="comparing-the-long-term-members-and-the-general-public" class="section level2" number="3.10">
+<h2><span class="header-section-number">3.10</span> Comparing The Long-term Members and The General Public</h2>
+<ul>
+<li><p>Results of ANOVA test shows significant differences only in the <strong>Nature Connection (<code>CNS</code>)</strong> (P =0.035)</p></li>
+<li><p>Post hoc test shows that the <strong>significance difference</strong> was observed between <strong>cluster 1 (fresh members)</strong> and <strong>cluster 5 (non GUI members)</strong>.</p></li>
+<li><p>To see the differences between the <strong>non GUI members</strong> and <strong>Long-term members</strong>, median test was conducted:
+no significance differences were observed in the <code>CNS</code>, <code>Self_Est</code>, and <code>Self_Eff</code>. It implies that <strong>non GUI members</strong> are <strong>not significantly different</strong> from <strong>Long-term GUI Members</strong> in terms of their sense of nature connection, self-esteem, and self-efficacy.</p></li>
+</ul>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#hyxyotxwts .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#hyxyotxwts .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#hyxyotxwts .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#hyxyotxwts .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#hyxyotxwts .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hyxyotxwts .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#hyxyotxwts .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#hyxyotxwts .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#hyxyotxwts .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#hyxyotxwts .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#hyxyotxwts .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#hyxyotxwts .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#hyxyotxwts .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#hyxyotxwts .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#hyxyotxwts .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#hyxyotxwts .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#hyxyotxwts .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#hyxyotxwts .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#hyxyotxwts .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hyxyotxwts .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#hyxyotxwts .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hyxyotxwts .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#hyxyotxwts .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hyxyotxwts .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#hyxyotxwts .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#hyxyotxwts .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#hyxyotxwts .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#hyxyotxwts .gt_left {
+  text-align: left;
+}
+
+#hyxyotxwts .gt_center {
+  text-align: center;
+}
+
+#hyxyotxwts .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#hyxyotxwts .gt_font_normal {
+  font-weight: normal;
+}
+
+#hyxyotxwts .gt_font_bold {
+  font-weight: bold;
+}
+
+#hyxyotxwts .gt_font_italic {
+  font-style: italic;
+}
+
+#hyxyotxwts .gt_super {
+  font-size: 65%;
+}
+
+#hyxyotxwts .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="hyxyotxwts" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <th colspan="4" class="gt_heading gt_title gt_font_normal" style>Median Test Results: Non GUI and Long-term GUI Members</th>
+    </tr>
+    <tr>
+      <th colspan="4" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style></th>
+    </tr>
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">Variables</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">Median of Non GUI</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">Median of Long-term GUI</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">p Value</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_center">Nature Connection</td>
+      <td class="gt_row gt_center">5.10</td>
+      <td class="gt_row gt_center">5.50</td>
+      <td class="gt_row gt_center">0.14</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_center">Self Esteem</td>
+      <td class="gt_row gt_center">4.75</td>
+      <td class="gt_row gt_center">5.25</td>
+      <td class="gt_row gt_center">0.22</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_center">Self Efficacy</td>
+      <td class="gt_row gt_center">5.25</td>
+      <td class="gt_row gt_center">5.36</td>
+      <td class="gt_row gt_center">0.76</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+
 </div>
 </div>
             </section>
