@@ -132,6 +132,74 @@ combined_tidy_revise <- rbind(tidy_core_restoration_revise, tidy_vol_restoration
 combined_tidy <- rbind(tidy_core_restoration, tidy_vol_restoration)
 ```
 
+#### Text Similarity
+```{r include=FALSE}
+#link: https://stackoverflow.com/questions/55629899/quanteda-calculate-text-similarity-by-row-between-two-dfms
+
+tests <- benefits %>%
+  select("H : Restoration at GUI") %>%
+  rename(Sentences = "H : Restoration at GUI") %>% 
+  rename(text = "Sentences") %>% 
+  mutate(id = row_number() #, 
+         # source = case_when(
+         #   id == 1 ~ "Core Members",
+         #   id == 2 ~ "Core Members",
+         #   TRUE ~ "Volunteers")
+         ) %>% 
+  select(id, text, #source
+         everything())
+
+
+# df <- tidyr::gather(tests, "text", -id)
+# df
+
+## Volunteers vs Core
+benefits_core <- benefits %>%
+  filter(Workshop == "1 : 1_GUI_FGD_1_Core_1_" | Workshop == "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("H : Restoration at GUI") %>%
+  rename(Sentences = "H : Restoration at GUI")
+
+benefits_vols <- benefits %>%
+  filter(Workshop != "1 : 1_GUI_FGD_1_Core_1_" & Workshop != "2 : 2_GUI_FGD_2_Core_2") %>%
+  select("H : Restoration at GUI") %>%
+  rename(Sentences = "H : Restoration at GUI")
+
+benefits_core <- paste(unlist(benefits_core), collapse =" ")
+benefits_vols <- paste(unlist(benefits_vols), collapse =" ")
+
+test_3 <- data.frame(id=c(1, 2))
+
+test_3$text <- c(benefits_core, benefits_vols)
+
+test_2<- data.frame(id=c(1, 2),
+           text=c(benefits_core, benefits_vols))
+
+test_3 <- data.frame(test_3)
+```
+
+```{r echo=FALSE}
+library(quanteda)
+# corp <- corpus(df)
+# docnames(corp) <- paste(df$id, df$source, sep = "_")
+# dfm(corp) %>%
+#   textstat_simil()
+
+corp <- corpus(tests)
+docnames(corp) <- paste(df$source, sep = "_")
+dfm(corp, remove_punct = TRUE , remove = c(stopwords("english"), "yeah", "uh", "it’s", "you’re", "there’s", "i’m", "don’t", "i’ve", "you’ve", "that’s", "things", "cos", "er", "erm", "everyone’s", "lo", "lor", "ah", "we’re", "um", "also")
+    ) %>%
+  textstat_simil(method = "cosine")
+#0.194 to 0.426
+
+corp_2 <- corpus(test_3)
+#docnames(corp_2) <- paste(df$source, sep = "_")
+dfm(corp_2, remove_punct = TRUE , remove = c(stopwords("english"), "yeah", "uh", "it’s", "you’re", "there’s", "i’m", "don’t", "i’ve", "you’ve", "that’s", "things", "cos", "er", "erm", "everyone’s", "lo", "lor", "ah", "we’re", "um", "also")) %>% View()
+  textstat_simil(method = "cosine")
+#0.585 overall
+```
+
+
+
 #### Most Frequently Used Words
 ```{r echo=FALSE}
 a1 <- tidy_core_restoration_revise %>%
