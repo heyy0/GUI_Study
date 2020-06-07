@@ -29,7 +29,16 @@ Qualitative analysis of Focus Group Discussions
 __*To what extent the facilitators of nature place-making conducted by NGOs influence the individual’s self-identity and perception of the place*__
 
 
-### Comparison between Core Members and Volunteers
+### Cosine Similarity: Comparison between Core Members and Volunteers
+
+- __Cosine similarity__ is a metric used to determine __how similar the documents__ are irrespective of their size.
+
+- Mathematically, it measures the cosine of the angle between two vectors projected in a multi-dimensional space. In this context, the two vectors are arrays containing the word counts of two documents.
+
+- When plotted on a multi-dimensional space, where each dimension corresponds to a word in the document, the cosine similarity captures the __orientation (the angle)__ of the documents and not the magnitude. 
+
+- This method is based on an assumption which is __the document (or sentence) are similar if having common words__.
+
 
 #### Benefits
 
