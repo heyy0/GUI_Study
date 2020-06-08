@@ -259,7 +259,7 @@ only_gui_scales %>%
 ```
 
 ## Profile of GUI Members in the sample
-###Frequency of Visits (per year)
+### Frequency of Visits (per year)
 The maximum number of the frequency visits is __300__- there is one member who visits GUI almost everyday. The mean and median values for the frequency of visits are 20.4 and 5, respectively. From the below chart, it's observed that the frequency of visits is skewed to the left (small numbers of visits)-__30% of respondents__ in this study visit GUI on average __once a year__, and __66% of respondents__ visit GUI __less than 12 times a year__ (on average less than once a month). 
 
 ```{r echo=FALSE}
@@ -860,7 +860,7 @@ fa <- gui_members_data %>%
   column_to_rownames(var = "id") %>%
   principal(nfactors = 2, rotate = "varimax")
 
-c1 <- fa[["loadings"]] %>%
+y1 <- fa[["loadings"]] %>%
   unclass() %>%
   as_tibble(rownames = "column") %>% # convert loadings to a tibble or easy plotting
   gather(key = "component", value = "value", -column) %>%
@@ -874,7 +874,7 @@ c1 <- fa[["loadings"]] %>%
   facet_grid(~component) +
   labs(title = "Directions Plot with the Varimax Method") +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))
-c1
+y1
 ```
 
 ### Determining K
@@ -1217,7 +1217,7 @@ c1 + c2 + c3 + c4 + e4 + e5 + e6 + c5 + c6 + c7
 kmeans_clusters_table <- t(kmeans_clusters$centers) %>% as.tibble(rownames = "components")
 kmeans_clusters_table <- data.frame(kmeans_clusters_table)
 
-c2 <- kmeans_clusters_table %>%
+y2 <- kmeans_clusters_table %>%
   gather(key = "clusters", value = "value", -components) %>%
   ggplot(aes(x = components, y = value)) +
   geom_hline(yintercept = 0) +
@@ -1230,7 +1230,7 @@ c2 <- kmeans_clusters_table %>%
   labs(title = "Components across different clusters") +
   theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
-c1 / c2
+y1 / y2
 ```
 
 

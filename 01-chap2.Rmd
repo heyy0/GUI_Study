@@ -14,6 +14,7 @@ editor_options:
 library(QuantPsyc)
 library(ggpubr)
 library(heplots)
+library(dplyr)
 library(tidyverse)
 library(gt)
 library(lubridate)
@@ -307,9 +308,9 @@ tbl_normality %>%
 
 
 ## Correlation Analysis
-- __Figure 1.__ shows correlation r by the figures and highlights: towards shades of blue mean negative and shades of red mean positive correlation.
+<!-- - __Figure 1.__ shows correlation r by the figures and highlights: towards shades of blue mean negative and shades of red mean positive correlation. -->
 
-- __Figure 2.__ shows the correlation r by __the figures__ and p-value by __the highlights__: the squares highlighted with the shades of red are significant correlations. The squares with grey are non-significant correlations.
+<!-- - __Figure 2.__ shows the correlation r by __the figures__ and p-value by __the highlights__: the squares highlighted with the shades of red are significant correlations. The squares with grey are non-significant correlations. -->
 
 - __Sense of Community (`SOC`)__ and __Social Cohesion (`SoCoh`)__ show the __moderate to strong significant correlation__. It's interesting to note that __Connection to Nature__ shows __small to moderate significant correlations__ with all the __psychological measurements__. This will be examined further with the only GUI dataset.
 
@@ -357,7 +358,7 @@ wilcox.test(gui_mar20_scales$CNS ~ gui_mar20_scales$gui_non_gui, mu = 0, alt = "
 ```{r include=FALSE}
 # Effect Size for Wilcoxon Test
 library(rstatix)
-gui_mar20_scales %>%
+gui_mar20_scales %>% 
   wilcox_effsize(SoCoh ~ gui_non_gui, paired = F)
 gui_mar20_scales %>%
   wilcox_effsize(Self_Est ~ gui_non_gui, paired = F)
@@ -378,35 +379,57 @@ gui_mar20_scales %>%
 ```{r include = FALSE}
 library(patchwork)
 a1 <- gui_mar20_scales %>%
+  mutate(gui_non_gui = case_when(
+    gui_non_gui == "yes" ~ "GUI Members",
+    TRUE ~"Non-GUI"
+  )) %>% 
   select(SoCoh, gui_non_gui) %>%
-  ggplot(aes(x = gui_non_gui, y = SoCoh, fill = gui_non_gui)) +
+  ggplot(aes(x = reorder(gui_non_gui, SoCoh), y = SoCoh, fill = gui_non_gui)) +
   geom_boxplot() +
   theme(legend.position = "None") +
-  labs(x = "Visited GUI Before", y = "Social Cohesion")
+  labs(x = "", y = "Social Cohesion")
+
 a2 <- gui_mar20_scales %>%
+  mutate(gui_non_gui = case_when(
+    gui_non_gui == "yes" ~ "GUI Members",
+    TRUE ~"Non-GUI"
+  )) %>% 
   select(SOC, gui_non_gui) %>%
-  ggplot(aes(x = gui_non_gui, y = SOC, fill = gui_non_gui)) +
+  ggplot(aes(x = reorder(gui_non_gui, SOC), y = SOC, fill = gui_non_gui)) +
   geom_boxplot() +
   theme(legend.position = "None") +
-  labs(x = "Visited GUI Before", y = "Sense of Community")
+  labs(x = "", y = "Sense of Community")
+
 a3 <- gui_mar20_scales %>%
+mutate(gui_non_gui = case_when(
+    gui_non_gui == "yes" ~ "GUI Members",
+    TRUE ~"Non-GUI"
+  )) %>% 
   select(CNS, gui_non_gui) %>%
-  ggplot(aes(x = gui_non_gui, y = CNS, fill = gui_non_gui)) +
+  ggplot(aes(x = reorder(gui_non_gui, CNS), y = CNS, fill = gui_non_gui)) +
   geom_boxplot() +
   theme(legend.position = "None") +
-  labs(x = "Visited GUI Before", y = "Connection to Nature")
+  labs(x = "", y = "Connection to Nature")
 a4 <- gui_mar20_scales %>%
+mutate(gui_non_gui = case_when(
+    gui_non_gui == "yes" ~ "GUI Members",
+    TRUE ~"Non-GUI"
+  )) %>% 
   select(Self_Eff, gui_non_gui) %>%
-  ggplot(aes(x = gui_non_gui, y = Self_Eff, fill = gui_non_gui)) +
+  ggplot(aes(x = reorder(gui_non_gui, Self_Eff), y = Self_Eff, fill = gui_non_gui)) +
   geom_boxplot() +
   theme(legend.position = "None") +
-  labs(x = "Visited GUI Before", y = "Self Efficacy")
+  labs(x = "", y = "Self Efficacy")
 a5 <- gui_mar20_scales %>%
+mutate(gui_non_gui = case_when(
+    gui_non_gui == "yes" ~ "GUI Members",
+    TRUE ~"Non-GUI"
+  )) %>% 
   select(Self_Est, gui_non_gui) %>%
-  ggplot(aes(x = gui_non_gui, y = Self_Est, fill = gui_non_gui)) +
+  ggplot(aes(x = reorder(gui_non_gui, Self_Est), y = Self_Est, fill = gui_non_gui)) +
   geom_boxplot() +
   theme(legend.position = "None") +
-  labs(x = "Visited GUI Before", y = "Self Esteem")
+  labs(x = "", y = "Self Esteem")
 ```
 
 ```{r echo=FALSE}

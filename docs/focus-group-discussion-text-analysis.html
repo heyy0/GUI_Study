@@ -147,11 +147,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.2" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#descriptive-statistics-1"><i class="fa fa-check"></i><b>3.2</b> Descriptive statistics</a></li>
 <li class="chapter" data-level="3.3" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#profile-of-gui-members-in-the-sample"><i class="fa fa-check"></i><b>3.3</b> Profile of GUI Members in the sample</a>
 <ul>
-<li class="chapter" data-level="3.3.1" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#total-duration-of-commitment-month"><i class="fa fa-check"></i><b>3.3.1</b> Total Duration of Commitment (month)</a></li>
-<li class="chapter" data-level="3.3.2" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#frequency-and-commitment"><i class="fa fa-check"></i><b>3.3.2</b> Frequency and Commitment</a></li>
-<li class="chapter" data-level="3.3.3" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#genger-race-and-age"><i class="fa fa-check"></i><b>3.3.3</b> Genger, Race, and Age</a></li>
-<li class="chapter" data-level="3.3.4" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#types-of-programs-engaged"><i class="fa fa-check"></i><b>3.3.4</b> Types of Programs Engaged</a></li>
-<li class="chapter" data-level="3.3.5" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#reasons-to-visit-gui"><i class="fa fa-check"></i><b>3.3.5</b> Reasons to visit GUI</a></li>
+<li class="chapter" data-level="3.3.1" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#frequency-of-visits-per-year"><i class="fa fa-check"></i><b>3.3.1</b> Frequency of Visits (per year)</a></li>
+<li class="chapter" data-level="3.3.2" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#total-duration-of-commitment-month"><i class="fa fa-check"></i><b>3.3.2</b> Total Duration of Commitment (month)</a></li>
+<li class="chapter" data-level="3.3.3" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#frequency-and-commitment"><i class="fa fa-check"></i><b>3.3.3</b> Frequency and Commitment</a></li>
+<li class="chapter" data-level="3.3.4" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#genger-race-and-age"><i class="fa fa-check"></i><b>3.3.4</b> Genger, Race, and Age</a></li>
+<li class="chapter" data-level="3.3.5" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#types-of-programs-engaged"><i class="fa fa-check"></i><b>3.3.5</b> Types of Programs Engaged</a></li>
+<li class="chapter" data-level="3.3.6" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#reasons-to-visit-gui"><i class="fa fa-check"></i><b>3.3.6</b> Reasons to visit GUI</a></li>
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#normality-check-1"><i class="fa fa-check"></i><b>3.4</b> Normality Check</a></li>
 <li class="chapter" data-level="3.5" data-path="online-survey-analysis-of-responses-from-gui-members.html"><a href="online-survey-analysis-of-responses-from-gui-members.html#gender-wise-analysis"><i class="fa fa-check"></i><b>3.5</b> Gender-wise Analysis</a></li>
@@ -256,8 +257,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-109-1.png" width="672" /></p>
 </div>
-<div id="text-similarity" class="section level4" number="5.1.1.3">
-<h4><span class="header-section-number">5.1.1.3</span> Text Similarity</h4>
+<div id="cosine-similarity" class="section level4" number="5.1.1.3">
+<h4><span class="header-section-number">5.1.1.3</span> Cosine Similarity</h4>
 <ul>
 <li><p><strong>Cosine Similarity</strong> is a metric used to determine how similar the documents are irrespective of their size.</p></li>
 <li><p>Cosine Similarity ranges from 0 to 1: 1 being the perfect match and 0 being totally different.</p></li>
@@ -270,13 +271,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li><strong>Cosine Similarity</strong> between Core members (text 1) and 5 focus group sessions with volunteers (text 2 to 6)</li>
 </ul>
-<pre><code>##           text1     text2     text3     text4     text5     text6
-## text1 1.0000000 0.3613546 0.3337387 0.5265683 0.3399109 0.3029946
-## text2 0.3613546 1.0000000 0.1357814 0.3253947 0.1760760 0.1803389
-## text3 0.3337387 0.1357814 1.0000000 0.3764931 0.3602114 0.2898755
-## text4 0.5265683 0.3253947 0.3764931 1.0000000 0.3737803 0.3105850
-## text5 0.3399109 0.1760760 0.3602114 0.3737803 1.0000000 0.2600093
-## text6 0.3029946 0.1803389 0.2898755 0.3105850 0.2600093 1.0000000</code></pre>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-112-1.png" width="672" /></p>
 </div>
 </div>
@@ -291,8 +285,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-116-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-1" class="section level4" number="5.1.2.3">
-<h4><span class="header-section-number">5.1.2.3</span> Text Similarity</h4>
+<div id="cosine-similarity-1" class="section level4" number="5.1.2.3">
+<h4><span class="header-section-number">5.1.2.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -317,8 +311,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-123-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-2" class="section level4" number="5.1.3.3">
-<h4><span class="header-section-number">5.1.3.3</span> Text Similarity</h4>
+<div id="cosine-similarity-2" class="section level4" number="5.1.3.3">
+<h4><span class="header-section-number">5.1.3.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -343,8 +337,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-129-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-3" class="section level4" number="5.1.4.3">
-<h4><span class="header-section-number">5.1.4.3</span> Text Similarity</h4>
+<div id="cosine-similarity-3" class="section level4" number="5.1.4.3">
+<h4><span class="header-section-number">5.1.4.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -369,8 +363,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-136-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-4" class="section level4" number="5.1.5.3">
-<h4><span class="header-section-number">5.1.5.3</span> Text Similarity</h4>
+<div id="cosine-similarity-4" class="section level4" number="5.1.5.3">
+<h4><span class="header-section-number">5.1.5.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -395,8 +389,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-143-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-5" class="section level4" number="5.1.6.3">
-<h4><span class="header-section-number">5.1.6.3</span> Text Similarity</h4>
+<div id="cosine-similarity-5" class="section level4" number="5.1.6.3">
+<h4><span class="header-section-number">5.1.6.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -421,8 +415,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-150-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-6" class="section level4" number="5.1.7.3">
-<h4><span class="header-section-number">5.1.7.3</span> Text Similarity</h4>
+<div id="cosine-similarity-6" class="section level4" number="5.1.7.3">
+<h4><span class="header-section-number">5.1.7.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -451,8 +445,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-157-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-7" class="section level4" number="5.1.9.3">
-<h4><span class="header-section-number">5.1.9.3</span> Text Similarity</h4>
+<div id="cosine-similarity-7" class="section level4" number="5.1.9.3">
+<h4><span class="header-section-number">5.1.9.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -480,8 +474,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-164-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-8" class="section level4" number="5.2.1.3">
-<h4><span class="header-section-number">5.2.1.3</span> Text Similarity</h4>
+<div id="cosine-similarity-8" class="section level4" number="5.2.1.3">
+<h4><span class="header-section-number">5.2.1.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -506,8 +500,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-171-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-9" class="section level4" number="5.2.2.3">
-<h4><span class="header-section-number">5.2.2.3</span> Text Similarity</h4>
+<div id="cosine-similarity-9" class="section level4" number="5.2.2.3">
+<h4><span class="header-section-number">5.2.2.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -532,8 +526,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-178-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-10" class="section level4" number="5.2.3.3">
-<h4><span class="header-section-number">5.2.3.3</span> Text Similarity</h4>
+<div id="cosine-similarity-10" class="section level4" number="5.2.3.3">
+<h4><span class="header-section-number">5.2.3.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -558,8 +552,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-185-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-11" class="section level4" number="5.2.4.3">
-<h4><span class="header-section-number">5.2.4.3</span> Text Similarity</h4>
+<div id="cosine-similarity-11" class="section level4" number="5.2.4.3">
+<h4><span class="header-section-number">5.2.4.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -584,8 +578,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-192-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-12" class="section level4" number="5.2.5.3">
-<h4><span class="header-section-number">5.2.5.3</span> Text Similarity</h4>
+<div id="cosine-similarity-12" class="section level4" number="5.2.5.3">
+<h4><span class="header-section-number">5.2.5.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -610,8 +604,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-199-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-13" class="section level4" number="5.2.6.3">
-<h4><span class="header-section-number">5.2.6.3</span> Text Similarity</h4>
+<div id="cosine-similarity-13" class="section level4" number="5.2.6.3">
+<h4><span class="header-section-number">5.2.6.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -636,8 +630,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This is to find words that are common within the messages of one author but uncommon in the rest of the messages.</p>
 <p><img src="GUI-Study_files/figure-html/unnamed-chunk-206-1.png" width="672" /></p>
 </div>
-<div id="text-similarity-14" class="section level4" number="5.2.7.3">
-<h4><span class="header-section-number">5.2.7.3</span> Text Similarity</h4>
+<div id="cosine-similarity-14" class="section level4" number="5.2.7.3">
+<h4><span class="header-section-number">5.2.7.3</span> Cosine Similarity</h4>
 <ul>
 <li>Overall <strong>Cosine Similarity</strong> between Core members and Volunteers</li>
 </ul>
@@ -666,7 +660,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#aivclfkkgk .gt_table {
+#mvetnmvavt .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -689,7 +683,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-left-color: #D3D3D3;
 }
 
-#aivclfkkgk .gt_heading {
+#mvetnmvavt .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -701,7 +695,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-color: #D3D3D3;
 }
 
-#aivclfkkgk .gt_title {
+#mvetnmvavt .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -711,7 +705,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-bottom-width: 0;
 }
 
-#aivclfkkgk .gt_subtitle {
+#mvetnmvavt .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -721,13 +715,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-top-width: 0;
 }
 
-#aivclfkkgk .gt_bottom_border {
+#mvetnmvavt .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#aivclfkkgk .gt_col_headings {
+#mvetnmvavt .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -742,7 +736,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-color: #D3D3D3;
 }
 
-#aivclfkkgk .gt_col_heading {
+#mvetnmvavt .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -762,7 +756,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   overflow-x: hidden;
 }
 
-#aivclfkkgk .gt_column_spanner_outer {
+#mvetnmvavt .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -774,15 +768,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-right: 4px;
 }
 
-#aivclfkkgk .gt_column_spanner_outer:first-child {
+#mvetnmvavt .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#aivclfkkgk .gt_column_spanner_outer:last-child {
+#mvetnmvavt .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#aivclfkkgk .gt_column_spanner {
+#mvetnmvavt .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -794,7 +788,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   width: 100%;
 }
 
-#aivclfkkgk .gt_group_heading {
+#mvetnmvavt .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -816,7 +810,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   vertical-align: middle;
 }
 
-#aivclfkkgk .gt_empty_group_heading {
+#mvetnmvavt .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -831,19 +825,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   vertical-align: middle;
 }
 
-#aivclfkkgk .gt_striped {
+#mvetnmvavt .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#aivclfkkgk .gt_from_md > :first-child {
+#mvetnmvavt .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#aivclfkkgk .gt_from_md > :last-child {
+#mvetnmvavt .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#aivclfkkgk .gt_row {
+#mvetnmvavt .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -862,7 +856,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   overflow-x: hidden;
 }
 
-#aivclfkkgk .gt_stub {
+#mvetnmvavt .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -874,7 +868,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-left: 12px;
 }
 
-#aivclfkkgk .gt_summary_row {
+#mvetnmvavt .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -884,7 +878,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-right: 5px;
 }
 
-#aivclfkkgk .gt_first_summary_row {
+#mvetnmvavt .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -894,7 +888,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-top-color: #D3D3D3;
 }
 
-#aivclfkkgk .gt_grand_summary_row {
+#mvetnmvavt .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -904,7 +898,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-right: 5px;
 }
 
-#aivclfkkgk .gt_first_grand_summary_row {
+#mvetnmvavt .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -914,7 +908,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-top-color: #D3D3D3;
 }
 
-#aivclfkkgk .gt_table_body {
+#mvetnmvavt .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -923,7 +917,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-bottom-color: #D3D3D3;
 }
 
-#aivclfkkgk .gt_footnotes {
+#mvetnmvavt .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -937,13 +931,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-color: #D3D3D3;
 }
 
-#aivclfkkgk .gt_footnote {
+#mvetnmvavt .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#aivclfkkgk .gt_sourcenotes {
+#mvetnmvavt .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -957,46 +951,46 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-color: #D3D3D3;
 }
 
-#aivclfkkgk .gt_sourcenote {
+#mvetnmvavt .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#aivclfkkgk .gt_left {
+#mvetnmvavt .gt_left {
   text-align: left;
 }
 
-#aivclfkkgk .gt_center {
+#mvetnmvavt .gt_center {
   text-align: center;
 }
 
-#aivclfkkgk .gt_right {
+#mvetnmvavt .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#aivclfkkgk .gt_font_normal {
+#mvetnmvavt .gt_font_normal {
   font-weight: normal;
 }
 
-#aivclfkkgk .gt_font_bold {
+#mvetnmvavt .gt_font_bold {
   font-weight: bold;
 }
 
-#aivclfkkgk .gt_font_italic {
+#mvetnmvavt .gt_font_italic {
   font-style: italic;
 }
 
-#aivclfkkgk .gt_super {
+#mvetnmvavt .gt_super {
   font-size: 65%;
 }
 
-#aivclfkkgk .gt_footnote_marks {
+#mvetnmvavt .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="aivclfkkgk" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="mvetnmvavt" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   <thead class="gt_header">
     <tr>
       <th colspan="2" class="gt_heading gt_title gt_font_normal" style>GUI Benefits: Comparison between Core Members and Volunteers</th>
@@ -1067,7 +1061,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#yhpfikefam .gt_table {
+#xrjoiegnih .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1090,7 +1084,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-left-color: #D3D3D3;
 }
 
-#yhpfikefam .gt_heading {
+#xrjoiegnih .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1102,7 +1096,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-color: #D3D3D3;
 }
 
-#yhpfikefam .gt_title {
+#xrjoiegnih .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1112,7 +1106,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-bottom-width: 0;
 }
 
-#yhpfikefam .gt_subtitle {
+#xrjoiegnih .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1122,13 +1116,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-top-width: 0;
 }
 
-#yhpfikefam .gt_bottom_border {
+#xrjoiegnih .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#yhpfikefam .gt_col_headings {
+#xrjoiegnih .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1143,7 +1137,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-color: #D3D3D3;
 }
 
-#yhpfikefam .gt_col_heading {
+#xrjoiegnih .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1163,7 +1157,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   overflow-x: hidden;
 }
 
-#yhpfikefam .gt_column_spanner_outer {
+#xrjoiegnih .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1175,15 +1169,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-right: 4px;
 }
 
-#yhpfikefam .gt_column_spanner_outer:first-child {
+#xrjoiegnih .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#yhpfikefam .gt_column_spanner_outer:last-child {
+#xrjoiegnih .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#yhpfikefam .gt_column_spanner {
+#xrjoiegnih .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1195,7 +1189,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   width: 100%;
 }
 
-#yhpfikefam .gt_group_heading {
+#xrjoiegnih .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1217,7 +1211,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   vertical-align: middle;
 }
 
-#yhpfikefam .gt_empty_group_heading {
+#xrjoiegnih .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1232,19 +1226,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   vertical-align: middle;
 }
 
-#yhpfikefam .gt_striped {
+#xrjoiegnih .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#yhpfikefam .gt_from_md > :first-child {
+#xrjoiegnih .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#yhpfikefam .gt_from_md > :last-child {
+#xrjoiegnih .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#yhpfikefam .gt_row {
+#xrjoiegnih .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1263,7 +1257,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   overflow-x: hidden;
 }
 
-#yhpfikefam .gt_stub {
+#xrjoiegnih .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1275,7 +1269,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-left: 12px;
 }
 
-#yhpfikefam .gt_summary_row {
+#xrjoiegnih .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1285,7 +1279,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-right: 5px;
 }
 
-#yhpfikefam .gt_first_summary_row {
+#xrjoiegnih .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1295,7 +1289,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-top-color: #D3D3D3;
 }
 
-#yhpfikefam .gt_grand_summary_row {
+#xrjoiegnih .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1305,7 +1299,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   padding-right: 5px;
 }
 
-#yhpfikefam .gt_first_grand_summary_row {
+#xrjoiegnih .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1315,7 +1309,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-top-color: #D3D3D3;
 }
 
-#yhpfikefam .gt_table_body {
+#xrjoiegnih .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1324,7 +1318,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-bottom-color: #D3D3D3;
 }
 
-#yhpfikefam .gt_footnotes {
+#xrjoiegnih .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1338,13 +1332,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-color: #D3D3D3;
 }
 
-#yhpfikefam .gt_footnote {
+#xrjoiegnih .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#yhpfikefam .gt_sourcenotes {
+#xrjoiegnih .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1358,46 +1352,46 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   border-right-color: #D3D3D3;
 }
 
-#yhpfikefam .gt_sourcenote {
+#xrjoiegnih .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#yhpfikefam .gt_left {
+#xrjoiegnih .gt_left {
   text-align: left;
 }
 
-#yhpfikefam .gt_center {
+#xrjoiegnih .gt_center {
   text-align: center;
 }
 
-#yhpfikefam .gt_right {
+#xrjoiegnih .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#yhpfikefam .gt_font_normal {
+#xrjoiegnih .gt_font_normal {
   font-weight: normal;
 }
 
-#yhpfikefam .gt_font_bold {
+#xrjoiegnih .gt_font_bold {
   font-weight: bold;
 }
 
-#yhpfikefam .gt_font_italic {
+#xrjoiegnih .gt_font_italic {
   font-style: italic;
 }
 
-#yhpfikefam .gt_super {
+#xrjoiegnih .gt_super {
   font-size: 65%;
 }
 
-#yhpfikefam .gt_footnote_marks {
+#xrjoiegnih .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="yhpfikefam" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="xrjoiegnih" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   <thead class="gt_header">
     <tr>
       <th colspan="2" class="gt_heading gt_title gt_font_normal" style>GUI Values: Comparison between Core Members and Volunteers</th>

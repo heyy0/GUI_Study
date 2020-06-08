@@ -150,7 +150,7 @@ combined_tidy_revise %>%
 ```
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 - __Cosine Similarity__ is a metric used to determine how similar the documents are irrespective of their size.
 
@@ -224,8 +224,6 @@ cor_M<- dfm(corp, remove_punct = TRUE , remove = c(stopwords("english"), "yeah",
 #0.194 to 0.426
 
 cor_M <- as.matrix(cor_M)
-
-cor_M
 
 col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
 corrplot(cor_M, method = "color", col = col(200), cl.pos = "n",
@@ -339,7 +337,7 @@ combined_tidy_connect_revise %>%
 ```
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- benefits %>%
@@ -520,7 +518,7 @@ combined_tidy_connect_revise %>%
 
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- benefits %>%
@@ -698,7 +696,7 @@ combined_tidy_connect_revise %>%
 ```
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- benefits %>%
@@ -879,7 +877,7 @@ combined_tidy_connect_revise %>%
 ```
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- benefits %>%
@@ -1062,7 +1060,7 @@ combined_tidy_connect_revise %>%
 
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- benefits %>%
@@ -1247,7 +1245,7 @@ combined_tidy_connect_revise %>%
 
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- benefits %>%
@@ -1432,7 +1430,7 @@ combined_tidy_connect_revise %>%
 
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- benefits %>%
@@ -1614,7 +1612,7 @@ combined_tidy_connect_revise %>%
 ```
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- values %>%
@@ -1794,7 +1792,7 @@ combined_tidy_connect_revise %>%
 ```
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- values %>%
@@ -1977,7 +1975,7 @@ combined_tidy_connect_revise %>%
 ```
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- values %>%
@@ -2160,7 +2158,7 @@ combined_tidy_connect_revise %>%
 ```
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- values %>%
@@ -2346,7 +2344,7 @@ combined_tidy_connect_revise %>%
 
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- values %>%
@@ -2528,7 +2526,7 @@ combined_tidy_connect_revise %>%
 ```
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- values %>%
@@ -2714,7 +2712,7 @@ combined_tidy_connect_revise %>%
 
 
 
-#### Text Similarity
+#### Cosine Similarity
 
 ```{r include=FALSE}
 tests <- values %>%

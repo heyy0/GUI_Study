@@ -21,7 +21,7 @@ library(patchwork)
 
 __*How nature place-making unfolds when conducted by NGOs*__
 
-Qualitative analysis of Focus Group Discussions 
+*Qualitative analysis of Focus Group Discussions will be added.
 
 
 ## Research Question 2
@@ -42,9 +42,9 @@ __*To what extent the facilitators of nature place-making conducted by NGOs infl
 
 #### Benefits
 
-- Relatively high `Cosine Similarity` are found among `Restoration`, `Nature Connection`, `Sense of Community`, and `Mindsets (related to 5G)` between GUI Core Members and volunteers.
+- Relatively __high `Cosine Similarity`__ are found among __`Restoration`, `Nature Connection`, `Sense of Community`, and `Mindsets (related to 5G)`__ between GUI Core Members and volunteers.
 
-- It is interesting to note that core members and volunteers seem to use different words to describe `Empowerment`, `Environmental Awareness`, `Hands-on Experiences`, and `Self-Efficacy or Confidence`.
+- It is interesting to note that core members and volunteers seem to use different words to describe __`Empowerment`, `Environmental Awareness`, `Hands-on Experiences`, and `Self-Efficacy or Confidence`__.
 
 ```{r echo=FALSE}
 tibble(
@@ -65,9 +65,9 @@ tibble(
 
 #### Values
 
--Relatively high `Cosine Similarity` are found among `Characteristics of Nature in GUI`, `Sense of Autonomy and Ownership`, `Risk-taking but Safe Space`, and `Connecting people`.
+- Relatively __high `Cosine Similarity`__ are found among __`Characteristics of Nature in GUI`, `Sense of Autonomy and Ownership`, `Risk-taking but Safe Space`, and `Connecting people`__.
 
-- For `Characteristics of Nature in GUI`, `Activism`, `Non hierarchical Structure`, and `Sense of Place`, core members and volunteers seem to use different words to describe them.
+- For `__Characteristics of Nature in GUI`, `Activism`, `Non hierarchical Structure`, and `Sense of Place`__, core members and volunteers seem to __use different words__ to describe them.
 
 ```{r echo=FALSE}
 tibble(
