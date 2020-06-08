@@ -51,7 +51,7 @@ tibble(
   "GUI Benefits" = c(
     "Restoration", "Nature Connection", "Sense of Community", "Empowerment", "Environmental Awareness", "Hands-on Experiences", "Mindsets (related to 5G)", "Self-awareness", "Self-Efficacy or Confidence"
   ),
-  "Correlation r" = c(0.586, 0.629, 0.696, 0.271, 0.151, 0.13, 0.523, "NA*", 0.395)
+  "Cosine Similarity" = c(0.586, 0.629, 0.696, 0.271, 0.151, 0.13, 0.523, "NA*", 0.395)
 ) %>%
   gt() %>%
   tab_header(
@@ -75,7 +75,7 @@ tibble(
     "Characteristics of Nature in GUI", "Sense of Autonomy and Ownership",
     "Risk-taking but Safe Space", "Connecting people", "Activism", "Non hierarchical Structure", "Sense of Place*"
   ),
-  "Correlation r" = c(0.530, 0.548, 0.589, 0.502, 0.281, 0.105, 0.308)
+  "Cosine Similarity" = c(0.530, 0.548, 0.589, 0.502, 0.281, 0.105, 0.308)
 ) %>%
   gt() %>%
   tab_header(

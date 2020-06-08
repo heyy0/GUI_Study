@@ -1489,57 +1489,70 @@ step( object = full.model,     # start at the full model
 <!-- ``` -->
 
 
-<!-- ```{r results="hide"} -->
-<!-- model_gui_2 <- lm(CNS ~ Commitment, data = model_data) -->
-<!-- summary(model_gui_2) #Not significant -->
-<!-- ``` -->
+```{r results="hide"}
+model_gui_2 <- lm(CNS ~ Commitment, data = model_data)
+summary(model_gui_2) #Not significant
+```
 
-<!-- ```{r results="hide"} -->
-<!-- model_gui_3 <- lm(IMI ~ `# of Programs`, data = model_data) -->
-<!-- summary(model_gui_3) # R-squared =0.10. Number of programs is Significant -->
-<!-- ``` -->
+```{r results="hide"}
+model_gui_3 <- lm(IMI ~ `# of Programs`, data = model_data)
+summary(model_gui_3) # R-squared =0.10. Number of programs is Significant
+```
 
-<!-- ```{r eval=FALSE, include=FALSE} -->
-<!-- shapiro.test(residuals(model_gui_3)) #Non significant. normal distribution -->
-<!-- AIC(model_gui_3) -->
+```{r eval=FALSE, include=FALSE}
+shapiro.test(residuals(model_gui_3)) #Non significant. normal distribution
+AIC(model_gui_3)
 
-<!-- ## Assumption check -->
-<!-- library(car) -->
-<!-- residualPlots(model = model_gui_3)  -->
-<!-- #If it comes up significant, it implies that there is some nonlinear relationship between the variable and the residuals. Tukey test returns non significance. Assumptions of linearlity was met -->
-<!-- ncvTest(model_gui_3) #Non significant means no violations of homogeneity of variance in this data. -->
-<!-- vif(model_gui_3) #colinearlity check. Not too highly correlated with each other. -->
-<!-- #A value of 1 means that the predictor is not correlated with other variables. The higher the value, the greater the correlation of the variable with other variables -->
-<!-- ``` -->
+## Assumption check
+library(car)
+residualPlots(model = model_gui_3)
+#If it comes up significant, it implies that there is some nonlinear relationship between the variable and the residuals. Tukey test returns non significance. Assumptions of linearlity was met
+ncvTest(model_gui_3) #Non significant means no violations of homogeneity of variance in this data.
+vif(model_gui_3) #colinearlity check. Not too highly correlated with each other.
+#A value of 1 means that the predictor is not correlated with other variables. The higher the value, the greater the correlation of the variable with other variables
+```
 
-<!-- ```{r results="hide"} -->
-<!-- model_gui_4 <- lm(Self_Est ~ age + Frequency + `# of Programs`, data = model_data) -->
-<!-- summary(model_gui_4) # R-squared =0.11. Age and Frequency are Significant -->
-<!-- ``` -->
+```{r results="hide"}
+model_gui_4 <- lm(Self_Est ~ age + Frequency + `# of Programs`, data = model_data)
+summary(model_gui_4) # R-squared =0.11. Age and Frequency are Significant
+```
 
-<!-- ```{r results="hide"} -->
-<!-- model_gui_5 <- lm(Self_Eff ~ age + Frequency + `# of Programs`, data = model_data) -->
-<!-- summary(model_gui_5) # Not significant -->
-<!-- ``` -->
+```{r results="hide"}
+model_gui_5 <- lm(Self_Eff ~ age + Frequency + `# of Programs`, data = model_data)
+summary(model_gui_5) # Not significant
+```
 
-<!-- ```{r results="hide"} -->
-<!-- model_gui_6 <- lm(formula = IM ~ age + Commitment + `# of Programs` + clusters,  -->
-<!--     data = model_data) -->
-<!-- summary(model_gui_6) # R-squared is 0.164. Number of programs and cluster 2 are significant -->
+```{r results="hide"}
+model_gui_6 <- lm(formula = IM ~ age + Commitment + `# of Programs` + clusters,
+    data = model_data)
+summary(model_gui_6) # R-squared is 0.164. Number of programs and cluster 2 are significant
 
-<!-- ``` -->
+```
 
-<!-- ```{r results="hide"} -->
-<!-- model_gui_7 <- lm(formula = PComp ~ `# of Programs`,  -->
-<!--     data = model_data) -->
-<!-- summary(model_gui_7) # R-squared is 0.065. Number of programs is significant -->
-<!-- ``` -->
+```{r results="hide"}
+model_gui_7 <- lm(formula = PComp ~ `# of Programs`,
+    data = model_data)
+summary(model_gui_7) # R-squared is 0.065. Number of programs is significant
+```
 
-<!-- ```{r results="hide"} -->
-<!-- model_gui_8 <- lm(formula = PChoice ~ `# of Programs`,  -->
-<!--     data = model_data) -->
-<!-- summary(model_gui_8) # R-squared is 0.039. Number of programs is significant -->
-<!-- ``` -->
+```{r results="hide"}
+model_gui_8 <- lm(formula = PChoice ~ `# of Programs`,
+    data = model_data)
+summary(model_gui_8) # R-squared is 0.039. Number of programs is significant
+```
+
+```{r include=FALSE}
+# Cluster 1: New member
+IM_1 <- 5.695954 + 0 + 1* 0.400716
+IM_1
+
+# Cluster 2: Long-term member
+
+IM_2 <- 5.695954 -0.823673 + 5* 0.400716
+IM_2
+
+```
+
 
 
 Outcome Variables  | R-squared  | Positive Coefficients| Negative Coefficients| 
