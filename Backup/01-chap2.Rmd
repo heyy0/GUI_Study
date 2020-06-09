@@ -1,12 +1,12 @@
 ---
-output: html_document
+output: word_document
 editor_options: 
   chunk_output_type: console
 ---
 
 # GUI Online Survey: Comparing GUI and Non-GUI Members
 
-- 193 entries (GUI: 104, non-GUI: 89)
+193 entries (GUI: 104, non-GUI: 89)
 
 
 ```{r include=FALSE}

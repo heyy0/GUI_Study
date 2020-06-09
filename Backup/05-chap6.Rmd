@@ -1,5 +1,5 @@
 ---
-output: html_document
+output: word_document
 editor_options: 
   chunk_output_type: console
 ---
@@ -1409,7 +1409,7 @@ Median.test(old_new$PChoice, old_new$clusters) # PChoice is not significant. p=0
 
 - __Statistically significant differences__ were observed in __both scales__. Cohen's d was estimated at __0.51 and 1.002__, which are __medium to large effect__ based on the Cohen’s guidelines (1992).
 
-- This study identified that __those who engaged in GUI programs__ feel __more restored and more positive emotions__ right __after attending a program__. 
+- This study identified that __those who engaged in GUI programs__ feel __more restored and more positive emmotions__ right __after attending a program__. 
 
 - Going forward, __program-wise analysis__ needs to be conducted to see if __attending a particular program__ shows __different ROS and PANAS__ compared to those who attend a different program. For this, we need further data collections (minimum of 20 participants in each program).
 

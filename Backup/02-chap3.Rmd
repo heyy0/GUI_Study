@@ -1,5 +1,5 @@
 ---
-output: html_document
+output: word_document
 editor_options: 
   chunk_output_type: console
 ---
@@ -378,7 +378,7 @@ only_gui_scales %>%
   correlate(test = TRUE, corr.method = "pearson", p.adjust.method = "none")
 ```
 
-### Gender, Race, and Age
+### Genger, Race, and Age
 #### Gender and Race
 From the below tables, it's observed that the majority of respondents in this study are female and Chinese. It would be good to check this distribution against the GUI membership directory (if it exists).
 
