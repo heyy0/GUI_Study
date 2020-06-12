@@ -25,130 +25,12 @@ library(psych)
 ```
 
 
-<!-- ```{r include=FALSE} -->
-<!-- # Loading Data and Saving it as Rdata -->
-<!-- gui_mar20 <- read_csv(here::here("4_Survey_Experiment/Data/GUI_Full_150320.csv")) %>% -->
-<!--   filter(Include == "yes") %>% -->
-<!--   mutate( -->
-<!--     commitment = as.numeric((as.yearmon(strptime(survey_filled, format = "%d/%m/%Y")) - -->
-<!--       as.yearmon(strptime(month_year, format = "%d/%m/%Y"))) * 12), # calcurating duration of commitment in months -->
-<!--     frequency = as.numeric(frequency), -->
-<!--     gender = as_factor(gender), -->
-<!--     race = as_factor(race) -->
-<!--   ) -->
-<!-- ``` -->
+```{r include=FALSE}
+# Saving Data Scales
+# saveRDS(gui_mar20_scales, ("gui_mar20_scales.rds"))
+gui_mar20_scales <- readRDS(here::here("data/gui_mar20_scales.rds"))
+```
 
-
-<!-- ```{r include=FALSE} -->
-<!-- # Data cleaning -->
-<!-- ## Imputing 0 with missing values -->
-<!-- na_strings <- c("NA", "n/a") -->
-<!-- gui_mar20 <- gui_mar20 %>% -->
-<!--   naniar::replace_with_na_all(condition = ~ . %in% na_strings) -->
-<!-- ``` -->
-
-<!-- ```{r include=FALSE} -->
-<!-- gui_mar20[is.na(gui_mar20)] <- 0 -->
-<!-- glimpse(gui_mar20) -->
-<!-- ``` -->
-
-
-<!-- ```{r include=FALSE} -->
-<!-- ## Reverse coding -->
-<!-- ### Coding character/numeric to factors and date -->
-<!-- gui_mar20 <- gui_mar20 %>% -->
-<!--   mutate( -->
-<!--     month_year = as.Date(month_year, "%d/%m/%y"), -->
-<!--     age = as.numeric(age), -->
-<!--     gender = as_factor(gender), -->
-<!--     race = as_factor(race) -->
-<!--   ) -->
-<!-- ``` -->
-
-<!-- ```{r include=FALSE} -->
-<!-- ### Coding scale values to numeric and reverse coding -->
-<!-- gui_mar20_coded <- gui_mar20 %>% -->
-<!--   select(-start, -survey_filled, -residency, -Include, -gui_non_gui, -month_year, -"which_programs/balik", -"which_programs/wood", -"which_programs/sketch", -"which_programs/harvesting", -"which_programs/corporate", -"which_programs/other", -"program_specify", -frequency, -reasons, -gender, -age, -race, -race_specify, -commitment) %>% -->
-<!--   mutate_if(is.character, as.numeric) %>% -->
-<!--   mutate( -->
-<!--     social_cohesion_4_rev_coded = case_when( # if 0, coded with 0 -->
-<!--       social_cohesion_4_rev == 0 ~ 0, -->
-<!--       TRUE ~ (8 - social_cohesion_4_rev) -->
-<!--     ), # if not, coded normally -->
-<!--     social_cohesion_5_rev_coded = case_when( # if 0, coded with 0 -->
-<!--       social_cohesion_5_rev == 0 ~ 0, -->
-<!--       TRUE ~ (8 - social_cohesion_5_rev) -->
-<!--     ), -->
-<!--     cns_4_rev_coded = case_when( # if 0, coded with 0 -->
-<!--       cns_4 == 0 ~ 0, -->
-<!--       TRUE ~ (8 - cns_4) -->
-<!--     ), -->
-<!--     self_est_2_rev_coded = case_when( # if 0, coded with 0 -->
-<!--       self_est_2_rev == 0 ~ 0, -->
-<!--       TRUE ~ (8 - self_est_2_rev) -->
-<!--     ), -->
-<!--     self_est_4_rev_coded = case_when( # if 0, coded with 0 -->
-<!--       self_est_4_rev == 0 ~ 0, -->
-<!--       TRUE ~ (8 - self_est_4_rev) -->
-<!--     ), -->
-<!--     imi_3_rev_coded = case_when( # if 0, coded with 0 -->
-<!--       imi_3_rev == 0 ~ 0, -->
-<!--       TRUE ~ (8 - imi_3_rev) -->
-<!--     ), -->
-<!--     imi_4_rev_coded = case_when( # if 0, coded with 0 -->
-<!--       imi_4 == 0 ~ 0, -->
-<!--       TRUE ~ (8 - imi_4) -->
-<!--     ) -->
-<!--   ) -->
-<!-- ``` -->
-
-
-<!-- ```{r include=FALSE} -->
-<!-- ## binding -->
-<!-- gui_mar20_fct <- gui_mar20 %>% -->
-<!--   select(survey_filled, residency, gui_non_gui, month_year, "which_programs/balik", "which_programs/wood", "which_programs/sketch", "which_programs/harvesting", "which_programs/corporate", "which_programs/other", "program_specify", frequency, reasons, gender, age, race, race_specify, commitment) -->
-<!-- gui_mar20_final <- cbind(gui_mar20_fct, gui_mar20_coded) -->
-<!-- ``` -->
-
-<!-- ```{r eval=FALSE, include=FALSE} -->
-<!-- # Saving Dataset -->
-<!-- saveRDS(gui_mar20_final, ("Survey_Experiment/Data/0_GUI_online_mar20.rds")) -->
-<!-- ``` -->
-
-<!-- ```{r include=FALSE} -->
-<!-- # Create scales -->
-<!-- scale.list <- list( -->
-<!--   SoCoh = c("social_cohesion_1", "social_cohesion_2", "social_cohesion_3", "social_cohesion_4_rev_coded", "social_cohesion_5_rev_coded"), -->
-<!--   SOC = c("soc_1", "soc_2", "soc_3", "soc_4", "soc_5", "soc_6", "soc_7", "soc_8"), -->
-<!--   CNS = c("cns_1", "cns_2", "cns_3", "cns_4_rev_coded", "cns_5", "cns_6", "cns_7", "cns_8", "cns_9", "cns_10"), -->
-<!--   Self_Est = c("self_est_1", "self_est_2_rev_coded", "self_est_3", "self_est_4_rev_coded"), -->
-<!--   Self_Eff = c("self_eff_1", "self_eff_2", "self_eff_3", "self_eff_4", "self_eff_5", "self_eff_6", "self_eff_7", "self_eff_8") -->
-<!-- ) -->
-<!-- ``` -->
-
-<!-- ```{r include=FALSE} -->
-<!-- library(psych) -->
-<!-- my.scales <- scoreItems(scale.list, gui_mar20_final) -->
-<!-- ``` -->
-
-
-<!-- ```{r include=FALSE} -->
-<!-- ## Cronbach's Alpha -->
-<!-- library(dplyr) -->
-<!-- dfSoCohscore <- select(gui_mar20_final, "social_cohesion_1", "social_cohesion_2", "social_cohesion_3", "social_cohesion_4_rev_coded", "social_cohesion_5_rev_coded") -->
-<!-- dfSOCscore <- select(gui_mar20_final, "soc_1", "soc_2", "soc_3", "soc_4", "soc_5", "soc_6", "soc_7", "soc_8") -->
-<!-- dfCNSscore <- select(gui_mar20_final, "cns_1", "cns_2", "cns_3", "cns_4_rev_coded", "cns_5", "cns_6", "cns_7", "cns_8", "cns_9", "cns_10") -->
-<!-- dfSelf_Estscore <- select(gui_mar20_final, "self_est_1", "self_est_2_rev_coded", "self_est_3", "self_est_4_rev_coded") -->
-<!-- dfSelf_Effscore <- select(gui_mar20_final, "self_eff_1", "self_eff_2", "self_eff_3", "self_eff_4", "self_eff_5", "self_eff_6", "self_eff_7", "self_eff_8") -->
-<!-- ``` -->
-
-<!-- ```{r include=FALSE} -->
-<!-- alpha(dfSoCohscore) -->
-<!-- alpha(dfSOCscore) -->
-<!-- alpha(dfCNSscore) -->
-<!-- alpha(dfSelf_Estscore) -->
-<!-- alpha(dfSelf_Effscore) -->
-<!-- ``` -->
 
 ## Internal Consistency
 All scales of psychological measures used in the online survey have good Cronbach’s alpha, ranging from .72 to .91 (good internal consistency). Therefore, we will proceed to include all the questions in the respective scales. 
@@ -169,12 +51,6 @@ tbl_var3 %>% gt()
 <!-- gui_mar20_scales <- cbind(gui_mar20_final, dfscores) -->
 <!-- ``` -->
 
-
-```{r include=FALSE}
-# Saving Data Scales
-# saveRDS(gui_mar20_scales, ("gui_mar20_scales.rds"))
-gui_mar20_scales <- readRDS(here::here("data/gui_mar20_scales.rds"))
-```
 
 ## Descriptive statistics
 ```{r echo=FALSE}
@@ -387,7 +263,8 @@ a1 <- gui_mar20_scales %>%
   ggplot(aes(x = reorder(gui_non_gui, SoCoh), y = SoCoh, fill = gui_non_gui)) +
   geom_boxplot() +
   theme(legend.position = "None") +
-  labs(x = "", y = "Social Cohesion")
+  labs(x = "", y = "Social Cohesion")+
+  theme_minimal()
 
 a2 <- gui_mar20_scales %>%
   mutate(gui_non_gui = case_when(
@@ -398,7 +275,8 @@ a2 <- gui_mar20_scales %>%
   ggplot(aes(x = reorder(gui_non_gui, SOC), y = SOC, fill = gui_non_gui)) +
   geom_boxplot() +
   theme(legend.position = "None") +
-  labs(x = "", y = "Sense of Community")
+  labs(x = "", y = "Sense of Community")+
+  theme_minimal()
 
 a3 <- gui_mar20_scales %>%
 mutate(gui_non_gui = case_when(
@@ -408,8 +286,10 @@ mutate(gui_non_gui = case_when(
   select(CNS, gui_non_gui) %>%
   ggplot(aes(x = reorder(gui_non_gui, CNS), y = CNS, fill = gui_non_gui)) +
   geom_boxplot() +
-  theme(legend.position = "None") +
-  labs(x = "", y = "Connection to Nature")
+  labs(x = "", y = "Connection to Nature")+
+  theme_minimal()+
+    theme(legend.position = "None")
+
 a4 <- gui_mar20_scales %>%
 mutate(gui_non_gui = case_when(
     gui_non_gui == "yes" ~ "GUI Members",
@@ -418,8 +298,9 @@ mutate(gui_non_gui = case_when(
   select(Self_Eff, gui_non_gui) %>%
   ggplot(aes(x = reorder(gui_non_gui, Self_Eff), y = Self_Eff, fill = gui_non_gui)) +
   geom_boxplot() +
-  theme(legend.position = "None") +
-  labs(x = "", y = "Self Efficacy")
+  labs(x = "", y = "Self Efficacy")+
+  theme_minimal()+
+  theme(legend.position = "None")
 a5 <- gui_mar20_scales %>%
 mutate(gui_non_gui = case_when(
     gui_non_gui == "yes" ~ "GUI Members",
@@ -428,13 +309,19 @@ mutate(gui_non_gui = case_when(
   select(Self_Est, gui_non_gui) %>%
   ggplot(aes(x = reorder(gui_non_gui, Self_Est), y = Self_Est, fill = gui_non_gui)) +
   geom_boxplot() +
-  theme(legend.position = "None") +
-  labs(x = "", y = "Self Esteem")
+  labs(x = "", y = "Self Esteem")+
+  theme_minimal()+
+  theme(legend.position = "None")
 ```
 
 ```{r echo=FALSE}
 (a1 + a2 + a3) / (a4 + a5)
 ```
+
+```{r include=FALSE}
+a3 + a4+ a5
+```
+
 
 ```{r include=FALSE}
 tbl_final <- tbl_var3 %>% # Cronbacks Alpha

@@ -23,137 +23,6 @@ library(psych)
 library(dplyr)
 ```
 
-<!-- ```{r include=FALSE} -->
-<!-- # loading full GUI data -->
-<!-- gui_df <- readRDS(here::here("data/0_GUI_online_mar20.rds")) -->
-<!-- only_gui <- gui_df %>% -->
-<!--   filter(gui_non_gui == "never") -->
-<!-- ``` -->
-
-<!-- ```{r include=FALSE} -->
-<!-- # replacing 0 in frequency and commitment -->
-<!-- only_gui <- only_gui %>% -->
-<!--   mutate( -->
-<!--     commitment_coded = case_when( # if 0, coded with 1 -->
-<!--       commitment == 0 ~ 1, -->
-<!--       TRUE ~ commitment -->
-<!--     ), -->
-<!--     frequency_coded = case_when( # if 0, coded with 1 -->
-<!--       frequency == 0 ~ 1, -->
-<!--       TRUE ~ frequency -->
-<!--     ), -->
-<!--     gender = case_when( # coding gender -->
-<!--       gender == 1 ~ "Female", -->
-<!--       gender == 3 ~ "Male", -->
-<!--       TRUE ~ "Others" -->
-<!--     ), -->
-<!--     balik = case_when( # if False, coded with 0 -->
-<!--       `which_programs/balik` == "FALSE" ~ 0, -->
-<!--       TRUE ~ 1 -->
-<!--     ), -->
-<!--     corporate = case_when( # if False, coded with 0 -->
-<!--       `which_programs/corporate` == "FALSE" ~ 0, -->
-<!--       TRUE ~ 1 -->
-<!--     ), -->
-<!--     wood = case_when( # if False, coded with 0 -->
-<!--       `which_programs/wood` == "FALSE" ~ 0, -->
-<!--       TRUE ~ 1 -->
-<!--     ), -->
-<!--     sketch = case_when( # if False, coded with 0 -->
-<!--       `which_programs/sketch` == "FALSE" ~ 0, -->
-<!--       TRUE ~ 1 -->
-<!--     ), -->
-<!--     harvesting = case_when( # if False, coded with 0 -->
-<!--       `which_programs/harvesting` == "FALSE" ~ 0, -->
-<!--       TRUE ~ 1 -->
-<!--     ), -->
-<!--     others = case_when( # if False, coded with 0 -->
-<!--       `which_programs/other` == "FALSE" ~ 0, -->
-<!--       TRUE ~ 1 -->
-<!--     ), -->
-<!--     number_programs = (balik + corporate + wood + sketch + harvesting + others), -->
-<!--     program_percent = number_programs / 6 -->
-<!--   ) -->
-<!-- ``` -->
-
-<!-- ```{r include=FALSE} -->
-<!-- # Create scales -->
-<!-- scale.list <- list( -->
-<!--   SoCoh = c("social_cohesion_1", "social_cohesion_2", "social_cohesion_3", "social_cohesion_4_rev_coded", "social_cohesion_5_rev_coded"), -->
-<!--   SOC = c("soc_1", "soc_2", "soc_3", "soc_4", "soc_5", "soc_6", "soc_7", "soc_8"), -->
-<!--   CNS = c("cns_1", "cns_2", "cns_3", "cns_4_rev_coded", "cns_5", "cns_6", "cns_7", "cns_8", "cns_9", "cns_10"), -->
-<!--   #IMI = c("imi_1", "imi_2", "imi_3_rev_coded", "imi_4_rev_coded", "imi_5", "imi_6", "imi_7", "imi_8"), -->
-<!--   Self_Est = c("self_est_1", "self_est_2_rev_coded", "self_est_3", "self_est_4_rev_coded"), -->
-<!--   Self_Eff = c("self_eff_1", "self_eff_2", "self_eff_3", "self_eff_4", "self_eff_5", "self_eff_6", "self_eff_7", "self_eff_8") -->
-<!--   #IM =c("imi_4_rev_coded", "imi_5", "imi_6", "imi_7"), -->
-<!--   #PComp =c("imi_2", "imi_8"), -->
-<!--   #PChoice =c("imi_1", "imi_3_rev_coded") -->
-<!-- ) -->
-<!-- ``` -->
-
-
-<!-- ```{r include=FALSE} -->
-<!-- library(psych) -->
-<!-- my.scales <- scoreItems(scale.list, only_gui) -->
-
-<!-- ``` -->
-
-
-<!-- ```{r include=FALSE} -->
-<!-- library(psych) -->
-<!-- my.scales <- scoreItems(scale.list, only_gui_scales) -->
-<!-- ``` -->
-
-
-<!-- ```{r include=FALSE} -->
-<!-- my.scores <- my.scales$scores -->
-<!-- ``` -->
-
-<!-- ```{r include=FALSE} -->
-<!-- dfscores <- data.frame(my.scores) -->
-<!-- only_gui <- cbind(only_gui, dfscores) -->
-
-<!-- non_gui<- only_gui %>% select(gui_non_gui, gender, age, race, SoCoh, SOC, CNS, Self_Est, Self_Eff) -->
-<!-- saveRDS(non_gui, ("data/non_gui_june4_scales.rds")) -->
-
-<!-- ``` -->
-
-
-<!-- ```{r include=FALSE} -->
-<!-- ## Cronbach's Alpha -->
-<!-- library(dplyr) -->
-<!-- dfSoCohscore <- select(only_gui, "social_cohesion_1", "social_cohesion_2", "social_cohesion_3", "social_cohesion_4_rev_coded", "social_cohesion_5_rev_coded") -->
-<!-- dfSOCscore <- select(only_gui, "soc_1", "soc_2", "soc_3", "soc_4", "soc_5", "soc_6", "soc_7", "soc_8") -->
-<!-- dfCNSscore <- select(only_gui, "cns_1", "cns_2", "cns_3", "cns_4_rev_coded", "cns_5", "cns_6", "cns_7", "cns_8", "cns_9", "cns_10") -->
-<!-- dfSelf_Estscore <- select(only_gui, "self_est_1", "self_est_2_rev_coded", "self_est_3", "self_est_4_rev_coded") -->
-<!-- dfSelf_Effscore <- select(only_gui, "self_eff_1", "self_eff_2", "self_eff_3", "self_eff_4", "self_eff_5", "self_eff_6", "self_eff_7", "self_eff_8") -->
-<!-- dfIMIscore <- select(only_gui, "imi_1", "imi_2", "imi_3_rev_coded", "imi_4_rev_coded", "imi_5", "imi_6", "imi_7", "imi_8") -->
-<!-- ``` -->
-
-<!-- ```{r include=FALSE} -->
-<!-- alpha(dfSoCohscore) -->
-<!-- alpha(dfSOCscore) -->
-<!-- alpha(dfCNSscore) -->
-<!-- alpha(dfSelf_Estscore) -->
-<!-- alpha(dfSelf_Effscore) -->
-<!-- alpha(dfIMIscore) -->
-<!-- ``` -->
-
-<!-- ```{r include=FALSE} -->
-<!-- ## Cronbach's Alpha -->
-<!-- library(dplyr) -->
-<!-- dfPCompscore <- select(only_gui_scales, "imi_2", "imi_8") -->
-<!-- dfPChoicescore <- select(only_gui_scales, "imi_1", "imi_3_rev_coded") -->
-<!-- dfIMscore <- select(only_gui_scales, "imi_4_rev_coded", "imi_5", "imi_6", "imi_7") -->
-<!-- ``` -->
-
-<!-- ```{r} -->
-<!-- alpha(dfPCompscore) -->
-<!-- alpha(dfPChoicescore) -->
-<!-- alpha(dfIMscore) -->
-<!-- ``` -->
-
-
 ## Internal Consistency
 All scales of psychological measures used in the online survey have good Cronbach’s alpha, ranging from .76 to .92 (good internal consistency). Therefore, we will proceed to include all the questions in the respective scales. 
 
@@ -1287,6 +1156,83 @@ Median.test(old_new$IM, old_new$clusters) # IM is not significant. p=0.64
 Median.test(old_new$PComp, old_new$clusters) # PComp is not significant. p=0.947
 Median.test(old_new$PChoice, old_new$clusters) # PChoice is not significant. p=0.739
 ```
+
+
+```{r include=FALSE}
+c1 <- old_new %>%
+  select(CNS, clusters) %>%
+  ggplot(aes(x = clusters, y = CNS, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+
+c2 <- old_new %>%
+  select(SOC, clusters) %>%
+  ggplot(aes(x = clusters, y = SOC, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+c3 <- old_new %>%
+  select(SoCoh, clusters) %>%
+  ggplot(aes(x = clusters, y = SoCoh, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# c4 <- old_new %>%
+#   select(IMI, clusters) %>%
+#   ggplot(aes(x = clusters, y = IMI, group = clusters, fill = clusters)) +
+#   geom_boxplot() +
+#   theme_minimal() +
+#   theme(legend.position = "none")
+
+e4 <- old_new %>%
+  select(IM, clusters) %>%
+  ggplot(aes(x = clusters, y = IM, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+e5 <- old_new %>%
+  select(PComp, clusters) %>%
+  ggplot(aes(x = clusters, y = PComp, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+e6 <- old_new %>%
+  select(PChoice, clusters) %>%
+  ggplot(aes(x = clusters, y = PChoice, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+c5 <- old_new %>%
+  select(Self_Eff, clusters) %>%
+  ggplot(aes(x = clusters, y = Self_Eff, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+c6 <- old_new %>%
+  select(Self_Est, clusters) %>%
+  ggplot(aes(x = clusters, y = Self_Est, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# c7 <- old_new %>%
+#   select(age, clusters) %>%
+#   ggplot(aes(x = clusters, y = age, group = clusters, fill = clusters)) +
+#   geom_boxplot() +
+#   theme_minimal() +
+#   theme(legend.position = "none")
+
+c1 + c2 + c3 + e4 + e5 + e6 + c5 + c6 #+ c7 + c4
+```
+
 
 <!-- ## Regression by Groups -->
 <!-- ```{r} -->

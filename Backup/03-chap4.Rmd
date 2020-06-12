@@ -1,0 +1,542 @@
+---
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Pre- and Post-Assessment
+
+## Description
+Total 58 entries (29 people respondend to pre-and post-survey) till Jan 2020
+
+```{r include=FALSE}
+# Packages
+library(QuantPsyc)
+library(ggpubr)
+library(heplots)
+library(tidyverse)
+library(lubridate)
+library(forcats)
+library(zoo)
+library(gt)
+library(psych)
+```
+
+<!-- ```{r include=FALSE} -->
+<!-- gui_pre_post <- read_csv(here::here("data/Pre_post_GUI_12Feb20.csv")) %>% -->
+<!--   filter(include == "yes") %>% -->
+<!--   mutate( -->
+<!--     age = as.numeric(age), -->
+<!--     gender = as_factor(gender), -->
+<!--     race = as_factor(race), -->
+<!--     program_today = as_factor(program_today) -->
+<!--   ) %>% -->
+<!--   filter(Please_type_your_assigned_numb != "16") %>% -->
+<!--   mutate( -->
+<!--     pos1 = as.numeric(pos1), -->
+<!--     pos9 = as.numeric(pos9), -->
+<!--     negative1_coded = as.numeric(negative1_coded), -->
+<!--     pos2 = as.numeric(pos2), -->
+<!--     pos3 = as.numeric(pos3), -->
+<!--     negative2_coded = as.numeric(negative2_coded), -->
+<!--     pos4 = as.numeric(pos4), -->
+<!--     pos6 = as.numeric(pos6), -->
+<!--     negative3_coded = as.numeric(negative3_coded), -->
+<!--     pos5 = as.numeric(pos5), -->
+<!--     pos7 = as.numeric(pos7), -->
+<!--     negative4_coded = as.numeric(negative4_coded), -->
+<!--     pos8 = as.numeric(pos8), -->
+<!--     pos10 = as.numeric(pos10), -->
+<!--     cns_1 = as.numeric(cns_1), -->
+<!--     cns_2 = as.numeric(cns_2), -->
+<!--     cns_3 = as.numeric(cns_3), -->
+<!--     cns_4 = as.numeric(cns_4) -->
+<!--   ) -->
+<!-- ```  -->
+
+
+<!-- ```{r include=FALSE} -->
+<!-- # 2.2 create scales -->
+<!-- scale.list2 <- -->
+<!--   list( -->
+<!--     ROS = c("ros1", "ros2", "ros3", "ros4", "ros5", "ros6"), -->
+<!--     PANAS = c( -->
+<!--       "panas_1_coded", "panas_2", "panas_3_coded", "panas_4", "panas_5_coded", "panas_6", -->
+<!--       "panas_7_coded", "panas_8", "panas_9_coded", "panas_10", "panas_11_coded", "panas_12", -->
+<!--       "panas_13_coded", "panas_14", "panas_15_coded", "panas_16", "panas_17_coded", "panas_18" -->
+<!--     ), -->
+<!--     POS = c( -->
+<!--       "pos1", "pos9", "negative1_coded", "pos2", "pos3", "negative2_coded", "pos4", "pos6", -->
+<!--       "negative3_coded", "pos5", "pos7", "negative4_coded", "pos8", "pos10" -->
+<!--     ), -->
+<!--     CNS = c("cns_1", "cns_2", "cns_3", "cns_4") -->
+<!--   ) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- library(psych) -->
+<!-- my.scales <- scoreItems(scale.list2, gui_pre_post) -->
+<!-- ``` -->
+
+
+<!-- ```{r include=FALSE} -->
+<!-- ## Cronbach's Alpha -->
+<!-- library(dplyr) -->
+<!-- dfRosscore <- select(gui_pre_post, "ros1", "ros2", "ros3", "ros4", "ros5", "ros6") -->
+<!-- dfPANASscore <- select(gui_pre_post, "panas_1_coded", "panas_2", "panas_3_coded", "panas_4", "panas_5_coded", "panas_6", "panas_7_coded", "panas_8", "panas_9_coded", "panas_10", "panas_11_coded", "panas_12", "panas_13_coded", "panas_14", "panas_15_coded", "panas_16", "panas_17_coded", "panas_18") -->
+<!-- dfPOSscore <- select(gui_pre_post, "pos1", "pos9", "negative1_coded", "pos2", "pos3", "negative2_coded", "pos4", "pos6", "negative3_coded", "pos5", "pos7", "negative4_coded", "pos8", "pos10") -->
+<!-- dfCNSscore <- select(gui_pre_post, "cns_1", "cns_2", "cns_3", "cns_4") -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- alpha(dfRosscore) -->
+<!-- alpha(dfPANASscore) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- my.scores <- my.scales$scores -->
+<!-- describe(my.scores) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- dfscores <- data.frame(my.scores) -->
+<!-- data_pre_post_scales <- cbind(gui_pre_post, dfscores) -->
+<!-- ``` -->
+
+```{r include=FALSE}
+## Creating RDS data
+# saveRDS(data_pre_post_scales, ("Survey_Experiment/data/data_pre_post_scales.rds"))
+data_pre_post_scales <- readRDS(here::here("data/data_pre_post_scales.rds"))
+```
+
+## Decrtiptive statistics
+Both Restoration Outcome Scale (`ROS`) and Positive and Negative Affect Schedule (`PANAS`) have good Cronbach’s alpha, ranging from .88 to .90 ( __good internal consistency__). The result of Sharpiro test shows that Age and PANAS follow __a normal distribution__. 
+
+```{r echo=FALSE}
+desc_1 <- data_pre_post_scales %>%
+  select(age, ROS, PANAS) %>%
+  describe()
+
+as.data.frame(desc_1) %>%
+  mutate(
+    variables = c("Age", "Restoration Outcome", "Positive and Negative Affect Schedule"),
+    Cronbachs_alpha = c("NA", 0.88, 0.9),
+    shapiro_test = c(0.059, 0.018, 0.052)
+  ) %>%
+  select(vars, variables, everything()) %>%
+  gt() %>%
+  tab_header(
+    title = "Descriptive Statistics (pre-post survey)"
+  ) %>%
+  cols_align(align = "center") %>%
+  fmt_number(
+    columns = vars(se, kurtosis, skew, range, mad, trimmed, median, sd, mean),
+    decimals = 2
+  ) %>%
+  fmt_number(
+    columns = vars(max, min),
+    decimals = 1
+  )
+```
+
+```{r include=FALSE}
+# Normality Check
+shapiro.test(data_pre_post_scales$ROS)
+hist(data_pre_post_scales$ROS)
+ggqqplot(data_pre_post_scales$ROS)
+
+shapiro.test(data_pre_post_scales$PANAS)
+hist(data_pre_post_scales$PANAS)
+ggqqplot(data_pre_post_scales$PANAS)
+
+shapiro.test(data_pre_post_scales$age)
+```
+
+## Correlation Test
+
+- It's observed that Restoration Outcome Scale (`ROS`) and Positive and Negative Affect Schedule (`PANAS`) have __a strong positive correlation__ (r=0.722, Spearman): Those who __fell the higher sense of positive emotions__ also feel the __higher sense of restorations__.
+
+- __Perceived Restorativeness Scale (`POS`)__ also __shows the signficant correlation__ with __the nature connection (`CNS`)__: those who have a higher sense of nature connection feels higher perceived restorations
+
+```{r echo=FALSE}
+library(corrplot)
+library(lsr)
+cor_test_results <- data_pre_post_scales %>%
+  select(ROS, PANAS, POS, CNS) %>%
+  # rename("Restoration" = ROS,"Positive Negative Emotions" = PANAS, "Perceived Restorativeness" = POS,  "Nature Connection"= CNS) %>%
+  correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "none")
+
+confident_95 <- cor_test_results$p.value
+
+cor_M <- cor_test_results$correlation
+
+
+col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+corrplot(cor_M,
+  method = "color", col = col(200),
+  type = "upper", number.cex = .7,
+  addCoef.col = "black", # Add coefficient of correlation
+  tl.col = "black", tl.srt = 45, # Text label color and rotation
+  # Combine with significance
+  p.mat = confident_95, sig.level = 0.05, insig = "blank",
+  # hide correlation coefficient on the principal diagonal
+  diag = FALSE
+)
+```
+
+
+
+## Significance Test (t-test and Wilcoxon Test ): Pre VS Post
+- As preliminary analyses, we assessed whether there were __any differences__ between __pre-test and post-test groups__ in terms of the respective psychological measures.
+
+- We conducted the __Welch Two Sample t-test__ on `PANAS` and __Wilcoxon Signed-rank test__ on `ROS`.
+
+- __Statistically significant differences__ were observed in __both scales__. Cohen's d was estimated at __0.51 and 1.002__, which are __medium to large effect__ based on the Cohen’s guidelines (1992).
+
+- This study identified that __those who engaged in GUI programs__ feel __more restored and more positive emmotions__ right __after attending a program__. 
+
+- Going forward, __program-wise analysis__ needs to be conducted to see if __attending a particular program__ shows __different ROS and PANAS__ compared to those who attend a different program. For this, we need further data collections (minimum of 20 participants in each program).
+
+```{r include=FALSE}
+# t test for SOC and Effect Size
+t.test(data_pre_post_scales$PANAS ~ data_pre_post_scales$pre_post, mu = 0, alt = "two.sided", conf = 0.95, var.eq = F, paired = T)
+
+library(effsize)
+cohen.d(data_pre_post_scales$PANAS ~ data_pre_post_scales$pre_post, na.rm = TRUE, pooled = TRUE, paired = T)
+```
+
+```{r include=FALSE}
+wilcox.test(data_pre_post_scales$ROS ~ data_pre_post_scales$pre_post, mu = 0, alt = "two.sided", conf.int = T, conf.level = 0.95, paired = T, exact = T, correct = T)
+
+library(rstatix)
+data_pre_post_scales %>%
+  wilcox_effsize(ROS ~ pre_post, paired = T)
+```
+
+```{r include=FALSE}
+data_pre_post_scales %>%
+  select(ROS, PANAS) %>%
+  describeBy(group = data_pre_post_scales$pre_post)
+
+pp_1 <- tibble(vars = c(1, 2), scales = c("ROS", "PANAS"), Cronbachs_alpha = c(0.88, 0.90))
+```
+
+```{r include=FALSE}
+pp_2 <- pp_1 %>% # Cronbacks Alpha
+  mutate(
+    shapiro_test = c(0.018, 0.052), # Normality shapiro test
+    pre_means = c(4.94, 5.20), # pre_means
+    post_means = c(5.78, 6.10), # post means
+    test_statistics = c("p < 0.01", "p < 0.001"), # test statistics
+    effect_size = c(0.517, 1.31965) # Effect size
+  )
+```
+
+```{r echo=FALSE}
+pp_2 %>%
+  gt() %>%
+  tab_header(
+    title = "Summary of Test Statistics: Pre-and-post Survey"
+  ) %>%
+  cols_align(align = "center") %>%
+  tab_source_note(
+    source_note = "*t-test for PANAS, and Wilcoxon test for ROS"
+  )
+```
+
+```{r echo=FALSE}
+tibble(
+  vars = c(1, 2), "Scales" = c("Restoration Outcome Scale (ROS)", "Positive and Negative Affect Scale (PANAS)"),
+  "Pre-test" = c(4.94, 5.20), # pre_means
+  "Post-test" = c(5.78, 6.10), # post means
+  "p-value" = c("p < 0.01", "p < 0.001"), # test statistics
+  "Effect Size" = c(0.517, 1.31965)
+) %>%
+  gt() %>%
+  tab_header(
+    title = "Summary of Test Statistics: Pre-and-post Survey"
+  ) %>%
+  cols_align(align = "center") %>%
+  tab_source_note(
+    source_note = "*t-test for PANAS, and Wilcoxon test for ROS"
+  ) %>%
+  fmt_number(
+    columns = vars("Effect Size"),
+    decimals = 2
+  )
+```
+
+
+```{r include=FALSE}
+library(patchwork)
+b1 <- data_pre_post_scales %>%
+  mutate(clusters = factor(pre_post, levels = c("Pre", "Post"))) %>%
+  select(ROS, pre_post) %>%
+  ggplot(aes(x = reorder(pre_post, ROS), y = ROS, fill = pre_post)) +
+  geom_boxplot() +
+  labs(x = "Pre VS Post", y = "ROS")+
+  theme_minimal()+
+  theme(legend.position = "None")
+
+b2 <- data_pre_post_scales %>%
+  mutate(clusters = factor(pre_post, levels = c("Pre", "Post"))) %>%
+  select(PANAS, pre_post) %>%
+  ggplot(aes(x = reorder(pre_post, PANAS), y = PANAS, fill = pre_post)) +
+  geom_boxplot() +
+  labs(x = "Pre VS Post", y = "PANAS")+
+  theme_minimal()+
+  theme(legend.position = "None")
+```
+
+```{r echo=FALSE}
+b1 + b2
+```
+
+
+<!-- ## Differences within programs -->
+<!-- ```{r include = FALSE} -->
+<!-- ### Tablutation -->
+<!-- xtabs(~program_today, data_pre_post_scales) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- ### Normality Check -->
+<!-- #Farming -->
+<!-- data_farming <- data_pre_post_scales %>%  -->
+<!--   filter(program_today == "farming") -->
+
+<!-- shapiro.test(data_farming$ROS) #normal distribution -->
+<!-- shapiro.test(data_farming$PANAS) #non normal distribution -->
+
+<!-- #Wood -->
+<!-- data_wood <- data_pre_post_scales %>%  -->
+<!--   filter(program_today == "wood") -->
+
+<!-- shapiro.test(data_wood$ROS) #normal distribution -->
+<!-- shapiro.test(data_wood$PANAS) #normal distribution -->
+
+<!-- #Sketch -->
+<!-- data_sketch <- data_pre_post_scales %>%  -->
+<!--   filter(program_today == "sketch") -->
+
+<!-- shapiro.test(data_sketch$ROS) #normal distribution -->
+<!-- shapiro.test(data_sketch$PANAS) #normal distribution -->
+<!-- ``` -->
+
+<!-- ###Farming —Pre VS Post -->
+<!-- ```{r include=FALSE} -->
+<!-- t.test(data_farming$ROS ~ data_farming$pre_post, mu = 0, alt = "two.sided", conf = 0.95, var.eq = F, paired = T) -->
+<!-- t.test(data_farming$PANAS ~ data_farming$pre_post, mu = 0, alt = "two.sided", conf = 0.95, var.eq = F, paired = T) -->
+<!-- cohen.d(data_farming$ROS ~ data_farming$pre_post, na.rm = TRUE, pooled = TRUE, paired = T) -->
+<!-- cohen.d(data_farming$PANAS ~ data_farming$pre_post, na.rm = TRUE, pooled = TRUE, paired = T) -->
+
+<!-- #ROS p=0.075 -->
+<!-- #PANS p=, effect sie = 1.29 -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- library(rstatix) -->
+<!-- wilcox.test(data_farming$PANAS ~ data_farming$pre_post, mu = 0, alt = "two.sided", conf.int = T, conf.level = 0.95, paired = T, exact = T, correct = T) -->
+
+<!-- data_farming %>%  -->
+<!--   wilcox_effsize(PANAS ~ pre_post, paired=T) -->
+
+<!-- # PANAS p=0.046, effect size = 0.767 -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- data_farming %>% -->
+<!--   select(ROS, PANAS) %>% -->
+<!--   describeBy(group = data_farming$pre_post) -->
+
+<!-- farming <- tibble(vars=c(1, 2), scales=c("Farming ROS", "Farming PANAS*"), sample=c(8, 8), pre_means=c(4.62, 5.13), post_means=c(6.21, 6.15), p_value=c(0.075, "*p <.05 (0.046)"), effect_size=c("NA", 0.767)) -->
+<!-- ``` -->
+
+<!-- #Wood -->
+<!-- ```{r} -->
+<!-- t.test(data_wood$ROS ~ data_wood$pre_post, mu = 0, alt = "two.sided", conf = 0.95, var.eq = F, paired = T) -->
+<!-- t.test(data_wood$PANAS ~ data_wood$pre_post, mu = 0, alt = "two.sided", conf = 0.95, var.eq = F, paired = T) -->
+
+<!-- library(effsize) -->
+<!-- cohen.d(data_wood$ROS ~ data_wood$pre_post, na.rm = TRUE, pooled = TRUE, paired = T) -->
+<!-- cohen.d(data_wood$PANAS ~ data_wood$pre_post, na.rm = TRUE, pooled = TRUE, paired = T) -->
+<!-- ``` -->
+
+<!-- #Sketch -->
+<!-- ```{r} -->
+<!-- t.test(data_sketch$ROS ~ data_sketch$pre_post, mu = 0, alt = "two.sided", conf = 0.95, var.eq = F, paired = T) -->
+<!-- t.test(data_sketch$PANAS ~ data_sketch$pre_post, mu = 0, alt = "two.sided", conf = 0.95, var.eq = F, paired = T) -->
+
+<!-- library(effsize) -->
+<!-- cohen.d(data_sketch$ROS ~ data_sketch$pre_post, na.rm = TRUE, pooled = TRUE, paired = T) -->
+<!-- cohen.d(data_sketch$PANAS ~ data_sketch$pre_post, na.rm = TRUE, pooled = TRUE, paired = T) -->
+
+<!-- #ROS p>.05 (0.058), large effect(1.263) -->
+<!-- #PANAS p<.01, small large (0.2979) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- data_wood %>% -->
+<!--   select(ROS, PANAS) %>% -->
+<!--   describeBy(group = data_wood$pre_post) -->
+
+<!-- wood <- tibble(vars=c(3, 4), scales=c("Wood ROS", "Wood PANAS"), sample=c(12, 12), pre_means=c(5.24, 5.39), post_means=c(5.64, 6.25), p_value=c("0.348", "*p<.01"), effect_size=c(0.490, 1.063)) -->
+<!-- #ROS p>.05, small effect(0.490) -->
+<!-- #PANAS p<.01, large (1.063) -->
+
+
+<!-- data_sketch %>% -->
+<!--   select(ROS, PANAS) %>% -->
+<!--   describeBy(group = data_sketch$pre_post) -->
+<!-- sketch <- tibble(vars=c(5, 6), scales=c("Sketch ROS", "Sketch PANAS"), sample=c(5, 5), pre_means=c(4.97, 5.29), post_means=c(5.90, 5.86), p_value=c("0.058", "*p<.01"), effect_size=c(1.263, 0.2979)) -->
+<!-- #ROS p>.05 (0.058), large effect(1.263) -->
+<!-- #PANAS p<.01, small effect (0.2979) -->
+
+<!-- #combining tables -->
+<!-- comp_groups <- rbind(farming, wood, sketch) -->
+<!-- comp_groups %>% -->
+<!--   gt() %>%  -->
+<!--   tab_header( -->
+<!--     title="Summary of Test Statistics: Pre-and-post Survey Results by Programs" -->
+<!--     ) %>%  -->
+<!--   cols_align(align = "center") %>%  -->
+<!--   tab_source_note( -->
+<!--     source_note = "*Wilcoxon signed rank test was applied" -->
+<!--   )  -->
+
+<!-- ``` -->
+
+
+<!-- # ANCOVA (differences acorss programs) -->
+<!-- ```{r message=FALSE} -->
+<!-- library(tidyverse) -->
+<!-- library(ggpubr) -->
+<!-- library(rstatix) -->
+<!-- library(broom) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- #preparing a data frame -->
+<!-- ##ROS -->
+
+<!-- comp_all <- data_pre_post_scales %>%  -->
+<!--   select(pre_post, program_today, unique_ID, ROS, PANAS, CNS, POS) -->
+
+<!-- comp_group0 <- data_pre_post_scales %>%  -->
+<!--   filter(program_today == "farming" | program_today == "wood" |program_today == "sketch") %>%  -->
+<!--   select(pre_post, program_today, unique_ID, ROS, PANAS, CNS, POS) -->
+
+<!-- pre <- comp_group0 %>%  -->
+<!--   filter(pre_post=="pre") %>%  -->
+<!--   select(-CNS, -POS) -->
+
+<!-- post <- comp_group0 %>%  -->
+<!--   filter(pre_post=="post") -->
+
+<!-- comp_goup1 <- left_join(pre, post, by="unique_ID") %>%  -->
+<!--   rename(programs=program_today.x,  -->
+<!--          pre_ROS=ROS.x,  -->
+<!--          pre_PANAS=PANAS.x, -->
+<!--          post_ROS=ROS.y, -->
+<!--          post_PANAS=PANAS.y) %>%  -->
+<!--   select(-pre_post.x, -pre_post.y, -program_today.y) -->
+
+<!-- comp_group_ROS <- comp_goup1 %>%  -->
+<!--   select(-pre_PANAS, -post_PANAS, -CNS, -POS) -->
+
+<!-- comp_group_PANAS <- comp_goup1 %>%  -->
+<!--   select(-pre_ROS, -post_ROS, -CNS, -POS) -->
+<!-- ``` -->
+
+<!-- #Checking Linearity  -->
+<!-- ```{r} -->
+<!-- comp_group_ROS %>%  -->
+<!--   ggscatter( -->
+<!--   x = "pre_ROS", y = "post_ROS", -->
+<!--   color = "programs", add = "reg.line" -->
+<!--   )+ -->
+<!--   stat_regline_equation( -->
+<!--     aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = programs) -->
+<!--     ) -->
+
+<!-- comp_group_PANAS %>%  -->
+<!--   ggscatter( -->
+<!--   x = "pre_PANAS", y = "post_PANAS", -->
+<!--   color = "programs", add = "reg.line" -->
+<!--   )+ -->
+<!--   stat_regline_equation( -->
+<!--     aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~"), color = programs) -->
+<!--     ) -->
+<!-- ``` -->
+
+<!-- #Checking homogeneity -->
+<!-- ```{r} -->
+<!-- comp_group_ROS %>%  -->
+<!--   anova_test(post_ROS ~ programs*pre_ROS) -->
+
+<!-- comp_group_PANAS %>%  -->
+<!--   anova_test(post_PANAS ~ programs*pre_PANAS) -->
+
+<!-- ``` -->
+
+<!-- # Anova test -->
+<!-- ```{r} -->
+<!-- res.aov1 <- comp_group_ROS %>%  -->
+<!--   anova_test(post_ROS ~ pre_ROS+programs) -->
+<!-- get_anova_table(res.aov1) -->
+
+<!-- res.aov2 <- comp_group_PANAS %>%  -->
+<!--   anova_test(post_PANAS ~ pre_PANAS+programs) -->
+<!-- get_anova_table(res.aov2) -->
+
+<!-- #After adjustment for pre-test ROS and PANAS score, there was no statistically significant difference in post-test ROS and PANAS score between the groups, F(2, 21) = 0.588 (ROS), F(2, 21) = 0.990 (PANAS), p >.05 -->
+
+
+<!-- #CNS as a covariance -->
+<!-- res.aov3 <- comp_goup1 %>%  -->
+<!--   anova_test(post_PANAS ~ pre_PANAS+CNS) -->
+<!-- get_anova_table(res.aov3) -->
+
+<!-- res.aov4 <- comp_goup1 %>%  -->
+<!--   anova_test(post_ROS ~ pre_ROS+CNS) -->
+<!-- get_anova_table(res.aov4) -->
+
+<!-- ``` -->
+
+<!-- ##Correlation and Linear Regression in CNS with post group results -->
+<!-- ```{r} -->
+<!-- library(lsr) -->
+<!-- comp_all %>%  -->
+<!--   select(ROS, PANAS, CNS, POS) %>% -->
+<!--   correlate(test=TRUE) -->
+
+<!-- #Both pre and post -->
+<!-- comp_all %>%  -->
+<!--   select(ROS, PANAS, CNS, POS) %>%  -->
+<!--   cor(method="spearman") -->
+
+<!-- #Only Post -->
+<!-- comp_all %>%  -->
+<!--   filter(pre_post=="post") %>%  -->
+<!--   select(ROS, PANAS, CNS, POS) %>%  -->
+<!--   cor(method="spearman") -->
+
+<!-- # -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- model_ROS <-  lm(comp_group_ROS$post_ROS ~ comp_group_ROS$pre_ROS+factor(comp_group_ROS$programs)) -->
+<!-- anova(model_ROS) -->
+
+<!-- model_ROS$coefficients -->
+
+<!-- model_PANAS <-  lm(comp_group_PANAS$post_PANAS ~ comp_group_PANAS$pre_PANAS+factor(comp_group_PANAS$programs)) -->
+<!-- anova(model_PANAS) -->
+
+<!-- model_PANAS$coefficients -->
+
+<!-- ``` -->
+
+
+
+<!-- # Post Hoc Analysis across different programs -->
