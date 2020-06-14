@@ -7,6 +7,7 @@ editor_options:
 # Online Survey: Analysis of Responses from GUI Members
 
 
+
 ```{r include=FALSE}
 # Packages
 library(QuantPsyc)
@@ -23,6 +24,15 @@ library(psych)
 library(dplyr)
 ```
 
+```{r include=FALSE}
+# Saving Data Scales
+#saveRDS(only_gui_scales, ("data/only_gui_june4_scales.rds"))
+#only_gui_scales <- readRDS("/data/only_gui_mar20_scales.rds") # for coding
+only_gui_scales <- readRDS(here::here("data/only_gui_june4_scales.rds"))
+```
+
+
+## Internal Consistency
 <!-- ```{r include=FALSE} -->
 <!-- # loading full GUI data -->
 <!-- gui_df <- readRDS(here::here("data/0_GUI_online_mar20.rds")) -->
@@ -154,7 +164,7 @@ library(dplyr)
 <!-- ``` -->
 
 
-## Internal Consistency
+
 All scales of psychological measures used in the online survey have good Cronbach’s alpha, ranging from .76 to .92 (good internal consistency). Therefore, we will proceed to include all the questions in the respective scales. 
 
 ```{r include=FALSE}
@@ -177,13 +187,6 @@ tbl_1 %>% gt() %>% tab_source_note(
 <!-- only_gui_scales <- cbind(only_gui, dfscores) -->
 <!-- ``` -->
 
-
-```{r include=FALSE}
-# Saving Data Scales
-#saveRDS(only_gui_scales, ("data/only_gui_june4_scales.rds"))
-#only_gui_scales <- readRDS("/data/only_gui_mar20_scales.rds") # for coding
-only_gui_scales <- readRDS(here::here("data/only_gui_june4_scales.rds"))
-```
 
 ## Descriptive statistics
 ```{r include=FALSE}
@@ -420,6 +423,27 @@ only_gui_scales %>%
   geom_vline(mapping = aes(xintercept = 46.2), color = "blue", alpha = 0.5) +
   labs(x = "Age", y = "", title = "Distribution of Age", subtitle = "*Red line is median (35.5) and Blue lines are the 25th (28) and 75th (46.2) quantile")
 ```
+
+```{r echo=FALSE}
+only_gui_scales %>%
+  select(age) %>%
+  ggplot(aes(x = age)) +
+  geom_density(fill="darkgreen", alpha=0.5)+
+  scale_x_continuous(breaks = c(18, 28, 35, 46, 75)) +
+  geom_vline(mapping = aes(xintercept = 35.5), color = "red", alpha = 0.5) +
+  geom_vline(mapping = aes(xintercept = 28), color = "blue", alpha = 0.5) +
+  geom_vline(mapping = aes(xintercept = 46.2), color = "blue", alpha = 0.5) +
+  labs(x = "Age", y = "", title = "Distribution of Age", subtitle = "*Red line is median (35.5) and Blue lines are the 25th (28) and 75th (46.2) quantile")
+```
+
+```{r include=FALSE}
+only_gui_scales %>%
+  select(age) %>% 
+  group_by(age) %>% 
+  summarise(count = n()) %>% 
+  arrange(-count) %>% View()
+```
+
 
 ```{r include=FALSE}
 only_gui_scales %>%
@@ -955,6 +979,103 @@ gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
 - Although the ANOVA test did not show any significant differences in the rest of the variables, the table A and the boxplots seem to show some variances among clusters. For example, __Sense of Community__ is very low in the cluster 1.
 
 ```{r include=FALSE}
+# Types of programs by clusters
+gui_cluster_data %>%
+  select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
+  group_by(clusters) %>% 
+  summarise_all(count)
+
+gui_cluster_data %>%
+  select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
+  group_by(clusters) %>% 
+  summarise(
+    balik_c = sum(balik),
+    corporate_c = sum(corporate),
+    sketch_c = sum(sketch),
+    wood_c = sum(wood),
+    harvesting_c = sum(harvesting),
+    others_c = sum(others)
+  ) 
+
+gui_cluster_data %>%
+  select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
+  group_by(clusters) %>% 
+  filter(clusters == 3 | clusters == 4)
+
+  summarise_all(mean)
+
+gui_cluster_data %>%
+    filter(number_programs == 1) %>% #View()
+select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
+  summarise(
+    balik_c = sum(balik),
+    corporate_c = sum(corporate),
+    sketch_c = sum(sketch),
+    wood_c = sum(wood),
+    harvesting_c = sum(harvesting),
+    others_c = sum(others)
+  )
+
+gui_cluster_data %>%
+select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
+  group_by(clusters) %>% 
+  summarise(
+    balik_c = sum(balik),
+    corporate_c = sum(corporate),
+    sketch_c = sum(sketch),
+    wood_c = sum(wood),
+    harvesting_c = sum(harvesting),
+    others_c = sum(others)
+  ) %>% gt()
+
+gui_cluster_data %>% 
+  filter(program_specify != 0) %>% 
+  View()
+  
+gui_cluster_data %>% 
+  filter(program_specify != 0) %>% 
+  select(program_specify) %>% View()
+
+gui_cluster_data %>%
+  select(balik, age) %>% 
+  ggplot()+
+  geom_point(aes(x=age, y=balik), alpha=0.4)+
+  theme_minimal()
+
+gui_cluster_data %>% 
+  select(age) %>% 
+  filter(age >= 60) %>% 
+  count()
+
+gui_cluster_data %>% 
+  select(age) %>% 
+  filter(age >= 50) %>% 
+  count()
+#60s = 6
+#50s = 16
+
+gui_cluster_data %>% 
+  select(age) %>% 
+  filter(age <= 23) %>% 
+  count()
+#teen = 8
+# college ages = 14
+
+gui_cluster_data %>% 
+  select(clusters, age) %>% 
+  group_by(clusters) %>%
+  ggplot()+
+  geom_boxplot(aes(x=clusters, y=age))+
+  geom_jitter(aes(x=clusters, y=age), alpha=0.4)+
+  theme_minimal()
+```
+
+<!-- Hi Diana, for the cluster 3, 1 with Balik Kampung, and another 1 with wood workshop. -->
+<!-- Among the cluster 4, 4 members with wood and 3 with others (farming volunteer, landscape & farm maintenance, and harvesting). -->
+
+
+
+```{r include=FALSE}
 # numner of programs
 res.aov <- aov(number_programs ~ clusters, data = gui_cluster_data)
 summary(res.aov) # Significant
@@ -1300,6 +1421,128 @@ Median.test(old_new$PChoice, old_new$clusters) # PChoice is not significant. p=0
 <!-- glance(model_1) -->
 <!-- summary(model_1) #sifnificant -->
 <!-- ``` -->
+
+## Age Group Comparison
+```{r include=FALSE}
+#saveRDS(gui_cluster_data_age, ("data/gui_cluster_data_age_June14.rds"))
+gui_cluster_data_age <- readRDS(here::here("data/gui_cluster_data_age_June14.rds"))
+ 
+# gui_cluster_data_age <- gui_cluster_data %>%
+#   mutate(age_group = case_when(
+#     age <= 27 ~ "youth (<28)",
+#     age > 27 & age <= 35 ~ "adults (28 to 35)",
+#     age > 35 & age <= 46 ~ "older_adults (36 to 46)",
+#     age > 46 ~ "young_seniors_&_seniors (>46)"
+#   )) %>%
+#   mutate(age_group=factor(age_group, levels = c("youth (<28)", "adults (28 to 35)", "older_adults (36 to 46)", "young_seniors_&_seniors (>46)")))
+
+#25
+only_gui_scales %>%
+  select(age) %>%
+  filter(age <= 27) %>%
+  summarize(count = n())
+
+#27
+only_gui_scales %>%
+  select(age) %>%
+  filter(age > 27 & age <= 35) %>%
+  summarize(count = n())
+
+#26
+only_gui_scales %>%
+  select(age) %>%
+  filter(age > 35 & age <= 46) %>%
+  summarize(count = n())
+
+#26
+only_gui_scales %>%
+  select(age) %>%
+  filter(age > 46) %>%
+  summarize(count = n())
+```
+
+```{r echo=FALSE}
+gui_cluster_data_age %>% 
+  select(age_group, frequency_coded, commitment_coded, number_programs, SoCoh, SOC, IMI, IM, PComp, PChoice, CNS, Self_Est, Self_Eff) %>% 
+  group_by(age_group) %>% 
+  summarise_all(mean) %>% 
+  gt() %>% 
+  fmt_number(
+    columns = vars(frequency_coded, commitment_coded, number_programs, SoCoh, SOC, IMI, IM, PComp, PChoice, CNS, Self_Est, Self_Eff),
+    decimals = 2
+  )
+```
+
+```{r include=FALSE}
+#ANOVA
+aov_1 <- aov(CNS ~ age_group, data = gui_cluster_data_age)
+summary(aov_1) # Not significant
+
+aov_1 <- aov(SOC ~ age_group, data = gui_cluster_data_age)
+summary(aov_1) # Not significant
+
+aov_1 <- aov(SoCoh ~ age_group, data = gui_cluster_data_age)
+summary(aov_1) # Significant
+
+# Post Hoc Test
+pairwise.t.test(
+  x = gui_cluster_data_age$SoCoh, # outcome variable
+  g = gui_cluster_data_age$age_group, # grouping variable
+  p.adjust.method = "none" # no correction used
+)
+
+aov_1 <- aov(IMI ~ age_group, data = gui_cluster_data_age)
+summary(aov_1) # Significant
+
+pairwise.t.test(
+  x = gui_cluster_data_age$IMI, # outcome variable
+  g = gui_cluster_data_age$age_group, # grouping variable
+  p.adjust.method = "none" # no correction used
+)
+#older_adults (36 to 46) is significantly different from youth and adult groups
+
+aov_1 <- aov(IM ~ age_group, data = gui_cluster_data_age)
+summary(aov_1) # Not Significant
+
+aov_1 <- aov(PComp ~ age_group, data = gui_cluster_data_age)
+summary(aov_1) # Not significant
+
+aov_1 <- aov(PChoice ~ age_group, data = gui_cluster_data_age)
+summary(aov_1) # Significant
+
+pairwise.t.test(
+  x = gui_cluster_data_age$PChoice, # outcome variable
+  g = gui_cluster_data_age$age_group, # grouping variable
+  p.adjust.method = "none" # no correction used
+)
+
+aov_1 <- aov(CNS ~ age_group, data = gui_cluster_data_age)
+summary(aov_1) # Not significant
+
+aov_1 <- aov(Self_Est ~ age_group, data = gui_cluster_data_age)
+summary(aov_1) # Significant
+
+pairwise.t.test(
+  x = gui_cluster_data_age$Self_Est, # outcome variable
+  g = gui_cluster_data_age$age_group, # grouping variable
+  p.adjust.method = "none" # no correction used
+) #Older adults have higher self-esteem than youth
+
+aov_1 <- aov(Self_Eff ~ age_group, data = gui_cluster_data_age)
+summary(aov_1) # Not significant
+
+
+aov_1 <- aov(frequency_coded ~ age_group, data = gui_cluster_data_age)
+summary(aov_1) # Not significant
+
+aov_1 <- aov(commitment_coded ~ age_group, data = gui_cluster_data_age)
+summary(aov_1) # Not significant
+
+aov_1 <- aov(number_programs ~ age_group, data = gui_cluster_data_age)
+summary(aov_1) # Not significant
+
+```
+
 
 ## Correlation Analysis
 - __`Correlation Test (Spearman's Rank Test)`__ shows correlation r by the figures and highlights: towards __shades of blue__ mean __negative__ and __shades of red__ mean __positive correlations__. Those squares with no highlights (white) are non-significant correlations (p> 0.05).
