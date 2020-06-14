@@ -978,96 +978,87 @@ gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
 
 - Although the ANOVA test did not show any significant differences in the rest of the variables, the table A and the boxplots seem to show some variances among clusters. For example, __Sense of Community__ is very low in the cluster 1.
 
-```{r include=FALSE}
+```{r echo=FALSE}
 # Types of programs by clusters
-gui_cluster_data %>%
-  select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
-  group_by(clusters) %>% 
-  summarise_all(count)
 
 gui_cluster_data %>%
-  select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
-  group_by(clusters) %>% 
-  summarise(
-    balik_c = sum(balik),
-    corporate_c = sum(corporate),
-    sketch_c = sum(sketch),
-    wood_c = sum(wood),
-    harvesting_c = sum(harvesting),
-    others_c = sum(others)
-  ) 
-
-gui_cluster_data %>%
-  select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
-  group_by(clusters) %>% 
-  filter(clusters == 3 | clusters == 4)
-
-  summarise_all(mean)
-
-gui_cluster_data %>%
-    filter(number_programs == 1) %>% #View()
-select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
-  summarise(
-    balik_c = sum(balik),
-    corporate_c = sum(corporate),
-    sketch_c = sum(sketch),
-    wood_c = sum(wood),
-    harvesting_c = sum(harvesting),
-    others_c = sum(others)
-  )
-
-gui_cluster_data %>%
-select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
-  group_by(clusters) %>% 
-  summarise(
-    balik_c = sum(balik),
-    corporate_c = sum(corporate),
-    sketch_c = sum(sketch),
-    wood_c = sum(wood),
-    harvesting_c = sum(harvesting),
-    others_c = sum(others)
-  ) %>% gt()
-
-gui_cluster_data %>% 
-  filter(program_specify != 0) %>% 
-  View()
-  
-gui_cluster_data %>% 
-  filter(program_specify != 0) %>% 
-  select(program_specify) %>% View()
-
-gui_cluster_data %>%
-  select(balik, age) %>% 
-  ggplot()+
-  geom_point(aes(x=age, y=balik), alpha=0.4)+
-  theme_minimal()
-
-gui_cluster_data %>% 
-  select(age) %>% 
-  filter(age >= 60) %>% 
-  count()
-
-gui_cluster_data %>% 
-  select(age) %>% 
-  filter(age >= 50) %>% 
-  count()
-#60s = 6
-#50s = 16
-
-gui_cluster_data %>% 
-  select(age) %>% 
-  filter(age <= 23) %>% 
-  count()
-#teen = 8
-# college ages = 14
-
-gui_cluster_data %>% 
-  select(clusters, age) %>% 
+  select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>%
   group_by(clusters) %>%
-  ggplot()+
-  geom_boxplot(aes(x=clusters, y=age))+
-  geom_jitter(aes(x=clusters, y=age), alpha=0.4)+
-  theme_minimal()
+  summarise(
+    balik_c = sum(balik),
+    corporate_c = sum(corporate),
+    sketch_c = sum(sketch),
+    wood_c = sum(wood),
+    harvesting_c = sum(harvesting),
+    others_c = sum(others)
+  ) %>% 
+  gt()
+
+
+# gui_cluster_data %>%
+#     filter(number_programs == 1) %>% #View()
+# select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
+#   summarise(
+#     balik_c = sum(balik),
+#     corporate_c = sum(corporate),
+#     sketch_c = sum(sketch),
+#     wood_c = sum(wood),
+#     harvesting_c = sum(harvesting),
+#     others_c = sum(others)
+#   )
+# 
+# gui_cluster_data %>%
+# select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
+#   group_by(clusters) %>% 
+#   summarise(
+#     balik_c = sum(balik),
+#     corporate_c = sum(corporate),
+#     sketch_c = sum(sketch),
+#     wood_c = sum(wood),
+#     harvesting_c = sum(harvesting),
+#     others_c = sum(others)
+#   ) %>% gt()
+
+# gui_cluster_data %>% 
+#   filter(program_specify != 0) %>% 
+#   View()
+  
+# gui_cluster_data %>% 
+#   filter(program_specify != 0) %>% 
+#   select(program_specify) %>% View()
+# 
+# gui_cluster_data %>%
+#   select(balik, age) %>% 
+#   ggplot()+
+#   geom_point(aes(x=age, y=balik), alpha=0.4)+
+#   theme_minimal()
+# 
+# gui_cluster_data %>% 
+#   select(age) %>% 
+#   filter(age >= 60) %>% 
+#   count()
+# 
+# gui_cluster_data %>% 
+#   select(age) %>% 
+#   filter(age >= 50) %>% 
+#   count()
+# #60s = 6
+# #50s = 16
+# 
+# gui_cluster_data %>% 
+#   select(age) %>% 
+#   filter(age <= 23) %>% 
+#   count()
+# #teen = 8
+# # college ages = 14
+# 
+# gui_cluster_data %>% 
+#   select(clusters, age) %>% 
+#   group_by(clusters) %>%
+#   ggplot()+
+#   geom_boxplot(aes(x=clusters, y=age))+
+#   geom_jitter(aes(x=clusters, y=age), alpha=0.4)+
+#   theme_minimal()
 ```
 
 <!-- Hi Diana, for the cluster 3, 1 with Balik Kampung, and another 1 with wood workshop. -->
@@ -1481,6 +1472,7 @@ summary(aov_1) # Not significant
 aov_1 <- aov(SOC ~ age_group, data = gui_cluster_data_age)
 summary(aov_1) # Not significant
 
+#SoCoh
 aov_1 <- aov(SoCoh ~ age_group, data = gui_cluster_data_age)
 summary(aov_1) # Significant
 
@@ -1491,6 +1483,7 @@ pairwise.t.test(
   p.adjust.method = "none" # no correction used
 )
 
+#IMI
 aov_1 <- aov(IMI ~ age_group, data = gui_cluster_data_age)
 summary(aov_1) # Significant
 
@@ -1507,6 +1500,7 @@ summary(aov_1) # Not Significant
 aov_1 <- aov(PComp ~ age_group, data = gui_cluster_data_age)
 summary(aov_1) # Not significant
 
+#PChoice
 aov_1 <- aov(PChoice ~ age_group, data = gui_cluster_data_age)
 summary(aov_1) # Significant
 
@@ -1531,7 +1525,6 @@ pairwise.t.test(
 aov_1 <- aov(Self_Eff ~ age_group, data = gui_cluster_data_age)
 summary(aov_1) # Not significant
 
-
 aov_1 <- aov(frequency_coded ~ age_group, data = gui_cluster_data_age)
 summary(aov_1) # Not significant
 
@@ -1541,6 +1534,24 @@ summary(aov_1) # Not significant
 aov_1 <- aov(number_programs ~ age_group, data = gui_cluster_data_age)
 summary(aov_1) # Not significant
 
+#SoCoh, PChoice, and Self_Est are significantly different.
+#SoCoh is higher among the younger groups. older_adults (36 to 46) has lower PChoice. And Self_est is higher among the older compared to the youngest group
+
+#older_adults (36 to 46) has the lowest frequency (less than once a month) and commitment (less than 1.5 years)
+```
+
+```{r echo=FALSE}
+gui_cluster_data_age %>% 
+  select(age_group, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
+  group_by(age_group) %>% 
+  summarise(
+    balik_c = sum(balik),
+    corporate_c = sum(corporate),
+    sketch_c = sum(sketch),
+    wood_c = sum(wood),
+    harvesting_c = sum(harvesting),
+    others_c = sum(others)
+  ) %>% gt()
 ```
 
 
