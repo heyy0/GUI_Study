@@ -978,93 +978,6 @@ gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
 
 - Although the ANOVA test did not show any significant differences in the rest of the variables, the table A and the boxplots seem to show some variances among clusters. For example, __Sense of Community__ is very low in the cluster 1.
 
-```{r echo=FALSE}
-# Types of programs by clusters
-
-gui_cluster_data %>%
-  select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>%
-  group_by(clusters) %>%
-  summarise(
-    balik_c = sum(balik),
-    corporate_c = sum(corporate),
-    sketch_c = sum(sketch),
-    wood_c = sum(wood),
-    harvesting_c = sum(harvesting),
-    others_c = sum(others)
-  ) %>% 
-  gt()
-
-
-# gui_cluster_data %>%
-#     filter(number_programs == 1) %>% #View()
-# select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
-#   summarise(
-#     balik_c = sum(balik),
-#     corporate_c = sum(corporate),
-#     sketch_c = sum(sketch),
-#     wood_c = sum(wood),
-#     harvesting_c = sum(harvesting),
-#     others_c = sum(others)
-#   )
-# 
-# gui_cluster_data %>%
-# select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
-#   group_by(clusters) %>% 
-#   summarise(
-#     balik_c = sum(balik),
-#     corporate_c = sum(corporate),
-#     sketch_c = sum(sketch),
-#     wood_c = sum(wood),
-#     harvesting_c = sum(harvesting),
-#     others_c = sum(others)
-#   ) %>% gt()
-
-# gui_cluster_data %>% 
-#   filter(program_specify != 0) %>% 
-#   View()
-  
-# gui_cluster_data %>% 
-#   filter(program_specify != 0) %>% 
-#   select(program_specify) %>% View()
-# 
-# gui_cluster_data %>%
-#   select(balik, age) %>% 
-#   ggplot()+
-#   geom_point(aes(x=age, y=balik), alpha=0.4)+
-#   theme_minimal()
-# 
-# gui_cluster_data %>% 
-#   select(age) %>% 
-#   filter(age >= 60) %>% 
-#   count()
-# 
-# gui_cluster_data %>% 
-#   select(age) %>% 
-#   filter(age >= 50) %>% 
-#   count()
-# #60s = 6
-# #50s = 16
-# 
-# gui_cluster_data %>% 
-#   select(age) %>% 
-#   filter(age <= 23) %>% 
-#   count()
-# #teen = 8
-# # college ages = 14
-# 
-# gui_cluster_data %>% 
-#   select(clusters, age) %>% 
-#   group_by(clusters) %>%
-#   ggplot()+
-#   geom_boxplot(aes(x=clusters, y=age))+
-#   geom_jitter(aes(x=clusters, y=age), alpha=0.4)+
-#   theme_minimal()
-```
-
-<!-- Hi Diana, for the cluster 3, 1 with Balik Kampung, and another 1 with wood workshop. -->
-<!-- Among the cluster 4, 4 members with wood and 3 with others (farming volunteer, landscape & farm maintenance, and harvesting). -->
-
-
 
 ```{r include=FALSE}
 # numner of programs
@@ -1307,6 +1220,100 @@ c7 <- gui_cluster_data %>%
 
 c1 + c2 + c3 + c4 + e4 + e5 + e6 + c5 + c6 + c7
 ```
+
+```{r echo=FALSE}
+# Types of programs by clusters
+
+gui_cluster_data %>%
+  select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>%
+  group_by(clusters) %>%
+  summarise(
+    balik_c = sum(balik),
+    corporate_c = sum(corporate),
+    sketch_c = sum(sketch),
+    wood_c = sum(wood),
+    harvesting_c = sum(harvesting),
+    others_c = sum(others)
+  ) %>% 
+  gt()
+
+
+# gui_cluster_data %>%
+#     filter(number_programs == 1) %>% #View()
+# select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
+#   summarise(
+#     balik_c = sum(balik),
+#     corporate_c = sum(corporate),
+#     sketch_c = sum(sketch),
+#     wood_c = sum(wood),
+#     harvesting_c = sum(harvesting),
+#     others_c = sum(others)
+#   )
+# 
+# gui_cluster_data %>%
+# select(clusters, balik, corporate, wood, sketch, harvesting, others, number_programs) %>% 
+#   group_by(clusters) %>% 
+#   summarise(
+#     balik_c = sum(balik),
+#     corporate_c = sum(corporate),
+#     sketch_c = sum(sketch),
+#     wood_c = sum(wood),
+#     harvesting_c = sum(harvesting),
+#     others_c = sum(others)
+#   ) %>% gt()
+
+# gui_cluster_data %>% 
+#   filter(program_specify != 0) %>% 
+#   View()
+  
+# gui_cluster_data %>% 
+#   filter(program_specify != 0) %>% 
+#   select(program_specify) %>% View()
+# 
+# gui_cluster_data %>%
+#   select(balik, age) %>% 
+#   ggplot()+
+#   geom_point(aes(x=age, y=balik), alpha=0.4)+
+#   theme_minimal()
+# 
+# gui_cluster_data %>% 
+#   select(age) %>% 
+#   filter(age >= 60) %>% 
+#   count()
+# 
+# gui_cluster_data %>% 
+#   select(age) %>% 
+#   filter(age >= 50) %>% 
+#   count()
+# #60s = 6
+# #50s = 16
+# 
+# gui_cluster_data %>% 
+#   select(age) %>% 
+#   filter(age <= 23) %>% 
+#   count()
+# #teen = 8
+# # college ages = 14
+# 
+# gui_cluster_data %>% 
+#   select(clusters, age) %>% 
+#   group_by(clusters) %>%
+#   ggplot()+
+#   geom_boxplot(aes(x=clusters, y=age))+
+#   geom_jitter(aes(x=clusters, y=age), alpha=0.4)+
+#   theme_minimal()
+
+# other_programs <- gui_cluster_data %>% 
+#   select(program_specify) %>% 
+#   filter(program_specify != 0) %>% 
+#   rename("Other Types of Programs" = program_specify)
+
+#write_csv(other_programs, "data/other_programs_june15.csv")
+```
+
+<!-- Hi Diana, for the cluster 3, 1 with Balik Kampung, and another 1 with wood workshop. -->
+<!-- Among the cluster 4, 4 members with wood and 3 with others (farming volunteer, landscape & farm maintenance, and harvesting). -->
+
 
 ### Interpreting the clusters
 - Based on the below directional plot and the Table A, `X1` or group 1 can be categorized as __fresh members__ of GUI (n=67): those who __recently started coming__ to GUI (on average within 8 months), their __frequency of visits is low__ (only twice a year), and they haven't attended many programs yet. Perhaps, these members are still exploring how to engage with GUI.
