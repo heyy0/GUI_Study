@@ -177,6 +177,7 @@ gui_mar20_scales <- readRDS(here::here("data/gui_mar20_scales.rds"))
 ```
 
 ## Descriptive statistics
+### Overall
 ```{r echo=FALSE}
 tbl_var1 <- gui_mar20_scales %>%
   select(age, SoCoh, SOC, CNS, Self_Est, Self_Eff) %>%
@@ -200,7 +201,10 @@ tbl_var1 %>%
     columns = vars(max, min),
     decimals = 1
   )
+```
 
+### GUI Members
+```{r echo=FALSE}
 # Just GUI
 gui_mar20_scales %>%
   filter(gui_non_gui == "yes") %>%
@@ -221,7 +225,55 @@ gui_mar20_scales %>%
     columns = vars(max, min),
     decimals = 1
   )
+```
 
+```{r echo=FALSE}
+gui_mar20_scales %>%
+  filter(gui_non_gui == "yes") %>%
+  select(gender) %>% 
+  mutate(gender = case_when(
+    gender == 1 ~ "Male",
+    gender == 2 ~ "Female",
+    TRUE ~ "Orhers"
+  )) %>% 
+  group_by(gender) %>% 
+  summarize(count = n()) %>% 
+  mutate(percentage =c(count[1]/104, count[2]/104, count[3]/104))%>% 
+  gt() %>% 
+  fmt_number(
+    columns = vars(percentage),
+    decimals = 2
+  ) %>%
+  tab_header(
+    title = "GUI Members: Gender"
+  ) 
+  
+
+gui_mar20_scales %>%
+  filter(gui_non_gui == "yes") %>%
+  select(race) %>% 
+  mutate(race = case_when(
+    race == 1 ~ "Chinese",
+    race == 2 ~ "Malay",
+    race == 3 ~ "Indian",
+    TRUE ~ "Orher Races"
+  )) %>% 
+  group_by(race) %>% 
+  summarize(count = n()) %>% 
+  mutate(percentage =c(count[1]/104, count[2]/104, count[3]/104, count[4]/104))%>% 
+  gt() %>% 
+    fmt_number(
+    columns = vars(percentage),
+    decimals = 2
+  ) %>%
+  tab_header(
+    title = "GUI Members: Race"
+  ) 
+```
+
+
+### Non-GUI Memnbers
+```{r echo=FALSE}
 # non-GUI
 gui_mar20_scales %>%
   filter(gui_non_gui == "never") %>%
@@ -244,13 +296,49 @@ gui_mar20_scales %>%
   )
 ```
 
-
-```{r include=FALSE}
-# Descriptive statisictics: GUI vs non-GUI
+```{r echo=FALSE}
 gui_mar20_scales %>%
-  select(frequency, commitment, age, SoCoh, SOC, CNS, Self_Est, Self_Eff) %>%
-  describeBy(group = gui_mar20_scales$gui_non_gui)
+  filter(gui_non_gui == "never") %>%
+  select(gender) %>% 
+  mutate(gender = case_when(
+    gender == 1 ~ "Male",
+    gender == 2 ~ "Female",
+    TRUE ~ "Orhers"
+  )) %>% 
+  group_by(gender) %>% 
+  summarize(count = n()) %>% 
+  mutate(percentage =c(count[1]/89, count[2]/89, count[3]/89))%>% 
+  gt() %>% 
+    fmt_number(
+    columns = vars(percentage),
+    decimals = 2
+  ) %>%
+  tab_header(
+    title = "Non-GUI Members: Gender"
+  ) 
+  
+gui_mar20_scales %>%
+  filter(gui_non_gui == "never") %>%
+  select(race) %>% 
+  mutate(race = case_when(
+    race == 1 ~ "Chinese",
+    race == 2 ~ "Malay",
+    race == 3 ~ "Indian",
+    TRUE ~ "Orher Races"
+  )) %>% 
+  group_by(race) %>% 
+  summarize(count = n()) %>% 
+  mutate(percentage =c(count[1]/89, count[2]/89, count[3]/89, count[4]/89))%>% 
+  gt() %>% 
+    fmt_number(
+    columns = vars(percentage),
+    decimals = 2
+  ) %>%
+  tab_header(
+    title = "Non-GUI Members: Race"
+  ) 
 ```
+
 
 
 ## Normality Check
