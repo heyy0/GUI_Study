@@ -248,7 +248,6 @@ gui_mar20_scales %>%
     title = "GUI Members: Gender"
   ) 
   
-
 gui_mar20_scales %>%
   filter(gui_non_gui == "yes") %>%
   select(race) %>% 
