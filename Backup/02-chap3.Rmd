@@ -1,5 +1,5 @@
 ---
-output: word_document
+output: html_document
 editor_options: 
   chunk_output_type: console
 ---
@@ -23,6 +23,149 @@ library(psych)
 library(dplyr)
 ```
 
+## Additional Cleaning
+
+
+<!-- ```{r include=FALSE} -->
+<!-- # loading full GUI data -->
+<!-- gui_df <- readRDS(here::here("data/0_GUI_online_mar20.rds")) -->
+<!-- only_gui <- gui_df %>% -->
+<!--   filter(gui_non_gui == "yes") -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- # replacing 0 in frequency and commitment -->
+<!-- only_gui <- only_gui %>% -->
+<!--   mutate( -->
+<!--     commitment_coded = case_when( # if 0, coded with 1 -->
+<!--       commitment == 0 ~ 1, -->
+<!--       TRUE ~ commitment -->
+<!--     ), -->
+<!--     frequency_coded = case_when( # if 0, coded with 1 -->
+<!--       frequency == 0 ~ 1, -->
+<!--       TRUE ~ frequency -->
+<!--     ), -->
+<!--     gender = case_when( # coding gender -->
+<!--       gender == 1 ~ "Female", -->
+<!--       gender == 3 ~ "Male", -->
+<!--       TRUE ~ "Others" -->
+<!--     ), -->
+<!--     balik = case_when( # if False, coded with 0 -->
+<!--       `which_programs/balik` == "FALSE" ~ 0, -->
+<!--       TRUE ~ 1 -->
+<!--     ), -->
+<!--     corporate = case_when( # if False, coded with 0 -->
+<!--       `which_programs/corporate` == "FALSE" ~ 0, -->
+<!--       TRUE ~ 1 -->
+<!--     ), -->
+<!--     wood = case_when( # if False, coded with 0 -->
+<!--       `which_programs/wood` == "FALSE" ~ 0, -->
+<!--       TRUE ~ 1 -->
+<!--     ), -->
+<!--     sketch = case_when( # if False, coded with 0 -->
+<!--       `which_programs/sketch` == "FALSE" ~ 0, -->
+<!--       TRUE ~ 1 -->
+<!--     ), -->
+<!--     harvesting = case_when( # if False, coded with 0 -->
+<!--       `which_programs/harvesting` == "FALSE" ~ 0, -->
+<!--       TRUE ~ 1 -->
+<!--     ), -->
+<!--     others = case_when( # if False, coded with 0 -->
+<!--       `which_programs/other` == "FALSE" ~ 0, -->
+<!--       TRUE ~ 1 -->
+<!--     ), -->
+<!--     number_programs = (balik + corporate + wood + sketch + harvesting + others), -->
+<!--     program_percent = number_programs / 6 -->
+<!--   ) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- # Create scales -->
+<!-- scale.list <- list( -->
+<!--   SoCoh = c("social_cohesion_1", "social_cohesion_2", "social_cohesion_3", "social_cohesion_4_rev_coded", "social_cohesion_5_rev_coded"), -->
+<!--   SOC = c("soc_1", "soc_2", "soc_3", "soc_4", "soc_5", "soc_6", "soc_7", "soc_8"), -->
+<!--   CNS = c("cns_1", "cns_2", "cns_3", "cns_4_rev_coded", "cns_5", "cns_6", "cns_7", "cns_8", "cns_9", "cns_10"), -->
+<!--   #IMI = c("imi_1", "imi_2", "imi_3_rev_coded", "imi_4_rev_coded", "imi_5", "imi_6", "imi_7", "imi_8"), -->
+<!--   Self_Est = c("self_est_1", "self_est_2_rev_coded", "self_est_3", "self_est_4_rev_coded"), -->
+<!--   Self_Eff = c("self_eff_1", "self_eff_2", "self_eff_3", "self_eff_4", "self_eff_5", "self_eff_6", "self_eff_7", "self_eff_8"), -->
+<!--   IM =c("imi_4_rev_coded", "imi_5", "imi_6", "imi_7"), -->
+<!--   PComp =c("imi_2", "imi_8"), -->
+<!--   PChoice =c("imi_1", "imi_3_rev_coded"), -->
+<!--   SOC_needs =c("soc_1", "soc_2"), -->
+<!--   SOC_belonging =c("soc_3", "soc_4"), -->
+<!--   SOC_influence =c("soc_5", "soc_6"), -->
+<!--   SOC_emotion =c("soc_7", "soc_8") -->
+<!-- ) -->
+<!-- ``` -->
+
+
+<!-- ```{r include=FALSE} -->
+<!-- library(psych) -->
+<!-- my.scales <- scoreItems(scale.list, only_gui) -->
+<!-- ``` -->
+
+
+<!-- ```{r include=FALSE} -->
+<!-- library(psych) -->
+<!-- my.scales <- scoreItems(scale.list, only_gui_scales) -->
+<!-- ``` -->
+
+
+<!-- ```{r include=FALSE} -->
+<!-- my.scores <- my.scales$scores -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- dfscores <- data.frame(my.scores) -->
+<!-- only_gui <- cbind(only_gui, dfscores) -->
+
+<!-- # non_gui<- only_gui %>% select(gui_non_gui, gender, age, race, SoCoh, SOC, CNS, Self_Est, Self_Eff) -->
+<!-- # saveRDS(non_gui, ("data/non_gui_june4_scales.rds")) -->
+<!-- #saveRDS(only_gui, ("data/only_gui_june18_scales.rds")) -->
+
+<!-- ``` -->
+
+```{r include=FALSE}
+only_gui <- readRDS(here::here("data/only_gui_june18_scales.rds"))
+```
+
+
+```{r include=FALSE}
+## Cronbach's Alpha
+library(dplyr)
+dfSoCohscore <- select(only_gui, "social_cohesion_1", "social_cohesion_2", "social_cohesion_3", "social_cohesion_4_rev_coded", "social_cohesion_5_rev_coded")
+dfSOCscore <- select(only_gui, "soc_1", "soc_2", "soc_3", "soc_4", "soc_5", "soc_6", "soc_7", "soc_8")
+dfCNSscore <- select(only_gui, "cns_1", "cns_2", "cns_3", "cns_4_rev_coded", "cns_5", "cns_6", "cns_7", "cns_8", "cns_9", "cns_10")
+dfSelf_Estscore <- select(only_gui, "self_est_1", "self_est_2_rev_coded", "self_est_3", "self_est_4_rev_coded")
+dfSelf_Effscore <- select(only_gui, "self_eff_1", "self_eff_2", "self_eff_3", "self_eff_4", "self_eff_5", "self_eff_6", "self_eff_7", "self_eff_8")
+dfIMIscore <- select(only_gui, "imi_1", "imi_2", "imi_3_rev_coded", "imi_4_rev_coded", "imi_5", "imi_6", "imi_7", "imi_8")
+
+score1 <- select(only_gui, "soc_1", "soc_2")
+
+score2 <- select(only_gui, "soc_3", "soc_4")
+
+score3 <- select(only_gui, "soc_5", "soc_6")
+
+score4 <- select(only_gui, "soc_7", "soc_8")
+```
+
+```{r include=FALSE}
+alpha(score1)
+alpha(score2)
+alpha(score3)
+alpha(score4)
+```
+
+<!-- ```{r include=FALSE} -->
+<!-- alpha(dfSoCohscore) -->
+<!-- alpha(dfSOCscore) -->
+<!-- alpha(dfCNSscore) -->
+<!-- alpha(dfSelf_Estscore) -->
+<!-- alpha(dfSelf_Effscore) -->
+<!-- alpha(dfIMIscore) -->
+<!-- ``` -->
+
+
 ## Internal Consistency
 All scales of psychological measures used in the online survey have good Cronbach’s alpha, ranging from .76 to .92 (good internal consistency). Therefore, we will proceed to include all the questions in the respective scales. 
 
@@ -31,7 +174,9 @@ tbl_1 <- tibble(vars = c(1, 2, 3, 4, 5, 6, 7, 8, 9), scales = c("Social Cohesion
 ```
 
 ```{r echo=FALSE}
-tbl_1 %>% gt() %>% tab_source_note(
+tbl_1 %>%
+  gt() %>%
+  tab_source_note(
     source_note = "* Perceived Competence and Perceived Choice have only two items, respectively"
   )
 ```
@@ -49,8 +194,8 @@ tbl_1 %>% gt() %>% tab_source_note(
 
 ```{r include=FALSE}
 # Saving Data Scales
-#saveRDS(only_gui_scales, ("data/only_gui_june4_scales.rds"))
-#only_gui_scales <- readRDS("/data/only_gui_mar20_scales.rds") # for coding
+# saveRDS(only_gui_scales, ("data/only_gui_june4_scales.rds"))
+# only_gui_scales <- readRDS("/data/only_gui_mar20_scales.rds") # for coding
 only_gui_scales <- readRDS(here::here("data/only_gui_june4_scales.rds"))
 ```
 
@@ -358,10 +503,11 @@ library(corrplot)
 
 cor_test_results <- only_gui_scales %>%
   select(frequency_coded, commitment_coded, program_percent) %>%
-  rename("Frequency" =frequency_coded,
-         "Program %" = program_percent,
-         "Commitment"= commitment_coded
-         ) %>% 
+  rename(
+    "Frequency" = frequency_coded,
+    "Program %" = program_percent,
+    "Commitment" = commitment_coded
+  ) %>%
   correlate(test = TRUE, corr.method = "pearson", p.adjust.method = "none")
 
 confident_95 <- cor_test_results$p.value
@@ -370,14 +516,16 @@ cor_M <- cor_test_results$correlation
 
 
 col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
-corrplot(cor_M, method = "color", col = col(200),
-         type = "upper", number.cex = .7,
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col = "black", tl.srt = 45, # Text label color and rotation
-         # Combine with significance
-         p.mat = confident_95, sig.level = 0.05, insig = "blank", 
-         # hide correlation coefficient on the principal diagonal
-         diag = FALSE)
+corrplot(cor_M,
+  method = "color", col = col(200),
+  type = "upper", number.cex = .7,
+  addCoef.col = "black", # Add coefficient of correlation
+  tl.col = "black", tl.srt = 45, # Text label color and rotation
+  # Combine with significance
+  p.mat = confident_95, sig.level = 0.05, insig = "blank",
+  # hide correlation coefficient on the principal diagonal
+  diag = FALSE
+)
 ```
 
 
@@ -575,7 +723,7 @@ tbl_gender <- tibble(
   scales = c("Age", "Frequency", "Commitment", "Social Cohesion", "Sense of Community", "Connection to Nature", "Intrinsic Motivation Inventory", "Intrisic Motivation (Enjoyment and Interests)", "Perceived Competence", "Perceived Choice", "Self Esteem", "Self Efficacy"),
   male_median = c(35.5, 9, 10, 6.0, 5.125, 5.20, 5.50, 5.88, 5.50, 5.50, 4.50, 5.00),
   female_median = c(36.0, 4, 16, 6.2, 5.25, 5.70, 5.88, 6.00, 5.00, 5.50, 5.25, 5.50),
-  Median_test_p_value = c("0.64", "0.079", "0.30", "0.40", "0.40", "0.82", "0.25", "0.21", "0.61", "0.72","0.09", "0.041*")
+  Median_test_p_value = c("0.64", "0.079", "0.30", "0.40", "0.40", "0.82", "0.25", "0.21", "0.61", "0.72", "0.09", "0.041*")
 )
 ```
   
@@ -671,7 +819,7 @@ a8 <- gui_gender_scales %>%
   labs(x = "Gender", y = "Duration of Commitment")
 
 
-(a1 + a2 + a3) / (a4 + a5 + a6) / (d5+ d6+d7)/ (a7 + a8)
+(a1 + a2 + a3) / (a4 + a5 + a6) / (d5 + d6 + d7) / (a7 + a8)
 ```
 
 
@@ -682,7 +830,7 @@ a8 <- gui_gender_scales %>%
 library(factoextra)
 
 # Adding row number
-id_only_gui <- only_gui_scales %>%
+id_only_gui <- only_gui %>%
   mutate(
     id = row_number(),
     id = as.character(id)
@@ -773,7 +921,7 @@ fviz_dend(hierarchical_clusters, k = 4, cex = 0.4) # K= the number of clusters i
 
 ### K-mean clustering
 ```{r echo=FALSE}
-#kmeans_clusters <- kmeans(cluster_data, centers = 4, nstart = 50) # selecting 4 cluters
+# kmeans_clusters <- kmeans(cluster_data, centers = 4, nstart = 50) # selecting 4 cluters
 
 # Saving and loading cluster data
 # saveRDS(kmeans_clusters, ("4_Survey_Experiment/Data/kmeans_clusters_17Apr2020.rds"))
@@ -810,8 +958,8 @@ gui_cluster_data <- left_join(id_only_gui, gui_components, by = "id") %>%
 ```
 
 ```{r include=FALSE}
-#saveRDS(gui_cluster_data, ("data/only_gui_cluster_June4.rds"))
-gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
+#saveRDS(gui_cluster_data, ("data/only_gui_cluster_June18.rds"))
+gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June18.rds"))
 ```
 
 ### Preliminary Analysis on the clusters
@@ -906,6 +1054,44 @@ pairwise.t.test(
 ) # Not significant at all
 
 ```
+
+```{r include=FALSE}
+# SOC Breakdown
+res.aov <- aov(SOC_needs ~ clusters, data = gui_cluster_data)
+summary(res.aov) # not Significant
+
+## Belonging
+res.aov <- aov(SOC_belonging ~ clusters, data = gui_cluster_data)
+summary(res.aov) #Significant
+
+pairwise.t.test(
+  x = gui_cluster_data$SOC_belonging, # outcome variable
+  g = gui_cluster_data$clusters, # grouping variable
+  p.adjust.method = "none" # no correction used
+) # 1 and 2 are different
+
+## Influence
+res.aov <- aov(SOC_influence ~ clusters, data = gui_cluster_data)
+summary(res.aov) #Not Significant
+
+pairwise.t.test(
+  x = gui_cluster_data$SOC_influence, # outcome variable
+  g = gui_cluster_data$clusters, # grouping variable
+  p.adjust.method = "none" # no correction used
+) # 1 and 2 are different
+
+## Emotions
+res.aov <- aov(SOC_emotion ~ clusters, data = gui_cluster_data)
+summary(res.aov) #Not Significant
+
+pairwise.t.test(
+  x = gui_cluster_data$SOC_emotion, # outcome variable
+  g = gui_cluster_data$clusters, # grouping variable
+  p.adjust.method = "none" # no correction used
+) # 1 and 2 are on the boarder line p=0.051
+
+```
+
 
 ```{r include=FALSE}
 cluster_wise <- gui_cluster_data %>%
@@ -1139,10 +1325,15 @@ y1 / y2
 
 ```{r include=FALSE}
 # t test and Effect Size (Gender) for IMI and SOC
-gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
+#gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June18.rds"))
 old_new <- gui_cluster_data %>%
   filter(clusters == 1 | clusters == 2)
 library(agricolae)
+
+old_new %>% 
+  select(clusters) %>% 
+  group_by(clusters) %>% 
+  summarise(count=n())
 ```
 
 ```{r results="hide"}
@@ -1155,6 +1346,12 @@ Median.test(old_new$Self_Eff, old_new$clusters) # Self-eff is not significant. p
 Median.test(old_new$IM, old_new$clusters) # IM is not significant. p=0.64
 Median.test(old_new$PComp, old_new$clusters) # PComp is not significant. p=0.947
 Median.test(old_new$PChoice, old_new$clusters) # PChoice is not significant. p=0.739
+
+Median.test(old_new$SOC_needs, old_new$clusters) # PChoice is not significant. p=0.35
+Median.test(old_new$SOC_belonging, old_new$clusters) # PChoice is not significant. p=0.02
+Median.test(old_new$SOC_influence, old_new$clusters) # PChoice is not significant. p=0.003
+Median.test(old_new$SOC_emotion, old_new$clusters) # PChoice is not significant. p=0.014
+
 ```
 
 
@@ -1164,7 +1361,9 @@ c1 <- old_new %>%
   ggplot(aes(x = clusters, y = CNS, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  labs(y = "Connection to Narure", x = "New VS Long-term Members") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
 
 
 c2 <- old_new %>%
@@ -1172,14 +1371,19 @@ c2 <- old_new %>%
   ggplot(aes(x = clusters, y = SOC, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  labs(y = "Sense of Community", x = "New VS Long-term Members") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
+
 
 c3 <- old_new %>%
   select(SoCoh, clusters) %>%
   ggplot(aes(x = clusters, y = SoCoh, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  labs(y = "Social Cohesion", x = "New VS Long-term Members") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
 
 # c4 <- old_new %>%
 #   select(IMI, clusters) %>%
@@ -1193,35 +1397,46 @@ e4 <- old_new %>%
   ggplot(aes(x = clusters, y = IM, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  labs(y = "Enjoyment/ Interest", x = "") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
 
 e5 <- old_new %>%
   select(PComp, clusters) %>%
   ggplot(aes(x = clusters, y = PComp, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  labs(y = "Perceived Competence", x = "") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
 
 e6 <- old_new %>%
   select(PChoice, clusters) %>%
   ggplot(aes(x = clusters, y = PChoice, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  labs(y = "Perceived Chocie", x = "") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
+
 
 c5 <- old_new %>%
   select(Self_Eff, clusters) %>%
   ggplot(aes(x = clusters, y = Self_Eff, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  labs(y = "Self-Efficacy", x = "") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
 
 c6 <- old_new %>%
   select(Self_Est, clusters) %>%
   ggplot(aes(x = clusters, y = Self_Est, group = clusters, fill = clusters)) +
   geom_boxplot() +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  labs(y = "Self-Esteem", x = "") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
 
 # c7 <- old_new %>%
 #   select(age, clusters) %>%
@@ -1231,6 +1446,127 @@ c6 <- old_new %>%
 #   theme(legend.position = "none")
 
 c1 + c2 + c3 + e4 + e5 + e6 + c5 + c6 #+ c7 + c4
+```
+
+```{r echo=FALSE}
+c1 + c2 + c3
+```
+
+```{r echo=FALSE}
+e4 + e5 + e6 + c5 + c6
+```
+
+```{r echo=FALSE}
+g1 <- old_new %>%
+  select(commitment_coded, clusters) %>%
+  ggplot(aes(x = clusters, y = commitment_coded, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  labs(y = "Duration of Commitment", x = "") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
+
+
+g2 <- old_new %>%
+  select(frequency_coded, clusters) %>%
+  ggplot(aes(x = clusters, y = frequency_coded, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  labs(y = "Frequency of Visits", x = "") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
+
+g3 <- old_new %>%
+  select(number_programs, clusters) %>%
+  ggplot(aes(x = clusters, y = number_programs, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  labs(y = "Number of Programs Attended", x = "") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
+```
+
+```{r}
+g1 + g2 + g3
+```
+
+```{r}
+old_new %>%
+  select(age, number_programs, commitment_coded, frequency_coded, number_programs, clusters) %>%
+  mutate(clusters = case_when(
+    clusters == 1 ~ "New Members",
+    TRUE ~ "Long-term Members"
+  )) %>%
+  group_by(clusters) %>%
+  summarize_all(median) %>%
+  set_colnames(c("Group", "Age", "Number of Program Types Attended", "Duration of Commitment (Months)", "Frequency of Visits (per year)")) %>%
+  gt() %>%
+  fmt_number(
+    columns = vars("Age", "Number of Program Types Attended", "Duration of Commitment (Months)", "Frequency of Visits (per year)"),
+    decimals = 1
+  )
+```
+
+```{r}
+old_new %>%
+  select(number_programs, commitment_coded, frequency_coded, number_programs, clusters) %>%
+  mutate(clusters = case_when(
+    clusters == 1 ~ "New Members",
+    TRUE ~ "Long-term Members"
+  )) %>%
+  group_by(clusters) %>%
+  summarize_all(median) %>%
+  set_colnames(c("Group", "Number of Program Types Attended", "Duration of Commitment (Months)", "Frequency of Visits (per year)")) %>%
+  gt() %>%
+  fmt_number(
+    columns = vars("Number of Program Types Attended", "Duration of Commitment (Months)", "Frequency of Visits (per year)"),
+    decimals = 1
+  )
+```
+
+```{r}
+s1 <- old_new %>%
+  select(SOC_needs, clusters) %>%
+  ggplot(aes(x = clusters, y = SOC_needs, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  labs(y = "Needs Fulfillment", x = "") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
+
+s2 <- old_new %>%
+  select(SOC_belonging, clusters) %>%
+  ggplot(aes(x = clusters, y = SOC_belonging, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  labs(y = "Belonging", x = "") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
+
+s3 <- old_new %>%
+  select(SOC_influence, clusters) %>%
+  ggplot(aes(x = clusters, y = SOC_influence, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  labs(y = "Influence", x = "") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
+
+s4 <- old_new %>%
+  select(SOC_emotion, clusters) %>%
+  ggplot(aes(x = clusters, y = SOC_emotion, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  labs(y = "Emotional Connection", x = "") +
+  scale_fill_manual(values = c("#DDE5D5", "#629952"))
+
+
+```
+
+```{r}
+#c3 +
+(s1 | s2 | s3 | s4)
 ```
 
 
@@ -1270,16 +1606,22 @@ c1 + c2 + c3 + e4 + e5 + e6 + c5 + c6 #+ c7 + c4
 
   
 ```{r include=FALSE}
-gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
+#gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
+gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June18.rds"))
 
 library(lsr)
 gui_cluster_data %>%
-  select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>% mutate(clusters=as.numeric(clusters)) %>% pairs()
+  select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IM, PComp, PChoice, Self_Est, Self_Eff, CNS, RC1, RC2, clusters, SOC_needs, SOC_belonging, SOC_influence, SOC_emotion) %>%
+  rename("Frequency" = frequency_coded, "Commitment" = commitment_coded, "# of Programs" = number_programs) %>%
+  mutate(clusters = as.numeric(clusters)) %>%
+  pairs()
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=8}
 cor_test_results <- gui_cluster_data %>%
-  select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>% mutate(clusters=as.numeric(clusters)) %>% 
+  select(age, frequency_coded, commitment_coded, number_programs, SOC, SOC_needs, SOC_belonging, SOC_influence, SOC_emotion, SoCoh, IM, PComp, PChoice, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>%
+  rename("Frequency" = frequency_coded, "Commitment" = commitment_coded, "# of Programs" = number_programs) %>%
+  mutate(clusters = as.numeric(clusters)) %>%
   correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "none")
 
 library(corrplot)
@@ -1289,17 +1631,18 @@ confident_95 <- cor_test_results$p.value
 cor_M <- cor_test_results$correlation
 
 col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
-corrplot(cor_M, method = "color", col = col(200),
-         type = "upper", number.cex = .7,
-         addCoef.col = "black", # Add coefficient of correlation
-         tl.col = "black", tl.srt = 45, # Text label color and rotation
-         # Combine with significance
-         p.mat = confident_95, sig.level = 0.05, insig = "blank", 
-         # hide correlation coefficient on the principal diagonal
-         diag = FALSE, 
-         title="Correlation Test (Spearman's Rank Test)",
-         mar=c(0,0,5,0))
-
+corrplot(cor_M,
+  method = "color", col = col(200),
+  type = "upper", number.cex = .7,
+  addCoef.col = "black", # Add coefficient of correlation
+  tl.col = "black", tl.srt = 45, # Text label color and rotation
+  # Combine with significance
+  p.mat = confident_95, sig.level = 0.05, insig = "blank",
+  # hide correlation coefficient on the principal diagonal
+  diag = FALSE,
+  title = "Correlation Test (Spearman's Rank Test)",
+  mar = c(0, 0, 5, 0)
+)
 ```
 
 
@@ -1321,99 +1664,136 @@ Higher values in `Frequency` and `# of Programs` will lead to higher `SOC`. Simi
 library(broom)
 
 model_data <- gui_cluster_data %>%
-  select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs)
+  select(age, frequency_coded, commitment_coded, number_programs, SOC, SOC_needs, SOC_belonging, SOC_influence, SOC_emotion, SoCoh, IM, PComp, PChoice, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>%
+  rename("Frequency" = frequency_coded, "Commitment" = commitment_coded, "# of Programs" = number_programs)
 ```
 
 ```{r include=FALSE}
-#SOC
-full.model <- lm(formula = SOC ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
-                   data = model_data  
- )
+# SOC
+full.model <- lm(
+  formula = SOC ~ age + Frequency + Commitment + `# of Programs` + clusters + RC1 + RC2,
+  data = model_data
+)
 
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
 
-#CNS
-full.model <- lm(formula = CNS ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
-                   data = model_data  
- )
+# CNS
+full.model <- lm(
+  formula = CNS ~ age + Frequency + Commitment + `# of Programs` + clusters + RC1 + RC2,
+  data = model_data
+)
 
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
 
-#IMI
-full.model <- lm(formula = IMI ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
-                   data = model_data  
- )
+# IMI
+full.model <- lm(
+  formula = IMI ~ age + Frequency + Commitment + `# of Programs` + clusters + RC1 + RC2,
+  data = model_data
+)
 
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
 
-#IM
-full.model <- lm(formula = IM ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
-                   data = model_data  
- )
+# IM
+full.model <- lm(
+  formula = IM ~ age + Frequency + Commitment + `# of Programs` + clusters + RC1 + RC2,
+  data = model_data
+)
 
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
 
-#PComp
-full.model <- lm(formula = PComp ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
-                   data = model_data  
- )
+# PComp
+full.model <- lm(
+  formula = PComp ~ age + Frequency + Commitment + `# of Programs` + clusters + RC1 + RC2,
+  data = model_data
+)
 
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
 
-#PChoice
-full.model <- lm(formula = PChoice ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
-                   data = model_data  
- )
+# PChoice
+full.model <- lm(
+  formula = PChoice ~ age + Frequency + Commitment + `# of Programs` + clusters + RC1 + RC2,
+  data = model_data
+)
 
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
 
-#Self_Est
-full.model <- lm(formula = Self_Est ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
-                   data = model_data
- )
+# Self_Est
+full.model <- lm(
+  formula = Self_Est ~ age + Frequency + Commitment + `# of Programs` + clusters + RC1 + RC2,
+  data = model_data
+)
 
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
 
-#Self_Eff
-full.model <- lm(formula = Self_Eff ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
-                   data = model_data
- )
+# Self_Eff
+full.model <- lm(
+  formula = Self_Eff ~ age + Frequency + Commitment + `# of Programs` + clusters + RC1 + RC2,
+  data = model_data
+)
 
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
 
-#Self_Est
-full.model <- lm(formula = Self_Est ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
-                   data = model_data
- )
+# Self_Est
+full.model <- lm(
+  formula = Self_Est ~ age + Frequency + Commitment + `# of Programs` + clusters + RC1 + RC2,
+  data = model_data
+)
 
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
 
-#SoCoh
-full.model <- lm(formula = SoCoh ~  age + Frequency +Commitment +`# of Programs`+clusters+RC1+RC2,  
-                   data = model_data
- )
+# SoCoh
+full.model <- lm(
+  formula = SoCoh ~ age + Frequency + Commitment + `# of Programs` + clusters + RC1 + RC2,
+  data = model_data
+)
 
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
+
+# Influence
+full.model <- lm(
+  formula = SOC_influence ~ age + Frequency + Commitment + `# of Programs` + clusters + RC1 + RC2,
+  data = model_data
+)
+
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
+```
+
+```{r include=FALSE}
+model_gui_2 <- lm(SOC_belonging ~ `# of Programs`, data = model_data)
+summary(model_gui_2) # Not significant
 ```
 
 <!-- ```{r results="hide"} -->
@@ -1437,7 +1817,7 @@ step( object = full.model,     # start at the full model
 
 ```{r results="hide"}
 model_gui_2 <- lm(CNS ~ Commitment, data = model_data)
-summary(model_gui_2) #Not significant
+summary(model_gui_2) # Not significant
 ```
 
 ```{r results="hide"}
@@ -1446,16 +1826,16 @@ summary(model_gui_3) # R-squared =0.10. Number of programs is Significant
 ```
 
 ```{r eval=FALSE, include=FALSE}
-shapiro.test(residuals(model_gui_3)) #Non significant. normal distribution
+shapiro.test(residuals(model_gui_3)) # Non significant. normal distribution
 AIC(model_gui_3)
 
 ## Assumption check
 library(car)
 residualPlots(model = model_gui_3)
-#If it comes up significant, it implies that there is some nonlinear relationship between the variable and the residuals. Tukey test returns non significance. Assumptions of linearlity was met
-ncvTest(model_gui_3) #Non significant means no violations of homogeneity of variance in this data.
-vif(model_gui_3) #colinearlity check. Not too highly correlated with each other.
-#A value of 1 means that the predictor is not correlated with other variables. The higher the value, the greater the correlation of the variable with other variables
+# If it comes up significant, it implies that there is some nonlinear relationship between the variable and the residuals. Tukey test returns non significance. Assumptions of linearlity was met
+ncvTest(model_gui_3) # Non significant means no violations of homogeneity of variance in this data.
+vif(model_gui_3) # colinearlity check. Not too highly correlated with each other.
+# A value of 1 means that the predictor is not correlated with other variables. The higher the value, the greater the correlation of the variable with other variables
 ```
 
 ```{r results="hide"}
@@ -1469,34 +1849,38 @@ summary(model_gui_5) # Not significant
 ```
 
 ```{r results="hide"}
-model_gui_6 <- lm(formula = IM ~ age + Commitment + `# of Programs` + clusters,
-    data = model_data)
+model_gui_6 <- lm(
+  formula = IM ~ age + Commitment + `# of Programs` + clusters,
+  data = model_data
+)
 summary(model_gui_6) # R-squared is 0.164. Number of programs and cluster 2 are significant
-
 ```
 
 ```{r results="hide"}
-model_gui_7 <- lm(formula = PComp ~ `# of Programs`,
-    data = model_data)
+model_gui_7 <- lm(
+  formula = PComp ~ `# of Programs`,
+  data = model_data
+)
 summary(model_gui_7) # R-squared is 0.065. Number of programs is significant
 ```
 
 ```{r results="hide"}
-model_gui_8 <- lm(formula = PChoice ~ `# of Programs`,
-    data = model_data)
+model_gui_8 <- lm(
+  formula = PChoice ~ `# of Programs`,
+  data = model_data
+)
 summary(model_gui_8) # R-squared is 0.039. Number of programs is significant
 ```
 
 ```{r include=FALSE}
 # Cluster 1: New member
-IM_1 <- 5.695954 + 0 + 1* 0.400716
+IM_1 <- 5.695954 + 0 + 1 * 0.400716
 IM_1
 
 # Cluster 2: Long-term member
 
-IM_2 <- 5.695954 -0.823673 + 5* 0.400716
+IM_2 <- 5.695954 - 0.823673 + 5 * 0.400716
 IM_2
-
 ```
 
 
@@ -1523,37 +1907,45 @@ Self Efficacy  |  Not significant  | NA |NA|
   <!-- In this model, __Intrinsic Motivation__ shows __a significant effect__ on __the Nature Connection__ ( _p_<.01), __explaining 20%__ of the variance in the Nature Connection (R-squared is 0.2031). -->
 
 ```{r include=FALSE}
-#CNS
-full.model <- lm(formula = CNS ~  age + Frequency +Commitment +`# of Programs`+SOC+SoCoh+Self_Est+Self_Eff+clusters+RC1+RC2+IM+PComp+PChoice,  
-                   data = model_data  
- )
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+# CNS
+full.model <- lm(
+  formula = CNS ~ age + Frequency + Commitment + `# of Programs` + SOC + SoCoh + Self_Est + Self_Eff + clusters + RC1 + RC2 + IM + PComp + PChoice,
+  data = model_data
+)
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
 
-#IM
-full.model <- lm(formula = IM ~ SoCoh+ Frequency +Commitment +`# of Programs`+SOC+Self_Est+Self_Eff+clusters+RC1+RC2+PComp+PChoice,  
-                   data = model_data  
- )
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+# IM
+full.model <- lm(
+  formula = IM ~ SoCoh + Frequency + Commitment + `# of Programs` + SOC + Self_Est + Self_Eff + clusters + RC1 + RC2 + PComp + PChoice,
+  data = model_data
+)
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
 
-#EFF
-full.model <- lm(formula = Self_Eff ~  Frequency +Commitment +`# of Programs`+SOC+SoCoh+Self_Est+Self_Eff+clusters+RC1+RC2+PComp+PChoice+IM,  
-                   data = model_data  
- )
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+# EFF
+full.model <- lm(
+  formula = Self_Eff ~ Frequency + Commitment + `# of Programs` + SOC + SoCoh + Self_Est + Self_Eff + clusters + RC1 + RC2 + PComp + PChoice + IM,
+  data = model_data
+)
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
 
-#NUmber of Programs
-full.model <- lm(formula = `# of Programs` ~  age + Frequency +Commitment +SOC+SoCoh+Self_Est+Self_Eff+PComp+PChoice+IM,  
-                   data = model_data  
- )
-step( object = full.model,     # start at the full model
-       direction = "backward"   # allow it remove predictors but not add them
- )
+# NUmber of Programs
+full.model <- lm(
+  formula = `# of Programs` ~ age + Frequency + Commitment + SOC + SoCoh + Self_Est + Self_Eff + PComp + PChoice + IM,
+  data = model_data
+)
+step(
+  object = full.model, # start at the full model
+  direction = "backward" # allow it remove predictors but not add them
+)
 ```
 
 ```{r results="hide"}
@@ -1584,13 +1976,12 @@ no significance differences were observed in the `CNS`, `Self_Est`, and `Self_Ef
 # non_gui <- readRDS(here::here("data/non_gui_june4_scales.rds"))
 # non_gui$clusters <- 5
 # gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
-# 
+#
 # cluster_comp <- gui_cluster_data %>% select(gui_non_gui, gender, age, race, SoCoh, SOC, CNS, Self_Est, Self_Eff, clusters)
-# 
+#
 # cluster_comp_gui <- rbind(cluster_comp, non_gui)
 # saveRDS(cluster_comp_gui, ("data/cluster_comp_gui_june5_scales.rds"))
 cluster_comp_gui <- readRDS(here::here("data/cluster_comp_gui_june5_scales.rds"))
-
 ```
 
 ```{r include=FALSE}
@@ -1632,7 +2023,7 @@ pairwise.t.test(
 ```{r include=FALSE}
 non_old_members <- cluster_comp_gui %>%
   filter(clusters == "2" | clusters == "5")
-  
+
 # Median Test
 library(agricolae)
 Median.test(non_old_members$CNS, non_old_members$clusters)
@@ -1641,14 +2032,15 @@ Median.test(non_old_members$Self_Eff, non_old_members$clusters)
 ```
 
 ```{r echo=FALSE}
-tibble("Variables" = c("Nature Connection", "Self Esteem", "Self Efficacy"),
-          "Median of Non GUI" =c(5.1, 4.75, 5.25),
-          "Median of Long-term GUI" =c(5.5, 5.25, 5.36),
-          "p Value" =c(0.14, 0.22, 0.76)) %>% gt() %>% 
-   tab_header(
+tibble(
+  "Variables" = c("Nature Connection", "Self Esteem", "Self Efficacy"),
+  "Median of Non GUI" = c(5.1, 4.75, 5.25),
+  "Median of Long-term GUI" = c(5.5, 5.25, 5.36),
+  "p Value" = c(0.14, 0.22, 0.76)
+) %>%
+  gt() %>%
+  tab_header(
     title = "Median Test Results: Non GUI and Long-term GUI Members"
-  ) %>% cols_align(align = "center")
+  ) %>%
+  cols_align(align = "center")
 ```
-
-
-

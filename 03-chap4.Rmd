@@ -249,15 +249,20 @@ b1 <- data_pre_post_scales %>%
   select(ROS, pre_post) %>%
   ggplot(aes(x = reorder(pre_post, ROS), y = ROS, fill = pre_post)) +
   geom_boxplot() +
+  theme_minimal()+
   theme(legend.position = "None") +
-  labs(x = "Pre VS Post", y = "ROS")
+  labs(x = "Pre VS Post", y = "ROS")+
+  scale_fill_manual(values = c("#629952", "#DDE5D5"))
+
 b2 <- data_pre_post_scales %>%
   mutate(clusters=factor(pre_post, levels = c("Pre", "Post"))) %>%
   select(PANAS, pre_post) %>%
   ggplot(aes(x = reorder(pre_post, PANAS), y = PANAS, fill = pre_post)) +
   geom_boxplot() +
+  theme_minimal()+
   theme(legend.position = "None") +
-  labs(x = "Pre VS Post", y = "PANAS")
+  labs(x = "Pre VS Post", y = "PANAS")+
+  scale_fill_manual(values = c("#629952", "#DDE5D5"))
 ```
 
 ```{r echo=FALSE}

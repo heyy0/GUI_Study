@@ -2815,9 +2815,9 @@ corrplot(cor_M, method = "color", col = col(200), cl.pos = "n",
 ```{r echo=FALSE}
 tibble(
   "GUI Benefits" = c(
-    "Restoration", "Nature Connection", "Sense of Community", "Empowerment", "Environmental Awareness", "Hands-on Experiences", "Mindsets (related to 5G)", "Self-awareness", "Self-Efficacy or Confidence"
+    "Restoration", "Nature Connection", "Sense of Community", "Empowerment", "Environmental Awareness", "Hands-on Experiences", "Mindsets (related to 5G)", "Self-Confidence", "Self-awareness"
   ),
-  "Cosine Similarity" = c(0.586, 0.629, 0.696, 0.271, 0.151, 0.13, 0.523, "NA*", 0.395)
+  "Cosine Similarity" = c(0.586, 0.629, 0.696, 0.271, 0.151, "0.130", 0.523, 0.395, "NA*")
 ) %>%
   gt() %>%
   tab_header(
@@ -2825,7 +2825,9 @@ tibble(
   ) %>%
   tab_source_note(
     source_note = "*Self-awareness was not found among core members."
-  )
+  ) %>% 
+  cols_align(align = "left") 
+
 ```
 
 #### Values
@@ -2846,7 +2848,8 @@ tibble(
   gt() %>%
   tab_header(
     title = "GUI Values: Comparison between Core Members and Volunteers"
-  ) 
+  ) %>% 
+  cols_align(align = "left") 
 # %>%
 #   tab_source_note(
 #     source_note = "* denotes non significant correlation"

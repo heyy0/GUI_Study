@@ -8,6 +8,42 @@ editor_options:
 
 - 193 entries (GUI: 104, non-GUI: 89)
 
+## Measurements
+
+### Online Survey
+
+- __The Frequency of Visits (`frequency_coded` or `frequency`)__ was measured by one question, "In the past 2 years, on average how many days per year did you visit GUI? (i.e. 80 (days per year)". 
+
+- __The Duration of Commitment (`commitment_coded` or `commitment`)__ was measured by one question, "Which month and year did you attend an activity in GUI for the first time?". The duration was attained by calculating months between 1) the date the respondent visited the GUI for the first time and 2) the date the respondent submited the survey response. For example, if one respondent visited GUI for the first time in November 2017 and submited the survey response in December 2019, the total duration would be 24 months. 
+
+- __Types of Programs Engaged (`number_programs`)__ was measured by the number of program types attended by the respondents. For example, if one responded have attended Balik Kampong and Sketching before, it would be 2.
+
+- __Social Cohesion and Trust (`SoCoh`)__ scale consists of five conceptually related items that aim to assess feelings of “trust, shared norms and values, positive and friendly relationships, and feelings of being accepted and belonging” (Forrest & Kearns, 2001; Sampson et al., 2007). Respondents were asked how strongly they agreed (on a seven-point scale) on five statements such as “People around here are willing to help their neighbors”. Those who have engaged in any GUI programs were asked about the GUI community instead of their neighbors (i.e. “People around GUI are willing to help their members”).
+
+- __Sense of Community (`SOC`)__: The Brief Sense of Community Scale aims to assess four dimensions of sense of community defined in the McMillan and Chavis’ (1986) model: 1) needs fulfilment is a perception that members’ needs will be met by the community (); 2) group membership is a feeling of belonging or a sense of interpersonal relatedness; 3) influence is measured as a sense that one matters, or can make a difference, in a community and that the community matters to its members; and 4) emotional connection is a feeling of attachment or bonding rooted in members’ shared history, place or experience. Respondents were asked how strongly they agreed (on a seven-point scale) on eight statements such as "I belong in my neighborhood." The scale for GUI members was modified to ask about the GUI community instead of their neighborhood (i.e. “I belong in the GUI community”). 
+
+- __Connectedness to Nature (`CNS`)__: Participants responded to the modified version of Connectedness to Nature Scale (`CNS`) that intends to assess individuals’ emotional connection to nature and a sense of oneness with the natural world (Mayer & Frantz, 2004). Examples of the items are “I often feel a sense of oneness with the natural world around me’’ and ‘‘I think of the natural world as a community to which I belong.’’ Respondents assessed each statement ranging from “1 strongly disagree” to “7 strongly agree”. Both GUI members and the control groups responded to the same set of 10 items. 
+
+- __Intrinsic Motivation Inventory (`IMI`)__ is a multidimensional measurement scale developed based on Self-Determination Theory (Ryan & Deci, 2000). We used the modified version of IMI, measuring the respondent’s self-reported interest or enjoyment, perceived competence, and perceived choice about activities in GUI. The interest/enjoyment subscale (Intrinsic Motivation or IM) represents the self-report measure of intrinsic motivation. The perceived choice and perceived competence concepts are considered as positive predictors of both self-report and behavioral measures of intrinsic motivation. 
+  
+  - __Perceived Choice (`PChoice`)__ measures how individuals feel they engage in one activity because they choose to do it. 
+  
+  - __Perceived Competence (`PComp`)__ assesses how effective individuals feel when they are performing a task (Monteiro et al., 2015). Examples of the items are "I believe I can choose what to do when I take part in activities in GUI” (perceived choice) and "After working at GUI activity for awhile, I felt pretty competent” (perceived competence).
+
+- __Self-Esteem (`Self_Est`)__: We used the modified version of Rosenberg Self-Esteem Scale (four items) that assesses respondents’ self-worth by measuring both positive and negative feelings about self (Rosenberg, 1965). All items—such as “On the whole, I am satisfied with myself.”—were answered using a 7-point scale, ranging from “1 strongly disagree” to “7 strongly agree”. 
+
+- __Self-Efficacy (`Self_Eff`)__: We used the New General Self-Efficacy Scale (NGSE) that aims to measure respondents’ “beliefs in one’s capabilities to mobilize the motivation, cognitive resources, and courses of action needed to meet given situational demands” (Bandura, 2010). Respondents answered eight items, using a 7-point scale, ranging from “1 strongly disagree” to “7 strongly agree”. Examples of items include “I will be able to achieve most of the goals that I have set for myself.” and “When facing difficult tasks, I am certain that I will accomplish them”.
+
+
+### Quasi-Experiment
+
+- __Restoration Outcome Scale (`ROS`)__ and __Perceived Restrictiveness Scales (`PRS`)__: We used two scales to assess restorative experiences of participating in GUI programs (Hartig et al., 1997; Korpela et al., 2008). __The `ROS` scale__ has six items, of which three measure relaxation and calmness (e.g. “I feel restored and relaxed), one reflects attention restoration (e.g. “I feel focused and alert”), and two reflect clearing one’s thoughts (e.g. “I can forget everyday worries”). The modified version of __`PRS`__ has 10 items, responding to the four restorative qualities—being away, fascination, coherence and compatibility (Hartig et al., 1997). The PRS was measured only once in the post-assessment. 
+
+- __Positive and Negative Affect Scale (PANAS)__: We used the modified version of Positive and Negative Affect Scale (`PANAS`) that measures the self-reported mood of participants before and after participating the GUI programs (Watson et al., 1988). Participants responded to nine items indicating positive affect, high energy level, and high concentration, and another set of nine items indicating negative affect, distress, and a variety of aversive mood states (afraid, upset, scared).
+
+- __Connectedness to Nature__: `CNS` was used only in the post-assessment as a control valuable since those who have a strong sense of connection with nature might show high scores in respective scales regardless of the participation in GUI programs. 
+
+
 
 ```{r include=FALSE}
 # Packages
@@ -473,8 +509,11 @@ a1 <- gui_mar20_scales %>%
   select(SoCoh, gui_non_gui) %>%
   ggplot(aes(x = reorder(gui_non_gui, SoCoh), y = SoCoh, fill = gui_non_gui)) +
   geom_boxplot() +
+  theme_minimal()+
   theme(legend.position = "None") +
-  labs(x = "", y = "Social Cohesion")
+  labs(x = "", y = "Social Cohesion")+
+  scale_fill_manual(values=c("#629952", "#EF9B64"))
+
 
 a2 <- gui_mar20_scales %>%
   mutate(gui_non_gui = case_when(
@@ -484,8 +523,10 @@ a2 <- gui_mar20_scales %>%
   select(SOC, gui_non_gui) %>%
   ggplot(aes(x = reorder(gui_non_gui, SOC), y = SOC, fill = gui_non_gui)) +
   geom_boxplot() +
+  theme_minimal()+
   theme(legend.position = "None") +
-  labs(x = "", y = "Sense of Community")
+  labs(x = "", y = "Sense of Community")+
+  scale_fill_manual(values=c("#629952", "#EF9B64"))
 
 a3 <- gui_mar20_scales %>%
 mutate(gui_non_gui = case_when(
@@ -493,10 +534,14 @@ mutate(gui_non_gui = case_when(
     TRUE ~"Non-GUI"
   )) %>% 
   select(CNS, gui_non_gui) %>%
-  ggplot(aes(x = reorder(gui_non_gui, CNS), y = CNS, fill = gui_non_gui)) +
+  ggplot(aes(x = reorder(gui_non_gui, CNS), y = CNS, fill =gui_non_gui)) +
   geom_boxplot() +
+  #scale_fill_brewer(palette="BuPu")+
+  theme_minimal()+
   theme(legend.position = "None") +
-  labs(x = "", y = "Connection to Nature")
+  labs(x = "", y = "Connection to Nature") +
+  scale_fill_manual(values=c("#629952", "#EF9B64"))
+
 a4 <- gui_mar20_scales %>%
 mutate(gui_non_gui = case_when(
     gui_non_gui == "yes" ~ "GUI Members",
@@ -505,8 +550,11 @@ mutate(gui_non_gui = case_when(
   select(Self_Eff, gui_non_gui) %>%
   ggplot(aes(x = reorder(gui_non_gui, Self_Eff), y = Self_Eff, fill = gui_non_gui)) +
   geom_boxplot() +
+  theme_minimal()+
   theme(legend.position = "None") +
-  labs(x = "", y = "Self Efficacy")
+  labs(x = "", y = "Self Efficacy")+
+  scale_fill_manual(values=c("#629952", "#EF9B64"))
+
 a5 <- gui_mar20_scales %>%
 mutate(gui_non_gui = case_when(
     gui_non_gui == "yes" ~ "GUI Members",
@@ -515,13 +563,20 @@ mutate(gui_non_gui = case_when(
   select(Self_Est, gui_non_gui) %>%
   ggplot(aes(x = reorder(gui_non_gui, Self_Est), y = Self_Est, fill = gui_non_gui)) +
   geom_boxplot() +
+  theme_minimal()+
   theme(legend.position = "None") +
-  labs(x = "", y = "Self Esteem")
+  labs(x = "", y = "Self Esteem")+
+  scale_fill_manual(values=c("#629952", "#EF9B64"))
 ```
 
 ```{r echo=FALSE}
 (a1 + a2 + a3) / (a4 + a5)
 ```
+
+```{r include=FALSE}
+a3 + a4 +a5 
+```
+
 
 ```{r include=FALSE}
 tbl_final <- tbl_var3 %>% # Cronbacks Alpha
