@@ -481,6 +481,7 @@ program_count %>%
   arrange(count) %>%
   ggplot() +
   geom_col(aes(x = reorder(programs, count), y = count), fill = "darkgreen", alpha = 0.8) +
+  geom_text(aes(x= programs, y=count, label = count), nudge_y = 3, fontface="bold")+
   coord_flip() +
   labs(x = "Program Type", y = "Number of People Attended Before") +
   theme_minimal()
@@ -491,13 +492,28 @@ program_count %>%
   
 ```{r echo=FALSE}
 only_gui_scales %>%
-  select(number_programs) %>%
+  group_by(number_programs) %>%
+  summarize(count=n()) %>% 
+  arrange(count) %>%
   ggplot() +
-  geom_bar(aes(x = number_programs), fill = "darkgreen", alpha = 0.8) +
+  geom_col(aes(x = number_programs, y = count), fill = "darkgreen", alpha = 0.8)+
+  geom_text(aes(x= number_programs, y=count, label = count), nudge_y = 2, fontface="bold")+
+  coord_flip() +
   labs(x = "Number of Program Types Attended", y = "Number of People in each category") +
   scale_x_continuous(breaks = c(1, 2, 3, 4, 5, 6)) +
   scale_y_continuous(breaks = c(0, 10, 20, 30, 40, 50, 55)) +
   theme_minimal()
+# 
+# 
+# only_gui_scales %>%
+#   select(number_programs) %>%
+#   ggplot() +
+#   geom_bar(aes(x = number_programs), fill = "darkgreen", alpha = 0.8) +
+#   geom_text(aes(x= number_programs, y=number_programs, label = number_programs), nudge_y = 3, fontface="bold")+
+#   labs(x = "Number of Program Types Attended", y = "Number of People in each category") +
+#   scale_x_continuous(breaks = c(1, 2, 3, 4, 5, 6)) +
+#   scale_y_continuous(breaks = c(0, 10, 20, 30, 40, 50, 55)) +
+#   theme_minimal()
 ```
 
 ```{r include=FALSE}
@@ -512,9 +528,9 @@ a / 104
 library(corrplot)
 
 cor_test_results <- only_gui_scales %>%
-  select(frequency_coded, commitment_coded, program_percent) %>%
+  select(frequency_coded, commitment_coded, number_programs) %>%
   rename("Frequency" =frequency_coded,
-         "Program %" = program_percent,
+         "Program Types" = number_programs,
          "Commitment"= commitment_coded
          ) %>% 
   correlate(test = TRUE, corr.method = "pearson", p.adjust.method = "none")
@@ -1145,6 +1161,24 @@ median_clusters %>%
   ) %>%
   cols_align(align = "center")
 ```
+
+```{r include=FALSE}
+median_clusters %>%
+  mutate(
+    male = c(17, 7, 1, 3),
+    female = c(49, 21, 1, 4),
+    members_n = c(67, 28, 2, 7)
+  ) %>%
+  select(clusters., male, female, members_n, everything()) %>%
+  select(clusters., male, female, members_n, age, number_programs, commitment_coded, frequency_coded) %>%
+  set_colnames(c("Group", "Male", "Female", "Total Count", "Age", "Number of Program Types Attended", "Duration of Commitment (Months)", "Frequency of Visits (per year)")) %>% 
+  gt() %>%
+  tab_header(
+    title = "Table A: Median Values by Groups"
+  ) %>%
+  cols_align(align = "center")
+```
+
 
 ```{r echo=FALSE}
 c1 <- gui_cluster_data %>%
