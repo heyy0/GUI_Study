@@ -363,15 +363,18 @@ only_gui_scales %>%
 The below chart suggests that many of the respondents in this study (36%) are __newer members of GUI (less than or equal to 15 months)__ who visit GUI __less than or equal to 5 times per year__. Also, the below chart and the result of the correlation test between the two variables indicate that the correlation between __frequency and commitment is weak__ (r=0.235, Pearson): it seems that the longer commitment with GUI does not necessarily lead to a higher frequency of visits. 
 
 ```{r echo=FALSE}
+#col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
 only_gui_scales %>%
   select(frequency_coded, commitment_coded) %>%
   ggplot(aes(commitment_coded, frequency_coded)) +
   geom_bin2d() +
-  geom_hline(mapping = aes(yintercept = 5), color = "red", alpha = 0.5) +
-  geom_vline(mapping = aes(xintercept = 15), color = "red", alpha = 0.5) +
-  scale_y_continuous(breaks = c(1, 5, 20, 100, 200, 300)) +
-  scale_x_continuous(breaks = c(0, 5, 15, 36, 50, 100, 136)) +
-  labs(y = "Frequency of Visits per Month", x = "Total duration of commitment (months)", title = "Frequency and Commitment", subtitle = "*Red lines are median for frequency of visits and commitment (5 and 15, respectively)")
+  geom_hline(mapping = aes(yintercept = 5), color = "red", alpha=0.5) +
+  geom_vline(mapping = aes(xintercept = 15), color = "red", alpha=0.5) +
+  scale_y_continuous(breaks = c(1, 5, 10, 20, 100, 200, 300)) +
+  scale_x_continuous(breaks = c(0, 5, 10, 15, 36, 50, 100, 136)) +
+  scale_fill_gradient(low = "#DDE5D5", high= "#2B4D21")+
+  labs(y = "Frequency of Visits per Year", x = "Total duration of commitment (months)", title = "Frequency and Commitment", subtitle = "*Red lines are median for frequency of visits and commitment (5 and 15, respectively)")+
+  theme_minimal()
 ```
 
 ```{r include=FALSE}
@@ -416,8 +419,9 @@ only_gui_scales %>%
 only_gui_scales %>%
   select(age) %>%
   ggplot(aes(x = age)) +
-  geom_histogram(bins = 30, alpha = 0.8) +
-  scale_x_continuous(breaks = c(18, 28, 35, 46, 75)) +
+  geom_histogram(bins = 30, alpha = 0.6, fill="darkgreen") +
+  scale_x_continuous(breaks = c(18, 28, 35, 46, 52, 75)) +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
   geom_vline(mapping = aes(xintercept = 35.5), color = "red", alpha = 0.5) +
   geom_vline(mapping = aes(xintercept = 28), color = "blue", alpha = 0.5) +
   geom_vline(mapping = aes(xintercept = 46.2), color = "blue", alpha = 0.5) +
@@ -427,7 +431,7 @@ only_gui_scales %>%
 ```{r echo=FALSE}
 only_gui_scales %>%
   select(age) %>%
-  ggplot(aes(x = age)) +
+  ggplot(aes(x = age, y=..density..)) +
   geom_density(fill="darkgreen", alpha=0.5)+
   scale_x_continuous(breaks = c(18, 28, 35, 46, 75)) +
   geom_vline(mapping = aes(xintercept = 35.5), color = "red", alpha = 0.5) +
