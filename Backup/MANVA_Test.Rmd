@@ -1,0 +1,208 @@
+---
+title: "MANOVA Test"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+## Reference
+[MANOVA procedure](https://www.datanovia.com/en/lessons/one-way-manova-in-r/)
+
+```{r include=FALSE}
+# Packages
+library(QuantPsyc)
+library(ggpubr)
+library(heplots)
+library(tidyverse)
+library(gt)
+library(lubridate)
+library(forcats)
+library(zoo)
+library(patchwork)
+library(lsr)
+library(psych)
+library(dplyr)
+```
+
+## Data import
+```{r include=FALSE}
+gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
+
+new_cluster_data <-gui_cluster_data %>% 
+  filter(clusters != 3 & clusters != 4) %>% 
+  select(id, SOC, CNS, SoCoh, IMI, clusters)
+  
+```
+
+## Check Assumptions
+
+### Sample size assumption
+
+As the cluster 3 has only 2 participants, we can only go ahead with three clusters (1, 2, and 4).
+
+```{r echo=FALSE}
+new_cluster_data %>%
+  group_by(clusters) %>%
+  summarise(N = n())
+```
+
+### Identify univariate outliers
+
+```{r include=FALSE}
+library(tidyverse)
+library(ggpubr)
+library(rstatix)
+library(car)
+library(broom)
+```
+
+```{r echo=FALSE}
+new_cluster_data %>%
+  group_by(clusters) %>%
+  identify_outliers(IMI)
+```
+
+### Detect multivariate outliers
+*not working. [link](https://www.datanovia.com/en/lessons/one-way-manova-in-r/)
+
+```{r eval=FALSE}
+new_cluster_data %>%
+ group_by(clusters) %>%
+ mahalanobis_distance(-id) %>%
+ filter(is.outlier == TRUE) %>%
+  as.data.frame()
+```
+
+
+### Check univariate normality assumption
+CNS for cluster 1 and SoCoh for cluster 1 & 2 are not normally distributed 
+
+```{r}
+new_cluster_data %>%
+  group_by(clusters) %>%
+  shapiro_test(SOC, CNS, IMI, SoCoh) %>%
+  arrange(variable)
+```
+
+### Check Multivariate normality
+The test is not significant (p > 0.05), so we can assume multivariate normality.
+
+```{r}
+new_cluster_data %>%
+  select(SOC, CNS, IMI, SoCoh) %>%
+  mshapiro_test()
+```
+
+### Identify multicollinearity
+A correlation above 0.9 is an indication of multicollinearity, which is problematic for MANOVA.
+
+```{r}
+new_cluster_data %>%
+  cor_test(SOC, CNS, IMI, SoCoh)
+```
+
+### Check linearity assumption
+
+```{r}
+library(GGally)
+results <- new_cluster_data %>%
+  select(SOC, CNS, IMI, SoCoh, clusters) %>%
+  group_by(clusters) %>%
+  doo(~ggpairs(.) + theme_bw(), result = "plots")
+results$plots
+```
+
+
+### Check the homogeneity of covariances assumption
+- The test is not significant: the data is not homogenous
+
+- _Note that, if you have balanced design (i.e., groups with similar sizes), you don’t need to worry too much about violation of the homogeneity of variances-covariance matrices and you can continue your analysis. However, having an unbalanced design is problematic. Possible solutions include: 1) transforming the dependent variables; 2) running the test anyway, but using Pillai’s multivariate statistic instead of Wilks’ statistic._
+
+
+```{r}
+box_m(new_cluster_data[, c("SOC", "CNS", "IMI", "SoCoh")], new_cluster_data$clusters)
+```
+
+### Check the homogneity of variance assumption
+- The Levene’s test is __not__ significant (p > 0.05), so there was homogeneity of variances. (that is fine.)
+
+- For each of the outcome variables, the one-way MANOVA assumes that there are equal variances between groups. This can be checked using the Levene’s test of equality of variances. 
+
+
+```{r}
+new_cluster_data %>% 
+  gather(key = "variable", value = "value", SOC, CNS, IMI, SoCoh) %>%
+  group_by(variable) %>%
+  levene_test(value ~ clusters)
+```
+
+## Computing MANOVA
+The test is not significant: There was __no__ statistically significant difference between the clusters on __the combined dependent variables__.
+
+
+```{r}
+model <- lm(cbind(SOC, CNS, IMI, SoCoh) ~ clusters, new_cluster_data)
+Manova(model, test.statistic = "Pillai")
+```
+
+## Post-hoc Test
+A statistically significant one-way MANOVA can be followed up by univariate one-way ANOVA examining, separately, each dependent variable. The goal is to identify the specific dependent variables that contributed to the significant global effect.
+
+```{r}
+grouped.data <- new_cluster_data %>%
+  gather(key = "variable", value = "value", SOC, CNS, IMI, SoCoh) %>%
+  group_by(variable)
+
+# Do welch one way anova test
+grouped.data %>% welch_anova_test(value ~ clusters)
+# or do Kruskal-Wallis test
+grouped.data %>% kruskal_test(value ~ clusters)
+```
+
+
+## Reporting the results
+
+- Example:
+_A one-way multivariate analysis of variance was performed to determine the effect of iris Species on Sepal.Length and Petal.Length. There are three different species: setosa, versicolor and virginica.
+
+There was a statistically significant difference between the Species on the combined dependent variables (Sepal.Length and Petal.Length), F(4, 294) = 71.829, p < 0.0001.
+
+Follow-up univariate ANOVAs, using a Bonferroni adjusted alpha level of 0.025, showed that there was a statistically significant difference in Sepal.Length (F(2, 147) = 119, p < 0.0001 ) and Petal.Length (F(2, 147) = 1180, p < 0.0001 ) between iris Species.
+
+All pairwise comparisons between groups were significant for each of the outcome variable (Sepal.Length and Petal.Length)._
+
+```{r}
+pwc <- new_cluster_data %>%
+  gather(key = "variables", value = "value", SOC, CNS, IMI, SoCoh) %>%
+  group_by(variables) %>%
+  games_howell_test(value ~ clusters) %>%
+  select(-estimate, -conf.low, -conf.high) # Remove details
+pwc
+```
+
+
+```{r echo=FALSE}
+# Visualization: box plots with p-values
+pwc <- pwc %>% add_xy_position(x = "Clusters")
+test.label <- create_test_label(
+  description = "MANOVA", statistic.text = quote(italic("F")),
+  statistic = 1.9697, p= "0.1059", parameter = "??",
+  type = "expression", detailed = TRUE
+  )
+ggboxplot(
+  new_cluster_data, x = "clusters", y = c("SOC", "CNS", "IMI", "SoCoh"), 
+  merge = TRUE, palette = "jco"
+  ) + 
+  stat_pvalue_manual(
+    pwc, hide.ns = TRUE, tip.length = 0, 
+    step.increase = 0.1, step.group.by = "variables",
+    color = "variables"
+    ) +
+  labs(
+    subtitle = test.label,
+    caption = get_pwc_label(pwc, type = "expression")
+  )
+```
+
+
+

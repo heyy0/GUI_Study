@@ -370,9 +370,9 @@ only_gui_scales %>%
   geom_bin2d() +
   geom_hline(mapping = aes(yintercept = 5), color = "red", alpha=0.5) +
   geom_vline(mapping = aes(xintercept = 15), color = "red", alpha=0.5) +
-  scale_y_continuous(breaks = c(1, 5, 10, 20, 100, 200, 300)) +
+  scale_y_continuous(breaks = c(1, 5, 10, 20, 30, 50, 100, 200, 300)) +
   scale_x_continuous(breaks = c(0, 5, 10, 15, 36, 50, 100, 136)) +
-  scale_fill_gradient(low = "#DDE5D5", high= "#2B4D21")+
+  scale_fill_gradient(low = "grey90", high= "#2B4D21")+
   labs(y = "Frequency of Visits per Year", x = "Total duration of commitment (months)", title = "Frequency and Commitment", subtitle = "*Red lines are median for frequency of visits and commitment (5 and 15, respectively)")+
   theme_minimal()
 ```
@@ -420,7 +420,7 @@ only_gui_scales %>%
   select(age) %>%
   ggplot(aes(x = age)) +
   geom_histogram(bins = 30, alpha = 0.6, fill="darkgreen") +
-  scale_x_continuous(breaks = c(18, 28, 35, 46, 52, 75)) +
+  scale_x_continuous(breaks = c(18, 28, 35, 46, 52, 60, 72)) +
   scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10)) +
   geom_vline(mapping = aes(xintercept = 35.5), color = "red", alpha = 0.5) +
   geom_vline(mapping = aes(xintercept = 28), color = "blue", alpha = 0.5) +
