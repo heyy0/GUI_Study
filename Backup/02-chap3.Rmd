@@ -859,7 +859,7 @@ pc <- gui_members_data_scaled %>%
 ```
 
 ```{r echo=FALSE}
-tidy(pc, "pcs")
+library(broom)
 tidy(pc, "pcs") %>%
   ggplot(aes(x = PC, y = cumulative)) +
   geom_hline(yintercept = 0.9, color = "orange") +
@@ -871,11 +871,13 @@ tidy(pc, "pcs") %>%
 
 - Whereas, component 2 (`RC2`) has more positive direction in `frequency_coded` and some positive directions in `commitment_coded`.
 
+- Conducting Directional plots with three components
+
 ```{r echo=FALSE}
 # PCA through principal function
 fa <- gui_members_data %>%
   column_to_rownames(var = "id") %>%
-  principal(nfactors = 2, rotate = "varimax")
+  principal(nfactors = 3, rotate = "varimax")
 
 y1 <- fa[["loadings"]] %>%
   unclass() %>%
@@ -899,7 +901,7 @@ y1
 fa_cluster <-
   gui_members_data %>%
   column_to_rownames(var = "id") %>%
-  principal(nfactors = 2, rotate = "varimax") %>%
+  principal(nfactors = 3, rotate = "varimax") %>%
   pluck("scores") %>%
   unclass() %>%
   as_tibble(rownames = "id")
@@ -913,7 +915,7 @@ A Hierarchical Cluster Analysis was applied to determine the appropriate number 
 
 ```{r}
 hierarchical_clusters <- hclust(dist(cluster_data))
-fviz_dend(hierarchical_clusters, k = 4, cex = 0.4) # K= the number of clusters in the dendogram
+fviz_dend(hierarchical_clusters, k = 5, cex = 0.4) # K= the number of clusters in the dendogram
 
 # hierarchical_clusters_k4 <- cutree(hierarchical_clusters, k = 4)
 # fviz_cluster(list(data = cluster_data, cluster = hierarchical_clusters_k4))
@@ -921,11 +923,11 @@ fviz_dend(hierarchical_clusters, k = 4, cex = 0.4) # K= the number of clusters i
 
 ### K-mean clustering
 ```{r echo=FALSE}
-# kmeans_clusters <- kmeans(cluster_data, centers = 4, nstart = 50) # selecting 4 cluters
+kmeans_clusters <- kmeans(cluster_data, centers = 5, nstart = 50) # selecting 4 cluters
 
 # Saving and loading cluster data
 # saveRDS(kmeans_clusters, ("4_Survey_Experiment/Data/kmeans_clusters_17Apr2020.rds"))
-kmeans_clusters <- readRDS(here::here("data/kmeans_clusters_17Apr2020.rds"))
+#kmeans_clusters <- readRDS(here::here("data/kmeans_clusters_17Apr2020.rds"))
 
 fviz_cluster(kmeans_clusters, data = cluster_data)
 ```
@@ -958,8 +960,8 @@ gui_cluster_data <- left_join(id_only_gui, gui_components, by = "id") %>%
 ```
 
 ```{r include=FALSE}
-#saveRDS(gui_cluster_data, ("data/only_gui_cluster_June18.rds"))
-gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June18.rds"))
+saveRDS(gui_cluster_data, ("data/only_gui_cluster5_Oct12.rds"))
+gui_cluster_data <- readRDS(here::here("data/only_gui_cluster5_Oct12.rds"))
 ```
 
 ### Preliminary Analysis on the clusters
@@ -1095,7 +1097,8 @@ pairwise.t.test(
 
 ```{r include=FALSE}
 cluster_wise <- gui_cluster_data %>%
-  select(age, frequency_coded, commitment_coded, number_programs, SoCoh, SOC, IMI, IM, PComp, PChoice, CNS, Self_Est, Self_Eff, clusters) %>%
+  select(age, frequency_coded, commitment_coded, number_programs, SoCoh, SOC, #IMI, 
+         IM, PComp, PChoice, CNS, Self_Est, Self_Eff, clusters) %>%
   describeBy(., group = "clusters")
 
 group1 <- round(cluster_wise$`1`, 2)
@@ -1122,7 +1125,13 @@ group4_rev <- group4 %>%
   t() %>%
   data.frame()
 
-median_clusters <- rbind(group1_rev, group2_rev, group3_rev, group4_rev) %>% select(clusters., everything())
+group5 <- round(cluster_wise$`5`, 2)
+group5_rev <- group5 %>%
+  select(median) %>%
+  t() %>%
+  data.frame()
+
+median_clusters <- rbind(group1_rev, group2_rev, group3_rev, group4_rev, group5_rev) %>% select(clusters., everything())
 
 gui_cluster_data %>%
   select(clusters) %>%
@@ -1151,12 +1160,12 @@ gui_cluster_data %>%
 #   cols_align(align = "center")
 
 gui_cluster_data %>%
-  filter(clusters == 1) %>%
+  filter(clusters == 3) %>%
   group_by(gender) %>%
   summarize(count = n())
 
 gui_cluster_data %>%
-  filter(clusters == 4) %>%
+  filter(clusters == 5) %>%
   group_by(gender) %>%
   summarize(count = n())
 ```
@@ -1164,9 +1173,9 @@ gui_cluster_data %>%
 ```{r echo=FALSE}
 median_clusters %>%
   mutate(
-    male = c(17, 7, 1, 3),
-    female = c(49, 21, 1, 4),
-    members_n = c(67, 28, 2, 7)
+    male = c(5, 3, 2, 1, 17),
+    female = c(14, 4, 11, 1, 45),
+    members_n = c(19, 7, 13, 2, 63)
   ) %>%
   select(clusters., male, female, members_n, everything()) %>%
   gt() %>%
@@ -1199,12 +1208,12 @@ c3 <- gui_cluster_data %>%
   theme_minimal() +
   theme(legend.position = "none")
 
-c4 <- gui_cluster_data %>%
-  select(IMI, clusters) %>%
-  ggplot(aes(x = clusters, y = IMI, group = clusters, fill = clusters)) +
-  geom_boxplot() +
-  theme_minimal() +
-  theme(legend.position = "none")
+# c4 <- gui_cluster_data %>%
+#   select(IMI, clusters) %>%
+#   ggplot(aes(x = clusters, y = IMI, group = clusters, fill = clusters)) +
+#   geom_boxplot() +
+#   theme_minimal() +
+#   theme(legend.position = "none")
 
 e4 <- gui_cluster_data %>%
   select(IM, clusters) %>%
@@ -1248,7 +1257,7 @@ c7 <- gui_cluster_data %>%
   theme_minimal() +
   theme(legend.position = "none")
 
-c1 + c2 + c3 + c4 + e4 + e5 + e6 + c5 + c6 + c7
+c1 + c2 + c3 + e4 + e5 + e6 + c5 + c6 + c7 #+c4
 ```
 
 ### Interpreting the clusters
@@ -1315,19 +1324,21 @@ y1 / y2
 <!--   male_median = c(35.5, 9, 10, 6.0, 5.125, 5.20, 5.50, 4.50, 5.00), -->
 <!-- ``` -->
 
-## Median Test: Fresh Members VS Long-term Members
-- Although the ANOVA test did not find any sigfnificant differences in the psychometric scales across the groups, the difference in the median of __Sense of Community__ between the __fresh_members__ and __long term members__ is hgih. Hence, we ran the Median Test.
+<!-- ## Median Test: Fresh Members VS Long-term Members -->
+<!-- - Although the ANOVA test did not find any sigfnificant differences in the psychometric scales across the groups, the difference in the median of __Sense of Community__ between the __fresh_members__ and __long term members__ is hgih. Hence, we ran the Median Test. -->
 
-- A __significant__ difference ( _p_ =0.014) was found in __Sense of Community__: hence, the long-term engagement with GUI seems to enhance a __Sense of Community__ of GUI members.
+<!-- - A __significant__ difference ( _p_ =0.014) was found in __Sense of Community__: hence, the long-term engagement with GUI seems to enhance a __Sense of Community__ of GUI members. -->
 
-- __Committed frequent visitors__ and __Everyday visitors__ did not show a significant difference in __Sense of Community__ when it's compared with __fresh_members__. Perhaps, this is due to the small number of group size (7 and 2, respectively). 
+<!-- - __Committed frequent visitors__ and __Everyday visitors__ did not show a significant difference in __Sense of Community__ when it's compared with __fresh_members__. Perhaps, this is due to the small number of group size (7 and 2, respectively).  -->
+
+## Median Test: 1 VS 5
 
 
 ```{r include=FALSE}
 # t test and Effect Size (Gender) for IMI and SOC
 #gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June18.rds"))
 old_new <- gui_cluster_data %>%
-  filter(clusters == 1 | clusters == 2)
+  filter(clusters == 1 | clusters == 5)
 library(agricolae)
 
 old_new %>% 
