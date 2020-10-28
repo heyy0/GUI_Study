@@ -1,0 +1,643 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# GUI Online Survey: Comparing GUI and Non-GUI Members
+
+- 193 entries (GUI: 104, non-GUI: 89)
+
+## Measurements
+
+### Online Survey
+
+- __The Frequency of Visits (`frequency_coded` or `frequency`)__ was measured by one question, "In the past 2 years, on average how many days per year did you visit GUI? (i.e. 80 (days per year)". 
+
+- __The Duration of Commitment (`commitment_coded` or `commitment`)__ was measured by one question, "Which month and year did you attend an activity in GUI for the first time?". The duration was attained by calculating months between 1) the date the respondent visited the GUI for the first time and 2) the date the respondent submited the survey response. For example, if one respondent visited GUI for the first time in November 2017 and submited the survey response in December 2019, the total duration would be 24 months. 
+
+- __Types of Programs Engaged (`number_programs`)__ was measured by the number of program types attended by the respondents. For example, if one responded have attended Balik Kampong and Sketching before, it would be 2.
+
+- __Social Cohesion and Trust (`SoCoh`)__ scale consists of five conceptually related items that aim to assess feelings of “trust, shared norms and values, positive and friendly relationships, and feelings of being accepted and belonging” (Forrest & Kearns, 2001; Sampson et al., 2007). Respondents were asked how strongly they agreed (on a seven-point scale) on five statements such as “People around here are willing to help their neighbors”. Those who have engaged in any GUI programs were asked about the GUI community instead of their neighbors (i.e. “People around GUI are willing to help their members”).
+
+- __Sense of Community (`SOC`)__: The Brief Sense of Community Scale aims to assess four dimensions of sense of community defined in the McMillan and Chavis’ (1986) model: 1) needs fulfilment is a perception that members’ needs will be met by the community (); 2) group membership is a feeling of belonging or a sense of interpersonal relatedness; 3) influence is measured as a sense that one matters, or can make a difference, in a community and that the community matters to its members; and 4) emotional connection is a feeling of attachment or bonding rooted in members’ shared history, place or experience. Respondents were asked how strongly they agreed (on a seven-point scale) on eight statements such as "I belong in my neighborhood." The scale for GUI members was modified to ask about the GUI community instead of their neighborhood (i.e. “I belong in the GUI community”). 
+
+- __Connectedness to Nature (`CNS`)__: Participants responded to the modified version of Connectedness to Nature Scale (`CNS`) that intends to assess individuals’ emotional connection to nature and a sense of oneness with the natural world (Mayer & Frantz, 2004). Examples of the items are “I often feel a sense of oneness with the natural world around me’’ and ‘‘I think of the natural world as a community to which I belong.’’ Respondents assessed each statement ranging from “1 strongly disagree” to “7 strongly agree”. Both GUI members and the control groups responded to the same set of 10 items. 
+
+- __Intrinsic Motivation Inventory (`IMI`)__ is a multidimensional measurement scale developed based on Self-Determination Theory (Ryan & Deci, 2000). We used the modified version of IMI, measuring the respondent’s self-reported interest or enjoyment, perceived competence, and perceived choice about activities in GUI. The interest/enjoyment subscale (Intrinsic Motivation or IM) represents the self-report measure of intrinsic motivation. The perceived choice and perceived competence concepts are considered as positive predictors of both self-report and behavioral measures of intrinsic motivation. 
+  
+  - __Perceived Choice (`PChoice`)__ measures how individuals feel they engage in one activity because they choose to do it. 
+  
+  - __Perceived Competence (`PComp`)__ assesses how effective individuals feel when they are performing a task (Monteiro et al., 2015). Examples of the items are "I believe I can choose what to do when I take part in activities in GUI” (perceived choice) and "After working at GUI activity for awhile, I felt pretty competent” (perceived competence).
+
+- __Self-Esteem (`Self_Est`)__: We used the modified version of Rosenberg Self-Esteem Scale (four items) that assesses respondents’ self-worth by measuring both positive and negative feelings about self (Rosenberg, 1965). All items—such as “On the whole, I am satisfied with myself.”—were answered using a 7-point scale, ranging from “1 strongly disagree” to “7 strongly agree”. 
+
+- __Self-Efficacy (`Self_Eff`)__: We used the New General Self-Efficacy Scale (NGSE) that aims to measure respondents’ “beliefs in one’s capabilities to mobilize the motivation, cognitive resources, and courses of action needed to meet given situational demands” (Bandura, 2010). Respondents answered eight items, using a 7-point scale, ranging from “1 strongly disagree” to “7 strongly agree”. Examples of items include “I will be able to achieve most of the goals that I have set for myself.” and “When facing difficult tasks, I am certain that I will accomplish them”.
+
+
+### Quasi-Experiment
+
+- __Restoration Outcome Scale (`ROS`)__ and __Perceived Restrictiveness Scales (`PRS`)__: We used two scales to assess restorative experiences of participating in GUI programs (Hartig et al., 1997; Korpela et al., 2008). __The `ROS` scale__ has six items, of which three measure relaxation and calmness (e.g. “I feel restored and relaxed), one reflects attention restoration (e.g. “I feel focused and alert”), and two reflect clearing one’s thoughts (e.g. “I can forget everyday worries”). The modified version of __`PRS`__ has 10 items, responding to the four restorative qualities—being away, fascination, coherence and compatibility (Hartig et al., 1997). The PRS was measured only once in the post-assessment. 
+
+- __Positive and Negative Affect Scale (PANAS)__: We used the modified version of Positive and Negative Affect Scale (`PANAS`) that measures the self-reported mood of participants before and after participating the GUI programs (Watson et al., 1988). Participants responded to nine items indicating positive affect, high energy level, and high concentration, and another set of nine items indicating negative affect, distress, and a variety of aversive mood states (afraid, upset, scared).
+
+- __Connectedness to Nature__: `CNS` was used only in the post-assessment as a control valuable since those who have a strong sense of connection with nature might show high scores in respective scales regardless of the participation in GUI programs. 
+
+
+
+```{r include=FALSE}
+# Packages
+library(QuantPsyc)
+library(ggpubr)
+library(heplots)
+library(dplyr)
+library(tidyverse)
+library(gt)
+library(lubridate)
+library(forcats)
+library(zoo)
+library(gt)
+library(psych)
+```
+
+
+<!-- ```{r include=FALSE} -->
+<!-- # Loading Data and Saving it as Rdata -->
+<!-- gui_mar20 <- read_csv(here::here("4_Survey_Experiment/Data/GUI_Full_150320.csv")) %>% -->
+<!--   filter(Include == "yes") %>% -->
+<!--   mutate( -->
+<!--     commitment = as.numeric((as.yearmon(strptime(survey_filled, format = "%d/%m/%Y")) - -->
+<!--       as.yearmon(strptime(month_year, format = "%d/%m/%Y"))) * 12), # calcurating duration of commitment in months -->
+<!--     frequency = as.numeric(frequency), -->
+<!--     gender = as_factor(gender), -->
+<!--     race = as_factor(race) -->
+<!--   ) -->
+<!-- ``` -->
+
+
+<!-- ```{r include=FALSE} -->
+<!-- # Data cleaning -->
+<!-- ## Imputing 0 with missing values -->
+<!-- na_strings <- c("NA", "n/a") -->
+<!-- gui_mar20 <- gui_mar20 %>% -->
+<!--   naniar::replace_with_na_all(condition = ~ . %in% na_strings) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- gui_mar20[is.na(gui_mar20)] <- 0 -->
+<!-- glimpse(gui_mar20) -->
+<!-- ``` -->
+
+
+<!-- ```{r include=FALSE} -->
+<!-- ## Reverse coding -->
+<!-- ### Coding character/numeric to factors and date -->
+<!-- gui_mar20 <- gui_mar20 %>% -->
+<!--   mutate( -->
+<!--     month_year = as.Date(month_year, "%d/%m/%y"), -->
+<!--     age = as.numeric(age), -->
+<!--     gender = as_factor(gender), -->
+<!--     race = as_factor(race) -->
+<!--   ) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- ### Coding scale values to numeric and reverse coding -->
+<!-- gui_mar20_coded <- gui_mar20 %>% -->
+<!--   select(-start, -survey_filled, -residency, -Include, -gui_non_gui, -month_year, -"which_programs/balik", -"which_programs/wood", -"which_programs/sketch", -"which_programs/harvesting", -"which_programs/corporate", -"which_programs/other", -"program_specify", -frequency, -reasons, -gender, -age, -race, -race_specify, -commitment) %>% -->
+<!--   mutate_if(is.character, as.numeric) %>% -->
+<!--   mutate( -->
+<!--     social_cohesion_4_rev_coded = case_when( # if 0, coded with 0 -->
+<!--       social_cohesion_4_rev == 0 ~ 0, -->
+<!--       TRUE ~ (8 - social_cohesion_4_rev) -->
+<!--     ), # if not, coded normally -->
+<!--     social_cohesion_5_rev_coded = case_when( # if 0, coded with 0 -->
+<!--       social_cohesion_5_rev == 0 ~ 0, -->
+<!--       TRUE ~ (8 - social_cohesion_5_rev) -->
+<!--     ), -->
+<!--     cns_4_rev_coded = case_when( # if 0, coded with 0 -->
+<!--       cns_4 == 0 ~ 0, -->
+<!--       TRUE ~ (8 - cns_4) -->
+<!--     ), -->
+<!--     self_est_2_rev_coded = case_when( # if 0, coded with 0 -->
+<!--       self_est_2_rev == 0 ~ 0, -->
+<!--       TRUE ~ (8 - self_est_2_rev) -->
+<!--     ), -->
+<!--     self_est_4_rev_coded = case_when( # if 0, coded with 0 -->
+<!--       self_est_4_rev == 0 ~ 0, -->
+<!--       TRUE ~ (8 - self_est_4_rev) -->
+<!--     ), -->
+<!--     imi_3_rev_coded = case_when( # if 0, coded with 0 -->
+<!--       imi_3_rev == 0 ~ 0, -->
+<!--       TRUE ~ (8 - imi_3_rev) -->
+<!--     ), -->
+<!--     imi_4_rev_coded = case_when( # if 0, coded with 0 -->
+<!--       imi_4 == 0 ~ 0, -->
+<!--       TRUE ~ (8 - imi_4) -->
+<!--     ) -->
+<!--   ) -->
+<!-- ``` -->
+
+
+<!-- ```{r include=FALSE} -->
+<!-- ## binding -->
+<!-- gui_mar20_fct <- gui_mar20 %>% -->
+<!--   select(survey_filled, residency, gui_non_gui, month_year, "which_programs/balik", "which_programs/wood", "which_programs/sketch", "which_programs/harvesting", "which_programs/corporate", "which_programs/other", "program_specify", frequency, reasons, gender, age, race, race_specify, commitment) -->
+<!-- gui_mar20_final <- cbind(gui_mar20_fct, gui_mar20_coded) -->
+<!-- ``` -->
+
+<!-- ```{r eval=FALSE, include=FALSE} -->
+<!-- # Saving Dataset -->
+<!-- saveRDS(gui_mar20_final, ("Survey_Experiment/Data/0_GUI_online_mar20.rds")) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- # Create scales -->
+<!-- scale.list <- list( -->
+<!--   SoCoh = c("social_cohesion_1", "social_cohesion_2", "social_cohesion_3", "social_cohesion_4_rev_coded", "social_cohesion_5_rev_coded"), -->
+<!--   SOC = c("soc_1", "soc_2", "soc_3", "soc_4", "soc_5", "soc_6", "soc_7", "soc_8"), -->
+<!--   CNS = c("cns_1", "cns_2", "cns_3", "cns_4_rev_coded", "cns_5", "cns_6", "cns_7", "cns_8", "cns_9", "cns_10"), -->
+<!--   Self_Est = c("self_est_1", "self_est_2_rev_coded", "self_est_3", "self_est_4_rev_coded"), -->
+<!--   Self_Eff = c("self_eff_1", "self_eff_2", "self_eff_3", "self_eff_4", "self_eff_5", "self_eff_6", "self_eff_7", "self_eff_8") -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- library(psych) -->
+<!-- my.scales <- scoreItems(scale.list, gui_mar20_final) -->
+<!-- ``` -->
+
+
+<!-- ```{r include=FALSE} -->
+<!-- ## Cronbach's Alpha -->
+<!-- library(dplyr) -->
+<!-- dfSoCohscore <- select(gui_mar20_final, "social_cohesion_1", "social_cohesion_2", "social_cohesion_3", "social_cohesion_4_rev_coded", "social_cohesion_5_rev_coded") -->
+<!-- dfSOCscore <- select(gui_mar20_final, "soc_1", "soc_2", "soc_3", "soc_4", "soc_5", "soc_6", "soc_7", "soc_8") -->
+<!-- dfCNSscore <- select(gui_mar20_final, "cns_1", "cns_2", "cns_3", "cns_4_rev_coded", "cns_5", "cns_6", "cns_7", "cns_8", "cns_9", "cns_10") -->
+<!-- dfSelf_Estscore <- select(gui_mar20_final, "self_est_1", "self_est_2_rev_coded", "self_est_3", "self_est_4_rev_coded") -->
+<!-- dfSelf_Effscore <- select(gui_mar20_final, "self_eff_1", "self_eff_2", "self_eff_3", "self_eff_4", "self_eff_5", "self_eff_6", "self_eff_7", "self_eff_8") -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- alpha(dfSoCohscore) -->
+<!-- alpha(dfSOCscore) -->
+<!-- alpha(dfCNSscore) -->
+<!-- alpha(dfSelf_Estscore) -->
+<!-- alpha(dfSelf_Effscore) -->
+<!-- ``` -->
+
+## Internal Consistency
+All scales of psychological measures used in the online survey have good Cronbach’s alpha, ranging from .72 to .91 (good internal consistency). Therefore, we will proceed to include all the questions in the respective scales. 
+```{r include=FALSE}
+tbl_var3 <- tibble(vars = c(1, 2, 3, 4, 5), scales = c("Social Cohesion", "Sense of Community", "Connection to Nature", "Self Esteem", "Self Efficacy"), Cronbachs = c(0.83, 0.91, 0.89, 0.71, 0.91))
+```
+
+```{r echo=FALSE}
+tbl_var3 %>% gt()
+```
+
+<!-- ```{r include=FALSE} -->
+<!-- my.scores <- my.scales$scores -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- dfscores <- data.frame(my.scores) -->
+<!-- gui_mar20_scales <- cbind(gui_mar20_final, dfscores) -->
+<!-- ``` -->
+
+
+```{r include=FALSE}
+# Saving Data Scales
+# saveRDS(gui_mar20_scales, ("gui_mar20_scales.rds"))
+gui_mar20_scales <- readRDS(here::here("data/gui_mar20_scales.rds"))
+```
+
+## Descriptive statistics
+### Overall
+```{r echo=FALSE}
+tbl_var1 <- gui_mar20_scales %>%
+  select(age, SoCoh, SOC, CNS, Self_Est, Self_Eff) %>%
+  describe()
+
+tbl_var1 <- tbl_var1 %>%
+  mutate(scales = c("Age", "Social Cohesion", "Sense of Community", "Connection to Nature", "Self Esteem", "Self Efficacy")) %>%
+  select(vars, scales, everything())
+
+tbl_var1 %>%
+  gt() %>%
+  tab_header(
+    title = "Descriptive Statistics of Major Variables (GUI and Non GUI Members)"
+  ) %>%
+  cols_align(align = "center") %>%
+  fmt_number(
+    columns = vars(se, kurtosis, skew, range, mad, trimmed, median, sd, mean),
+    decimals = 2
+  ) %>%
+  fmt_number(
+    columns = vars(max, min),
+    decimals = 1
+  )
+```
+
+### GUI Members
+```{r echo=FALSE}
+# Just GUI
+gui_mar20_scales %>%
+  filter(gui_non_gui == "yes") %>%
+  select(age, SoCoh, SOC, CNS, Self_Est, Self_Eff) %>%
+  describe() %>%
+  mutate(scales = c("Age", "Social Cohesion", "Sense of Community", "Connection to Nature", "Self Esteem", "Self Efficacy")) %>%
+  select(vars, scales, everything()) %>%
+  gt() %>%
+  tab_header(
+    title = "Descriptive Statistics of Major Variables (Only GUI Members)"
+  ) %>%
+  cols_align(align = "center") %>%
+  fmt_number(
+    columns = vars(se, kurtosis, skew, range, mad, trimmed, median, sd, mean),
+    decimals = 2
+  ) %>%
+  fmt_number(
+    columns = vars(max, min),
+    decimals = 1
+  )
+```
+
+```{r echo=FALSE}
+gui_mar20_scales %>%
+  filter(gui_non_gui == "yes") %>%
+  select(gender) %>% 
+  mutate(gender = case_when(
+    gender == 1 ~ "Male",
+    gender == 2 ~ "Female",
+    TRUE ~ "Orhers"
+  )) %>% 
+  group_by(gender) %>% 
+  summarize(count = n()) %>% 
+  mutate(percentage =c(count[1]/104, count[2]/104, count[3]/104))%>% 
+  gt() %>% 
+  fmt_number(
+    columns = vars(percentage),
+    decimals = 2
+  ) %>%
+  tab_header(
+    title = "GUI Members: Gender"
+  ) 
+  
+gui_mar20_scales %>%
+  filter(gui_non_gui == "yes") %>%
+  select(race) %>% 
+  mutate(race = case_when(
+    race == 1 ~ "Chinese",
+    race == 2 ~ "Malay",
+    race == 3 ~ "Indian",
+    TRUE ~ "Orher Races"
+  )) %>% 
+  group_by(race) %>% 
+  summarize(count = n()) %>% 
+  mutate(percentage =c(count[1]/104, count[2]/104, count[3]/104, count[4]/104))%>% 
+  gt() %>% 
+    fmt_number(
+    columns = vars(percentage),
+    decimals = 2
+  ) %>%
+  tab_header(
+    title = "GUI Members: Race"
+  ) 
+```
+
+
+### Non-GUI Memnbers
+```{r echo=FALSE}
+# non-GUI
+gui_mar20_scales %>%
+  filter(gui_non_gui == "never") %>%
+  select(age, SoCoh, SOC, CNS, Self_Est, Self_Eff) %>%
+  describe() %>%
+  mutate(scales = c("Age", "Social Cohesion", "Sense of Community", "Connection to Nature", "Self Esteem", "Self Efficacy")) %>%
+  select(vars, scales, everything()) %>%
+  gt() %>%
+  tab_header(
+    title = "Descriptive Statistics of Major Variables (Only non-GUI Members)"
+  ) %>%
+  cols_align(align = "center") %>%
+  fmt_number(
+    columns = vars(se, kurtosis, skew, range, mad, trimmed, median, sd, mean),
+    decimals = 2
+  ) %>%
+  fmt_number(
+    columns = vars(max, min),
+    decimals = 1
+  )
+```
+
+```{r echo=FALSE}
+gui_mar20_scales %>%
+  filter(gui_non_gui == "never") %>%
+  select(gender) %>% 
+  mutate(gender = case_when(
+    gender == 1 ~ "Male",
+    gender == 2 ~ "Female",
+    TRUE ~ "Orhers"
+  )) %>% 
+  group_by(gender) %>% 
+  summarize(count = n()) %>% 
+  mutate(percentage =c(count[1]/89, count[2]/89, count[3]/89))%>% 
+  gt() %>% 
+    fmt_number(
+    columns = vars(percentage),
+    decimals = 2
+  ) %>%
+  tab_header(
+    title = "Non-GUI Members: Gender"
+  ) 
+  
+gui_mar20_scales %>%
+  filter(gui_non_gui == "never") %>%
+  select(race) %>% 
+  mutate(race = case_when(
+    race == 1 ~ "Chinese",
+    race == 2 ~ "Malay",
+    race == 3 ~ "Indian",
+    TRUE ~ "Orher Races"
+  )) %>% 
+  group_by(race) %>% 
+  summarize(count = n()) %>% 
+  mutate(percentage =c(count[1]/89, count[2]/89, count[3]/89, count[4]/89))%>% 
+  gt() %>% 
+    fmt_number(
+    columns = vars(percentage),
+    decimals = 2
+  ) %>%
+  tab_header(
+    title = "Non-GUI Members: Race"
+  ) 
+```
+
+
+
+## Normality Check
+```{r include=FALSE}
+shapiro.test(gui_mar20_scales$SoCoh)
+hist(gui_mar20_scales$SoCoh)
+ggqqplot(gui_mar20_scales$SoCoh)
+```
+
+```{r include=FALSE}
+shapiro.test(gui_mar20_scales$SOC)
+hist(gui_mar20_scales$SOC)
+ggqqplot(gui_mar20_scales$SOC)
+```
+
+```{r include=FALSE}
+shapiro.test(gui_mar20_scales$CNS)
+hist(gui_mar20_scales$CNS)
+ggqqplot(gui_mar20_scales$CNS)
+```
+
+```{r include=FALSE}
+shapiro.test(gui_mar20_scales$Self_Est)
+hist(gui_mar20_scales$Self_Est)
+ggqqplot(gui_mar20_scales$Self_Est)
+```
+
+```{r include=FALSE}
+shapiro.test(gui_mar20_scales$Self_Eff)
+hist(gui_mar20_scales$Self_Eff)
+ggqqplot(gui_mar20_scales$Self_Eff)
+```
+
+```{r include=FALSE}
+shapiro.test(gui_mar20_scales$age)
+hist(gui_mar20_scales$age)
+ggqqplot(gui_mar20_scales$age)
+```
+
+All the variables below excepts Sense of Community do not follow the normal distribution.
+```{r include=FALSE}
+tbl_normality <- tibble(
+  variables = c("Age", "Social Cohesion", "Sense of Community", "Connection to Nature", "Self Esteem", "Self Efficacy"),
+  shapiro_test = c("p <.001", "p <.001", "0.098*", 0.003, 0.005, "p <.001")
+)
+```
+
+```{r echo=FALSE}
+tbl_normality %>%
+  gt() %>%
+  tab_source_note(
+    source_note = "*Sense of community follows the normal distribution"
+  )
+```
+
+
+## Correlation Analysis
+<!-- - __Figure 1.__ shows correlation r by the figures and highlights: towards shades of blue mean negative and shades of red mean positive correlation. -->
+
+<!-- - __Figure 2.__ shows the correlation r by __the figures__ and p-value by __the highlights__: the squares highlighted with the shades of red are significant correlations. The squares with grey are non-significant correlations. -->
+
+- __Sense of Community (`SOC`)__ and __Social Cohesion (`SoCoh`)__ show the __moderate to strong significant correlation__. It's interesting to note that __Connection to Nature__ shows __small to moderate significant correlations__ with all the __psychological measurements__. This will be examined further with the only GUI dataset.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(corrplot)
+library(lsr)
+
+cor_test_results <- gui_mar20_scales %>%
+  select(age, SOC, SoCoh, Self_Est, Self_Eff, CNS) %>% 
+  correlate(test = TRUE, corr.method = "pearson", p.adjust.method = "none")
+
+confident_95 <- cor_test_results$p.value
+
+cor_M <- cor_test_results$correlation
+
+
+col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+corrplot(cor_M, method = "color", col = col(200),
+         type = "upper", number.cex = .7,
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col = "black", tl.srt = 45, # Text label color and rotation
+         # Combine with significance
+         p.mat = confident_95, sig.level = 0.05, insig = "blank", 
+         # hide correlation coefficient on the principal diagonal
+         diag = FALSE)
+```
+
+## Significant test (t-test and Wilcoxon Test)
+```{r include=FALSE}
+# t test for SOC and Effect Size
+t.test(gui_mar20_scales$SOC ~ gui_mar20_scales$gui_non_gui, mu = 0, alt = "two.sided", conf = 0.95, var.eq = F, paired = F)
+
+library(effsize)
+cohen.d(gui_mar20_scales$SOC ~ gui_mar20_scales$gui_non_gui, na.rm = TRUE, pooled = TRUE, paired = F)
+```
+
+```{r include=FALSE}
+# Wilcoxon Test (Nonparametric Test)
+wilcox.test(gui_mar20_scales$SoCoh ~ gui_mar20_scales$gui_non_gui, mu = 0, alt = "two.sided", conf.int = T, conf.level = 0.95, paired = F, exact = T, correct = T)
+wilcox.test(gui_mar20_scales$Self_Est ~ gui_mar20_scales$gui_non_gui, mu = 0, alt = "two.sided", conf.int = T, conf.level = 0.95, paired = F, exact = T, correct = T)
+wilcox.test(gui_mar20_scales$Self_Eff ~ gui_mar20_scales$gui_non_gui, mu = 0, alt = "two.sided", conf.int = T, conf.level = 0.95, paired = F, exact = T, correct = T)
+wilcox.test(gui_mar20_scales$CNS ~ gui_mar20_scales$gui_non_gui, mu = 0, alt = "two.sided", conf.int = T, conf.level = 0.95, paired = F, exact = T, correct = T)
+```
+
+```{r include=FALSE}
+# Effect Size for Wilcoxon Test
+library(rstatix)
+gui_mar20_scales %>% 
+  wilcox_effsize(SoCoh ~ gui_non_gui, paired = F)
+gui_mar20_scales %>%
+  wilcox_effsize(Self_Est ~ gui_non_gui, paired = F)
+gui_mar20_scales %>%
+  wilcox_effsize(Self_Eff ~ gui_non_gui, paired = F)
+gui_mar20_scales %>%
+  wilcox_effsize(CNS ~ gui_non_gui, paired = F)
+```
+  
+- As preliminary analyses, we assessed whether there were __any differences between GUI and non-GUI group in terms of the respective psychological measures__ such as sense of community, nature connection, self-efficacy, and self-esteem. 
+
+- We conducted __the Welch Two Sample t-test__ on __Sense of Community__ and __Wilcoxon Signed-rank test__ on the rest of the scales. __Statistically significant differences__ were observed in __the Nature Connection__ between __GUI members and non-GUI members__ (Table 6). Cohen's d was estimated at __0.2__, which is __a small effect__ based on the Cohen’s guidelines (1992). 
+
+- Although the effect is small, this study identified that __those who engaged in GUI programs more than three months__ in the last two years have __a stronger sense of connection to nature__.  
+
+- While __social cohesion__ and __a sense of community__ were __significantly higher__ among the GUI members, responses from non-GUI members to these scales were about __their neighborhood rather than about GUI__. Therefore, this study __cannot confirm__ that GUI members have a higher sense of community and social cohesion compared to the ones non-GUI group has.
+
+```{r echo=FALSE}
+#Showing the group wise data
+library(reshape)
+
+#Showing 4 graphs by clusters
+#x is rating 1 to 7, and y is scales
+
+gg1 <- gui_mar20_scales %>%
+  filter(gui_non_gui == "yes") %>% 
+  select(SoCoh, SOC, CNS, Self_Est, Self_Eff) %>%
+  melt() %>% 
+  ggplot(aes(factor(variable), value))+
+  geom_boxplot(aes(fill=variable, alpha=0.8))+
+  #geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+  labs(x="Scales", y="Rating (1 to 7)", title="GUI Members (n=104)")+
+  #coord_flip()+
+  theme_minimal() +
+  theme(legend.position = "none")+
+  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
+
+gg2 <- gui_mar20_scales %>%
+  filter(gui_non_gui == "never") %>% 
+  select(SoCoh, SOC, CNS, Self_Est, Self_Eff) %>%
+  melt() %>% 
+  ggplot(aes(factor(variable), value))+
+  geom_boxplot(aes(fill=variable, alpha=0.8))+
+  #geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+  labs(x="Scales", y="Rating (1 to 7)", title="Non-GUI Members (n=89)")+
+  #coord_flip()+
+  theme_minimal() +
+  theme(legend.position = "none")+
+  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
+
+gg1+gg2
+
+```
+
+
+
+```{r include = FALSE}
+library(patchwork)
+a1 <- gui_mar20_scales %>%
+  mutate(gui_non_gui = case_when(
+    gui_non_gui == "yes" ~ "GUI Members",
+    TRUE ~"Non-GUI"
+  )) %>% 
+  select(SoCoh, gui_non_gui) %>%
+  ggplot(aes(x = reorder(gui_non_gui, SoCoh), y = SoCoh, fill = gui_non_gui)) +
+  geom_boxplot() +
+  theme_minimal()+
+  theme(legend.position = "None") +
+  labs(x = "", y = "Social Cohesion")+
+  scale_fill_manual(values=c("#629952", "#EF9B64"))
+
+
+a2 <- gui_mar20_scales %>%
+  mutate(gui_non_gui = case_when(
+    gui_non_gui == "yes" ~ "GUI Members",
+    TRUE ~"Non-GUI"
+  )) %>% 
+  select(SOC, gui_non_gui) %>%
+  ggplot(aes(x = reorder(gui_non_gui, SOC), y = SOC, fill = gui_non_gui)) +
+  geom_boxplot() +
+  theme_minimal()+
+  theme(legend.position = "None") +
+  labs(x = "", y = "Sense of Community")+
+  scale_fill_manual(values=c("#629952", "#EF9B64"))
+
+a3 <- gui_mar20_scales %>%
+mutate(gui_non_gui = case_when(
+    gui_non_gui == "yes" ~ "GUI Members",
+    TRUE ~"Non-GUI"
+  )) %>% 
+  select(CNS, gui_non_gui) %>%
+  ggplot(aes(x = reorder(gui_non_gui, CNS), y = CNS, fill =gui_non_gui)) +
+  geom_boxplot() +
+  #scale_fill_brewer(palette="BuPu")+
+  theme_minimal()+
+  theme(legend.position = "None") +
+  labs(x = "", y = "Connection to Nature") +
+  scale_fill_manual(values=c("#629952", "#EF9B64"))
+
+a4 <- gui_mar20_scales %>%
+mutate(gui_non_gui = case_when(
+    gui_non_gui == "yes" ~ "GUI Members",
+    TRUE ~"Non-GUI"
+  )) %>% 
+  select(Self_Eff, gui_non_gui) %>%
+  ggplot(aes(x = reorder(gui_non_gui, Self_Eff), y = Self_Eff, fill = gui_non_gui)) +
+  geom_boxplot() +
+  theme_minimal()+
+  theme(legend.position = "None") +
+  labs(x = "", y = "Self Efficacy")+
+  scale_fill_manual(values=c("#629952", "#EF9B64"))
+
+a5 <- gui_mar20_scales %>%
+mutate(gui_non_gui = case_when(
+    gui_non_gui == "yes" ~ "GUI Members",
+    TRUE ~"Non-GUI"
+  )) %>% 
+  select(Self_Est, gui_non_gui) %>%
+  ggplot(aes(x = reorder(gui_non_gui, Self_Est), y = Self_Est, fill = gui_non_gui)) +
+  geom_boxplot() +
+  theme_minimal()+
+  theme(legend.position = "None") +
+  labs(x = "", y = "Self Esteem")+
+  scale_fill_manual(values=c("#629952", "#EF9B64"))
+```
+
+```{r echo=FALSE}
+(a1 + a2 + a3) / (a4 + a5)
+```
+
+```{r include=FALSE}
+a3 + a4 +a5 
+```
+
+
+```{r include=FALSE}
+tbl_final <- tbl_var3 %>% # Cronbacks Alpha
+  mutate(
+    shapiro_test = c("p <.001", "0.098*", 0.003, 0.005, "p <.001"), # Normality shapiro test
+    non_GUI_means = c(4.41, 4.42, 5.12, 4.80, 5.22), # non GUI means
+    GUI_means = c(5.92, 5.19, 5.54, 5.06, 5.34), # GUI means
+    test_statistics = c("p < .001**", "p < .001**", "p < .001**", 0.12, 0.42), # test statistics
+    effect_size = c(0.665, 0.738, 0.219, 0.111, 0.057) # Effect size
+  )
+```
+
+```{r echo=FALSE}
+tbl_final %>%
+  gt() %>%
+  tab_header(
+    title = "Table 6: Summary of Test Statistics"
+  ) %>%
+  cols_align(align = "center") %>%
+  tab_source_note(
+    source_note = "*t-test for Sense of Community, and Wilcoxon test for the rest of the scales"
+  )
+```
+
+
