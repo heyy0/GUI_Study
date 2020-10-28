@@ -1223,7 +1223,7 @@ g1 <- gui_cluster_data %>%
   labs(x="Scales", y="Rating (1 to 7)", title="Cluster 1: Fresh Members (n=67)")+
   #scale_y_continuous(limits = c(1, 7))+
   expand_limits(y=c(1, 7))+
-  coord_flip()+
+  #coord_flip()+
   theme_minimal() +
   theme(legend.position = "none")+
   theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
@@ -1237,7 +1237,7 @@ g2 <- gui_cluster_data %>%
   #geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   labs(x="Scales", y="Rating (1 to 7)", title="Cluster 2: Long-Term Members (n=28)")+
   expand_limits(y=c(1, 7))+
-  coord_flip()+
+  #coord_flip()+
   theme_minimal() +
   theme(legend.position = "none")+
   theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
@@ -1251,7 +1251,7 @@ g3 <- gui_cluster_data %>%
   #geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   labs(x="Scales", y="Rating (1 to 7)", title="Cluster 3: Everyday Visitors (n=2)")+
   expand_limits(y=c(1, 7))+
-  coord_flip()+
+  #coord_flip()+
   theme_minimal() +
   theme(legend.position = "none")+
   theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
@@ -1265,7 +1265,7 @@ g4 <- gui_cluster_data %>%
   #geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   labs(x="Scales", y="Rating (1 to 7)", title="Cluster 4: Committed Frequent Visitors (n=7)")+
   expand_limits(y=c(1, 7))+
-  coord_flip()+
+  #coord_flip()+
   theme_minimal() +
   theme(legend.position = "none")+
   theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
