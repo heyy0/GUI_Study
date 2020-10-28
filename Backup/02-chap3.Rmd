@@ -1190,6 +1190,8 @@ c1 <- gui_cluster_data %>%
   select(CNS, clusters) %>%
   ggplot(aes(x = clusters, y = CNS, group = clusters, fill = clusters)) +
   geom_boxplot() +
+  #geom_jitter(alpha =0.4)+
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.5)+
   theme_minimal() +
   theme(legend.position = "none")
 

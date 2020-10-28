@@ -1189,6 +1189,7 @@ c1 <- gui_cluster_data %>%
   select(CNS, clusters) %>%
   ggplot(aes(x = clusters, y = CNS, group = clusters, fill = clusters)) +
   geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   theme_minimal() +
   theme(legend.position = "none")
 
@@ -1197,6 +1198,7 @@ c2 <- gui_cluster_data %>%
   select(SOC, clusters) %>%
   ggplot(aes(x = clusters, y = SOC, group = clusters, fill = clusters)) +
   geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   theme_minimal() +
   theme(legend.position = "none")
 
@@ -1204,6 +1206,7 @@ c3 <- gui_cluster_data %>%
   select(SoCoh, clusters) %>%
   ggplot(aes(x = clusters, y = SoCoh, group = clusters, fill = clusters)) +
   geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   theme_minimal() +
   theme(legend.position = "none")
 
@@ -1211,6 +1214,7 @@ c4 <- gui_cluster_data %>%
   select(IMI, clusters) %>%
   ggplot(aes(x = clusters, y = IMI, group = clusters, fill = clusters)) +
   geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   theme_minimal() +
   theme(legend.position = "none")
 
@@ -1218,6 +1222,7 @@ e4 <- gui_cluster_data %>%
   select(IM, clusters) %>%
   ggplot(aes(x = clusters, y = IM, group = clusters, fill = clusters)) +
   geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   theme_minimal() +
   theme(legend.position = "none")
 
@@ -1225,6 +1230,7 @@ e5 <- gui_cluster_data %>%
   select(PComp, clusters) %>%
   ggplot(aes(x = clusters, y = PComp, group = clusters, fill = clusters)) +
   geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   theme_minimal() +
   theme(legend.position = "none")
 
@@ -1232,6 +1238,7 @@ e6 <- gui_cluster_data %>%
   select(PChoice, clusters) %>%
   ggplot(aes(x = clusters, y = PChoice, group = clusters, fill = clusters)) +
   geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   theme_minimal() +
   theme(legend.position = "none")
 
@@ -1239,6 +1246,7 @@ c5 <- gui_cluster_data %>%
   select(Self_Eff, clusters) %>%
   ggplot(aes(x = clusters, y = Self_Eff, group = clusters, fill = clusters)) +
   geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   theme_minimal() +
   theme(legend.position = "none")
 
@@ -1246,6 +1254,7 @@ c6 <- gui_cluster_data %>%
   select(Self_Est, clusters) %>%
   ggplot(aes(x = clusters, y = Self_Est, group = clusters, fill = clusters)) +
   geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   theme_minimal() +
   theme(legend.position = "none")
 
@@ -1253,6 +1262,7 @@ c7 <- gui_cluster_data %>%
   select(age, clusters) %>%
   ggplot(aes(x = clusters, y = age, group = clusters, fill = clusters)) +
   geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   theme_minimal() +
   theme(legend.position = "none")
 
