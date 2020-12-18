@@ -2047,6 +2047,32 @@ cluster_comp_gui <- readRDS(here::here("data/cluster_comp_gui_june5_scales.rds")
 
 ```
 
+```{r}
+cluster_comp_gui %>% 
+  select(CNS, clusters) %>% 
+  group_by(clusters) %>% 
+  summarize(CNS_median=median(CNS))
+
+cluster_comp_gui %>% 
+  group_by(clusters) %>% 
+  summarize(count=n())
+```
+
+```{r}
+# Kruskal-Wallis
+kruskal.test(CNS ~ clusters, data = cluster_comp_gui) # p < 0.05 (0.03)
+
+cluster_comp_gui$clusters = factor(cluster_comp_gui$clusters, levels = c("1", "2", "3", "4", "5"))
+
+# post-hoc test - pairwise mann-whitney u-test
+PT = pairwise.wilcox.test(cluster_comp_gui$CNS,
+                          cluster_comp_gui$clusters,
+                          p.adjust.method = "none")
+
+PT
+```
+
+
 ```{r include=FALSE}
 # Anova
 # CNS

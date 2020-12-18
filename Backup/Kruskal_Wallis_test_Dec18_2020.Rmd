@@ -1,0 +1,104 @@
+---
+title: "Kruskwalli_test_Dec18_2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=FALSE}
+library(tidyverse)
+library(here)
+library(psych)
+library(lsr)
+library(ggpubr)
+library(gt)
+library(ggplot2)
+library(lattice)
+library(FSA)
+```
+
+```{r include=FALSE}
+cluster_comp_gui <- readRDS(here::here("data/cluster_comp_gui_june5_scales.rds")) #5 groups
+gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds")) # 4 groups
+```
+
+```{r include=FALSE}
+cluster_comp_gui %>% 
+  select(CNS, clusters) %>% 
+  group_by(clusters) %>% 
+  summarize(CNS_median=median(CNS))
+
+cluster_comp_gui %>% 
+  group_by(clusters) %>% 
+  summarize(count=n())
+```
+
+## Kruskal-Wallis Test: 4 GUI groups
+```{r}
+# CNS
+kruskal.test(CNS ~ clusters, data = gui_cluster_data) # p > 0.05 (0.747)
+```
+
+```{r}
+# SOC
+kruskal.test(SOC ~ clusters, data = gui_cluster_data) # p > 0.05 (0.1503)
+
+gui_cluster_data$clusters = factor(gui_cluster_data$clusters, levels = c("1", "2", "3", "4"))
+
+# post-hoc test - pairwise mann-whitney u-test
+PT = pairwise.wilcox.test(gui_cluster_data$SOC,
+                          gui_cluster_data$clusters,
+                          p.adjust.method = "none")
+
+PT
+```
+
+```{r}
+# SoCoh
+kruskal.test(SoCoh ~ clusters, data = gui_cluster_data) # p > 0.05 (0.460)
+```
+
+```{r}
+# Self-Est
+kruskal.test(Self_Eff ~ clusters, data = gui_cluster_data) # p > 0.05 (529)
+
+# Self-Eff
+kruskal.test(Self_Est ~ clusters, data = gui_cluster_data) # p > 0.05 (0.595)
+
+# IMI
+kruskal.test(IMI ~ clusters, data = gui_cluster_data) # p > 0.05 (0.538)
+
+# IM
+kruskal.test(IM ~ clusters, data = gui_cluster_data) # p > 0.05 (0.604)
+
+#PChoice
+kruskal.test(PChoice ~ clusters, data = gui_cluster_data) # p > 0.05 (0.396)
+
+#PComp
+kruskal.test(PComp ~ clusters, data = gui_cluster_data) # p > 0.05 (0.647)
+```
+
+
+## Kruskal-Wallis Test: Non-GUI members VS 4 GUI groups
+```{r}
+# CNS
+kruskal.test(CNS ~ clusters, data = cluster_comp_gui) # p < 0.05 (0.03)
+
+cluster_comp_gui$clusters = factor(cluster_comp_gui$clusters, levels = c("1", "2", "3", "4", "5"))
+
+# post-hoc test - pairwise mann-whitney u-test
+PT = pairwise.wilcox.test(cluster_comp_gui$CNS,
+                          cluster_comp_gui$clusters,
+                          p.adjust.method = "none")
+
+PT
+```
+
+```{r}
+# Self-Eff
+kruskal.test(Self_Eff ~ clusters, data = cluster_comp_gui) # p > 0.05 (0.61)
+
+# Self-Est
+kruskal.test(Self_Est ~ clusters, data = cluster_comp_gui) # p > 0.05 (0.32)
+```
+
