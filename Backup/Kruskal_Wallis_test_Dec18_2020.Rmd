@@ -54,6 +54,21 @@ PT
 ```
 
 ```{r}
+library(dunn.test)
+dunn.test(gui_cluster_data$SOC,
+                          gui_cluster_data$clusters, method = "holm")
+```
+
+```{r}
+two_groups <- gui_cluster_data %>% 
+  filter(clusters==1 | clusters==2)
+wilcox.test(two_groups$SOC ~ two_groups$clusters, mu = 0, alt = "two.sided", conf.int = F, conf.level = 0.95, paired = F, exact = F, correct = T)
+
+#Just two group comparison, the difference is significant
+```
+
+
+```{r}
 # SoCoh
 kruskal.test(SoCoh ~ clusters, data = gui_cluster_data) # p > 0.05 (0.460)
 ```
@@ -93,6 +108,12 @@ PT = pairwise.wilcox.test(cluster_comp_gui$CNS,
 
 PT
 ```
+
+```{r}
+dunn.test(cluster_comp_gui$CNS, cluster_comp_gui$clusters, method = "holm")
+```
+
+
 
 ```{r}
 # Self-Eff
