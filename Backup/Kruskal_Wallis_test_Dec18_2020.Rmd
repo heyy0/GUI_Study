@@ -148,3 +148,8 @@ adonis(Z ~ cluster_comp_gui$clusters, method = "euclidean",
 #significant (around p=0.05, it fractuates slightly). 5 groups are significantly different in terms of CNS, Self-est and Self-eff
 ```
 
+- by measuring several dependent variables in a single experiment, there is a better chance of discovering which factor is truly important. 
+
+- Second, it can protect against Type I errors that might occur if multiple ANOVA’s were conducted independently. Additionally, it can reveal differences not discovered by ANOVA tests.
+
+- the dependent variables should be largely uncorrelated
