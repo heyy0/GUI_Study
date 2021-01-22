@@ -104,16 +104,15 @@ cluster_comp_gui$clusters = factor(cluster_comp_gui$clusters, levels = c("1", "2
 # post-hoc test - pairwise mann-whitney u-test
 PT = pairwise.wilcox.test(cluster_comp_gui$CNS,
                           cluster_comp_gui$clusters,
-                          p.adjust.method = "none")
+                          p.adjust.method = "holm")
 
 PT
 ```
 
 ```{r}
+library(dunn.test)
 dunn.test(cluster_comp_gui$CNS, cluster_comp_gui$clusters, method = "holm")
 ```
-
-
 
 ```{r}
 # Self-Eff
@@ -121,5 +120,31 @@ kruskal.test(Self_Eff ~ clusters, data = cluster_comp_gui) # p > 0.05 (0.61)
 
 # Self-Est
 kruskal.test(Self_Est ~ clusters, data = cluster_comp_gui) # p > 0.05 (0.32)
+```
+
+
+
+## Non-parametric MANOVA
+
+### 4 groups
+```{r echo=FALSE, message=FALSE}
+library(vegan)
+## Create the Y matrix of variables under comparison:
+Y <- gui_cluster_data[, c("SOC", "SoCoh", "CNS", "IMI", "Self_Est", "Self_Eff")]
+## Perform a one-way NPMANOVA:
+adonis(Y ~ gui_cluster_data$clusters, method = "euclidean",
+       permutations = 999)
+
+#Not significant: 4 groups are not significantly different in terms of 6 indicators
+```
+
+### 5 groups
+```{r}
+Z <- cluster_comp_gui[, c("CNS", "Self_Est", "Self_Eff")]
+## Perform a one-way NPMANOVA:
+adonis(Z ~ cluster_comp_gui$clusters, method = "euclidean",
+       permutations = 999)
+
+#significant (around p=0.05, it fractuates slightly). 5 groups are significantly different in terms of CNS, Self-est and Self-eff
 ```
 
