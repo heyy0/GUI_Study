@@ -1,0 +1,138 @@
+---
+title: "Correlation Table for Publication"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+```{r include=FALSE}
+library(heplots)
+library(tidyverse)
+library(gt)
+library(lsr)
+library(psych)
+```
+
+```{r include=FALSE}
+gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
+```
+
+## Correlation Analysis
+- __`Correlation Test (Spearman's Rank Test with Holm adjustment)`__ shows correlation r by the figures and highlights: towards __shades of blue__ mean __negative__ and __shades of red__ mean __positive correlations__. Those squares with no highlights (white) are non-significant correlations (p> 0.05).
+
+- It's observed that __Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation Inventry (`IMI`)__ show __significant correlations (moderate to strong)__ among them.   
+
+- The subset of __Intrinsic Motivation Inventry (`IMI`)__, including __Intrinsic Motivation (enjoyment/ intetests: `IM`)__, __Perceived Competence (`PComp`)__ and __Perceived Chocie (`PChoice`)__ also __show significant correlations__ with `SOC` and `SoCoh` (however, the correlations are weaker compared to the ones with `IMI`)
+
+- Frequency (`frequency_coded`) and commitment (`commitment_coded`) also show moderate to strong correlations (Spearman). However, as discussed earlier, __the correlation test with Pearson__ only __showed a weak correlation (r=0.23, Pearson)__.
+  
+- __1) those who visit GUI frequently__ and __2) those who commit GUI in the long duration__ seem to have __a higher sense of community__ and __a higher Intrinsic Motivation (`IMI`)__. Earlier studies from Community Psychology support these findings: __sense of community and intrinsic motivation can be built through frequent interactions over the long term__ (Christens & Peterson, 2010; Bidee, 2013; Oostlander et al., 2013). 
+
+- It is interesting to note that Perceived Competence (`PComp`) shows a significant correlation with `Frequency`, whereas Perceived Choice (`PChoice`) is significantly correlated with `Commitment`
+
+<!-- Whereas, `SoCoh` (Social Cohesion) does not show any significant correlations with  `Frequency` and `Commitment`, indicating that `SoCoh` does not develop over time through frequent interactions.     -->
+  
+- There is __a strong correlation__ between __Nature Connection (`CNS`)__ and __Intrinsic Motivation (`IMI`)__ (r=0.465)__, implying that __those who are self-motivated also have a high sense of nature connection.__
+  
+- The number of __program types attended__ (`# of Programs`) shows __significant positive correlations__ with __`Frequency`, `Commitment`, Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation (`IMI`)__. Hence, __more committed members__ with __a higher sense of community__ engage in __a variety of programs__. It is also interesting to note that `# of Programs` shows a significant negative correlation with `age`: __older GUI members__ attend __less variety of GUI programs__.
+
+- This correlation test did not show significant correlations between __1) frequency and commitment, and 2) Social Cohesion (`SoCoh`)__ and __Nature connection (`CNS`)__. This suggests that __Social Cohesion__ and __Nature Connection__ can be built among GUI members regardless of their duration of commitment and frequency of visits. As the focus group discussion with GUI volunteers noted, perhaps __GUI members__ can gain a sense of Social Cohesion __immediately__ through their engagement at GUI. Regarding the Nature Connection, it seems that __those who visit GUI already have a higher sense of nature connection__. Therefore, it doesn't seem to change so much over time.
+
+  
+```{r include=FALSE}
+gui_cluster_data %>%
+  dplyr::select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>% mutate(clusters=as.numeric(clusters)) %>% pairs()
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=8}
+cor_test_results <- gui_cluster_data %>%
+  dplyr::select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff, CNS) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>%
+  correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "holm")
+
+library(corrplot)
+
+confident_95 <- cor_test_results$p.value
+
+cor_M <- cor_test_results$correlation
+
+col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+corrplot(cor_M, method = "color", col = col(200),
+         type = "upper", number.cex = .7,
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col = "black", tl.srt = 45, # Text label color and rotation
+         # Combine with significance
+         p.mat = confident_95, sig.level = 0.05, insig = "blank", 
+         # hide correlation coefficient on the principal diagonal
+         diag = FALSE, 
+         title="Correlation Test (Spearman's Rank Test)",
+         mar=c(0,0,5,0))
+```
+
+
+## Correlation Matrix Table for Publication
+```{r echo=FALSE}
+table_1 <- gui_cluster_data %>%
+  dplyr::select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff #, CNS, RC1, RC2, clusters
+         ) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>% 
+  correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "holm")
+
+library(corrplot)
+
+confident_95 <- table_1$p.value
+
+cor_M <- table_1$correlation
+
+col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+corrplot(cor_M, method = "color", col = col(200),
+         type = "upper", number.cex = .7,
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col = "black", tl.srt = 45, # Text label color and rotation
+         # Combine with significance
+         p.mat = confident_95, 
+         sig.level = c(.001, .01, .05), insig = "label_sig", 
+         pch.cex = 1, pch.col = "white",
+         # hide correlation coefficient on the principal diagonal
+         diag = FALSE, 
+         title="Correlation Test (Spearman's Rank Test)",
+         mar=c(0,0,5,0))
+
+```
+
+
+
+
+#### Table with gt() summary without significance level
+```{r echo=FALSE}
+cor_summary<- cor_M %>% round(., 3)  
+
+upper<-cor_summary
+upper[upper.tri(cor_summary)]<-""
+upper<-as.data.frame(upper)
+upper
+```
+
+```{r}
+upper %>% mutate(Variables = c("age", "Frequency", "Commitment",  "# of Programs", "SOC", "SoCoh", "IMI", "IM", "PComp", "PChoice", "Self_Est", "Self_Eff")) %>% 
+  dplyr::select(Variables, everything()) %>% 
+  gt()
+```
+
+
+#### Correlation package
+
+```{r include=FALSE}
+library(agricolae)
+agri_r<- gui_cluster_data %>%
+  dplyr::select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff #, CNS, RC1, RC2, clusters
+         ) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>% 
+  correlation()
+
+summary(agri_r)
+```
+
+
