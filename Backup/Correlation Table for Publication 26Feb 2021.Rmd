@@ -25,7 +25,7 @@ gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
 ## Correlation Analysis
 - __`Correlation Test (Spearman's Rank Test with Holm adjustment)`__ shows correlation r by the figures and highlights: towards __shades of blue__ mean __negative__ and __shades of red__ mean __positive correlations__. 
 
-- Those squares with no stars (white) are non-significant correlations (p> 0.05). * = _p_ < 0.05, "* * *" = _p_ < 0.001, "* * * * " = _p_ < 0.001
+- Those squares with no stars (white) are non-significant correlations (p> 0.05). * = _p_ < 0.05, "* * *" = _p_ < 0.001, "* * * * " = _p_ < 0.0001
 
 - It's observed that __Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation Inventry (`IMI`)__ show __significant correlations (moderate to strong)__ among them.   
 
@@ -43,6 +43,8 @@ gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
 <!-- Whereas, `SoCoh` (Social Cohesion) does not show any significant correlations with  `Frequency` and `Commitment`, indicating that `SoCoh` does not develop over time through frequent interactions.     -->
   
 - There is __a strong correlation__ between __Nature Connection (`CNS`)__ and __Intrinsic Motivation (`IMI`)__ (r=0.47)__, implying that __those who are self-motivated also have a high sense of nature connection.__
+
+- `CNS` is also significantly correlated with `SOC` and `Self_Eff`.
   
 <!-- - The number of __program types attended__ (`# of Programs`) shows __significant positive correlations__ with __`Frequency`, `Commitment`, Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation (`IMI`)__. Hence, __more committed members__ with __a higher sense of community__ engage in __a variety of programs__. It is also interesting to note that `# of Programs` shows a significant negative correlation with `age`: __older GUI members__ attend __less variety of GUI programs__. -->
 
