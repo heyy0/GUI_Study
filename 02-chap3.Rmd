@@ -1643,13 +1643,40 @@ gui_cluster_data %>%
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=8}
 cor_test_results <- gui_cluster_data %>%
   select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff, CNS, RC1, RC2, clusters) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>% mutate(clusters=as.numeric(clusters)) %>% 
-  correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "none")
+  correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "holm")
 
 library(corrplot)
 
 confident_95 <- cor_test_results$p.value
 
 cor_M <- cor_test_results$correlation
+
+col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+corrplot(cor_M, method = "color", col = col(200),
+         type = "upper", number.cex = .7,
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col = "black", tl.srt = 45, # Text label color and rotation
+         # Combine with significance
+         p.mat = confident_95, sig.level = 0.05, insig = "blank", 
+         # hide correlation coefficient on the principal diagonal
+         diag = FALSE, 
+         title="Correlation Test (Spearman's Rank Test)",
+         mar=c(0,0,5,0))
+
+```
+
+- Correlation Table for Publication
+```{r echo=FALSE}
+table_1 <- gui_cluster_data %>%
+  select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, IMI, IM, PComp, PChoice, Self_Est, Self_Eff #, CNS, RC1, RC2, clusters
+         ) %>% rename("Frequency" = frequency_coded,"Commitment" = commitment_coded, "# of Programs" = number_programs) %>% 
+  correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "holm")
+
+library(corrplot)
+
+confident_95 <- table_1$p.value
+
+cor_M <- table_1$correlation
 
 col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
 corrplot(cor_M, method = "color", col = col(200),

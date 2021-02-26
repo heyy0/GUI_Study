@@ -1,5 +1,5 @@
 ---
-title: "Kruskwalli_test_Dec18_2020"
+title: "Fligner-Killeen test and Kruskwalli test"
 output: html_document
 editor_options: 
   chunk_output_type: console
@@ -18,20 +18,40 @@ library(FSA)
 ```
 
 ```{r include=FALSE}
-cluster_comp_gui <- readRDS(here::here("data/cluster_comp_gui_june5_scales.rds")) #5 groups
+cluster_comp_gui <- readRDS(here::here("data/cluster_comp_gui_june5_scales.rds")) # 5 groups
 gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds")) # 4 groups
 ```
 
 ```{r include=FALSE}
-cluster_comp_gui %>% 
-  select(CNS, clusters) %>% 
-  group_by(clusters) %>% 
-  summarize(CNS_median=median(CNS))
+cluster_comp_gui %>%
+  select(CNS, clusters) %>%
+  group_by(clusters) %>%
+  summarize(CNS_median = median(CNS))
 
-cluster_comp_gui %>% 
-  group_by(clusters) %>% 
-  summarize(count=n())
+cluster_comp_gui %>%
+  group_by(clusters) %>%
+  summarize(count = n())
 ```
+
+## Fligner-Killeen test (median)
+- Since the sample size of each cluster is uneven, it is essential to check the homogenity of variance across the four clusters.
+
+- The null hypothesis of Fligner Killeen test is that variance is equall among the groups. If it’s significant, reject the null, and accept that varianle is not equal.
+
+- The results of Fligner Killeen test shows that __`PChoice` and `Self_Est`__ __do not have equal variance__ across the four groups. __The rest of variables__ have __equal variance__ across the groups.
+
+```{r echo=FALSE}
+fligner.test(SOC ~ clusters, gui_cluster_data) # not significant. Variance is equal
+fligner.test(SoCoh ~ clusters, gui_cluster_data) # not significant. Variance is equal
+fligner.test(CNS ~ clusters, gui_cluster_data) # not significant. Variance is equal
+fligner.test(IMI ~ clusters, gui_cluster_data) # not significant. Variance is equal
+fligner.test(IM ~ clusters, gui_cluster_data) # not significant. Variance is equal
+fligner.test(PComp ~ clusters, gui_cluster_data) # not significant. Variance is equal
+fligner.test(PChoice ~ clusters, gui_cluster_data) # Significant. Variance is NOT equal
+fligner.test(Self_Est ~ clusters, gui_cluster_data) # Significant. Variance is NOT equal
+fligner.test(Self_Eff ~ clusters, gui_cluster_data) # not significant. Variance is equal
+```
+
 
 ## Kruskal-Wallis Test: 4 GUI groups
 ```{r}
@@ -42,31 +62,27 @@ kruskal.test(CNS ~ clusters, data = gui_cluster_data) # p > 0.05 (0.747)
 ```{r}
 # SOC
 kruskal.test(SOC ~ clusters, data = gui_cluster_data) # p > 0.05 (0.1503)
-
-gui_cluster_data$clusters = factor(gui_cluster_data$clusters, levels = c("1", "2", "3", "4"))
-
-# post-hoc test - pairwise mann-whitney u-test
-PT = pairwise.wilcox.test(gui_cluster_data$SOC,
-                          gui_cluster_data$clusters,
-                          p.adjust.method = "none")
-
-PT
 ```
 
-```{r}
-library(dunn.test)
-dunn.test(gui_cluster_data$SOC,
-                          gui_cluster_data$clusters, method = "holm")
-```
 
-```{r}
-two_groups <- gui_cluster_data %>% 
-  filter(clusters==1 | clusters==2)
-wilcox.test(two_groups$SOC ~ two_groups$clusters, mu = 0, alt = "two.sided", conf.int = F, conf.level = 0.95, paired = F, exact = F, correct = T)
 
-#Just two group comparison, the difference is significant
-```
+<!-- ```{r echo=FALSE} -->
+<!-- gui_cluster_data$clusters = factor(gui_cluster_data$clusters, levels = c("1", "2", "3", "4")) -->
 
+<!-- #post-hoc test - pairwise mann-whitney u-test -->
+<!-- PT = pairwise.wilcox.test(gui_cluster_data$SOC, -->
+<!--                           gui_cluster_data$clusters, -->
+<!--                           p.adjust.method = "holm") -->
+
+<!-- PT -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- library(dunn.test) -->
+<!-- dunn.test(gui_cluster_data$SOC, -->
+<!--                           gui_cluster_data$clusters, method = "holm") -->
+<!-- ``` -->
 
 ```{r}
 # SoCoh
@@ -86,35 +102,55 @@ kruskal.test(IMI ~ clusters, data = gui_cluster_data) # p > 0.05 (0.538)
 # IM
 kruskal.test(IM ~ clusters, data = gui_cluster_data) # p > 0.05 (0.604)
 
-#PChoice
+# PChoice
 kruskal.test(PChoice ~ clusters, data = gui_cluster_data) # p > 0.05 (0.396)
 
-#PComp
+# PComp
 kruskal.test(PComp ~ clusters, data = gui_cluster_data) # p > 0.05 (0.647)
 ```
 
+### Comparing Fresh Members and Long-term members
+- When cluster 1 and 2 are compared, the Wilcox test shows that cluster 2 has significantly higher degree of `SOC`.
+
+```{r echo=FALSE}
+two_groups <- gui_cluster_data %>%
+  filter(clusters == 1 | clusters == 2)
+wilcox.test(two_groups$SOC ~ two_groups$clusters, mu = 0, alt = "two.sided", conf.int = F, conf.level = 0.95, paired = F, exact = F, correct = T)
+```
+
+## Fligner-Killeen test for 5 groups
+- The results of Fligner Killeen test shows that __all the variables__ have __equal variance__ across the groups.
+
+```{r echo=FALSE}
+fligner.test(SOC ~ clusters, cluster_comp_gui) # not significant. Variance is equal
+fligner.test(SoCoh ~ clusters, cluster_comp_gui) # not significant. Variance is equal
+fligner.test(CNS ~ clusters, cluster_comp_gui) # not significant. Variance is equal
+fligner.test(Self_Est ~ clusters, cluster_comp_gui) # not significant. Variance is equal
+fligner.test(Self_Eff ~ clusters, cluster_comp_gui) # not significant. Variance is equal
+```
 
 ## Kruskal-Wallis Test: Non-GUI members VS 4 GUI groups
 ```{r}
 # CNS
 kruskal.test(CNS ~ clusters, data = cluster_comp_gui) # p < 0.05 (0.03)
 
-cluster_comp_gui$clusters = factor(cluster_comp_gui$clusters, levels = c("1", "2", "3", "4", "5"))
+cluster_comp_gui$clusters <- factor(cluster_comp_gui$clusters, levels = c("1", "2", "3", "4", "5"))
 
 # post-hoc test - pairwise mann-whitney u-test
-PT = pairwise.wilcox.test(cluster_comp_gui$CNS,
-                          cluster_comp_gui$clusters,
-                          p.adjust.method = "holm")
+PT <- pairwise.wilcox.test(cluster_comp_gui$CNS,
+  cluster_comp_gui$clusters,
+  p.adjust.method = "holm"
+)
 
 PT
 ```
 
-```{r}
+```{r include=FALSE}
 library(dunn.test)
 dunn.test(cluster_comp_gui$CNS, cluster_comp_gui$clusters, method = "holm")
 ```
 
-```{r}
+```{r echo=FALSE}
 # Self-Eff
 kruskal.test(Self_Eff ~ clusters, data = cluster_comp_gui) # p > 0.05 (0.61)
 
@@ -127,29 +163,44 @@ kruskal.test(Self_Est ~ clusters, data = cluster_comp_gui) # p > 0.05 (0.32)
 ## Non-parametric MANOVA
 
 ### 4 groups
+- Non parametric MANOVA test returns that 4 groups are not significantly different in terms of 6 indicators.
+
 ```{r echo=FALSE, message=FALSE}
 library(vegan)
 ## Create the Y matrix of variables under comparison:
 Y <- gui_cluster_data[, c("SOC", "SoCoh", "CNS", "IMI", "Self_Est", "Self_Eff")]
 ## Perform a one-way NPMANOVA:
-adonis(Y ~ gui_cluster_data$clusters, method = "euclidean",
-       permutations = 999)
-
-#Not significant: 4 groups are not significantly different in terms of 6 indicators
+adonis(Y ~ gui_cluster_data$clusters,
+  method = "euclidean",
+  permutations = 999
+)
 ```
 
 ### 5 groups
-```{r}
+- Non parametric MANOVA test returns that 5 groups are significantly different in terms of 6 indicators.
+- However, the p-value fractuares slightly each time running the analysis. It is around 0.05.
+
+- 5 groups are significantly different in terms of `CNS`, `Self-Est` and `Self-Eff`
+
+
+```{r echo=FALSE}
 Z <- cluster_comp_gui[, c("CNS", "Self_Est", "Self_Eff")]
 ## Perform a one-way NPMANOVA:
-adonis(Z ~ cluster_comp_gui$clusters, method = "euclidean",
-       permutations = 999)
-
-#significant (around p=0.05, it fractuates slightly). 5 groups are significantly different in terms of CNS, Self-est and Self-eff
+adonis(Z ~ cluster_comp_gui$clusters,
+  method = "euclidean",
+  permutations = 999
+)
 ```
 
-- by measuring several dependent variables in a single experiment, there is a better chance of discovering which factor is truly important. 
+
+<!-- ```{r} -->
+<!-- Y -->
+<!-- ``` -->
+
+
+### Advantages of MANOVA
+- By measuring several dependent variables in a single experiment, there is a better chance of discovering which factor is truly important. 
 
 - Second, it can protect against Type I errors that might occur if multiple ANOVA’s were conducted independently. Additionally, it can reveal differences not discovered by ANOVA tests.
 
-- the dependent variables should be largely uncorrelated
+- One of the key assumptions is that the dependent variables should be largely uncorrelated
