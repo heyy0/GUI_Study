@@ -1,0 +1,171 @@
+---
+title: "Boxplots by Clusters"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(gt)
+library(patchwork)
+library(lsr)
+library(psych)
+library(reshape)
+```
+
+```{r include=FALSE}
+gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds")) # 4 groups
+```
+
+
+```{r echo=FALSE}
+#Showing 4 graphs by clusters
+#x is rating 1 to 7, and y is scales
+
+g1 <- gui_cluster_data %>%
+  filter(clusters == 1) %>% 
+  dplyr::select(SoCoh, SOC, IMI, CNS, Self_Est, Self_Eff) %>% 
+  melt() %>% 
+  ggplot(aes(factor(variable), value))+
+  geom_boxplot(aes(fill=variable, alpha=0.8))+
+  #geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+  labs(x="Scales", y="Rating (1 to 7)", title="Cluster 1: Fresh Members (n=67)")+
+  #scale_y_continuous(limits = c(1, 7))+
+  expand_limits(y=c(1, 7))+
+  #coord_flip()+
+  theme_minimal() +
+  theme(legend.position = "none")+
+  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
+
+g2 <- gui_cluster_data %>%
+  filter(clusters == 2) %>% 
+  dplyr::select(SoCoh, SOC, IMI, CNS, Self_Est, Self_Eff) %>% 
+  melt() %>% 
+  ggplot(aes(factor(variable), value))+
+  geom_boxplot(aes(fill=variable, alpha=0.8))+
+  #geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+  labs(x="", y="", title="Cluster 2: Long-Term Members (n=28)")+
+  expand_limits(y=c(1, 7))+
+  #coord_flip()+
+  theme_minimal() +
+  theme(legend.position = "none")+
+  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
+
+g3 <- gui_cluster_data %>%
+  filter(clusters == 3) %>% 
+  dplyr::select(SoCoh, SOC, IMI, CNS, Self_Est, Self_Eff) %>% 
+  melt() %>% 
+  ggplot(aes(factor(variable), value))+
+  geom_boxplot(aes(fill=variable, alpha=0.8))+
+  #geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+  labs(x="", y="", title="Cluster 3: Everyday Visitors (n=2)")+
+  expand_limits(y=c(1, 7))+
+  #coord_flip()+
+  theme_minimal() +
+  theme(legend.position = "none")+
+  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
+
+g4 <- gui_cluster_data %>%
+  filter(clusters == 4) %>% 
+  dplyr::select(SoCoh, SOC, IMI, CNS, Self_Est, Self_Eff) %>% 
+  melt() %>% 
+  ggplot(aes(factor(variable), value))+
+  geom_boxplot(aes(fill=variable, alpha=0.8))+
+  #geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+  labs(x="", y="", title="Cluster 4: Committed Frequent Visitors (n=7)")+
+  expand_limits(y=c(1, 7))+
+  #coord_flip()+
+  theme_minimal() +
+  theme(legend.position = "none")+
+  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
+
+g1+g2+g3+g4
+```
+
+
+```{r echo=FALSE}
+c1 <- gui_cluster_data %>%
+  select(CNS, clusters) %>%
+  ggplot(aes(x = clusters, y = CNS, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+  #coord_flip() +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+
+c2 <- gui_cluster_data %>%
+  select(SOC, clusters) %>%
+  ggplot(aes(x = clusters, y = SOC, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+  theme_minimal() +
+  theme(legend.position = "none")
+
+c3 <- gui_cluster_data %>%
+  select(SoCoh, clusters) %>%
+  ggplot(aes(x = clusters, y = SoCoh, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+  theme_minimal() +
+  theme(legend.position = "none")
+
+c4 <- gui_cluster_data %>%
+  select(IMI, clusters) %>%
+  ggplot(aes(x = clusters, y = IMI, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# e4 <- gui_cluster_data %>%
+#   select(IM, clusters) %>%
+#   ggplot(aes(x = clusters, y = IM, group = clusters, fill = clusters)) +
+#   geom_boxplot() +
+#   geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+#   theme_minimal() +
+#   theme(legend.position = "none")
+# 
+# e5 <- gui_cluster_data %>%
+#   select(PComp, clusters) %>%
+#   ggplot(aes(x = clusters, y = PComp, group = clusters, fill = clusters)) +
+#   geom_boxplot() +
+#   geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+#   theme_minimal() +
+#   theme(legend.position = "none")
+# 
+# e6 <- gui_cluster_data %>%
+#   select(PChoice, clusters) %>%
+#   ggplot(aes(x = clusters, y = PChoice, group = clusters, fill = clusters)) +
+#   geom_boxplot() +
+#   geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+#   theme_minimal() +
+#   theme(legend.position = "none")
+
+c5 <- gui_cluster_data %>%
+  select(Self_Eff, clusters) %>%
+  ggplot(aes(x = clusters, y = Self_Eff, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+  theme_minimal() +
+  theme(legend.position = "none")
+
+c6 <- gui_cluster_data %>%
+  select(Self_Est, clusters) %>%
+  ggplot(aes(x = clusters, y = Self_Est, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+  theme_minimal() +
+  theme(legend.position = "none")
+
+c7 <- gui_cluster_data %>%
+  select(age, clusters) %>%
+  ggplot(aes(x = clusters, y = age, group = clusters, fill = clusters)) +
+  geom_boxplot() +
+  geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
+  theme_minimal() +
+  theme(legend.position = "none")
+
+c1 + c2 + c3 + c4 + c5 + c6 + c7 #e4 + e5 + e6 + 
+```
