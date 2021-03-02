@@ -89,7 +89,9 @@ gui_cluster_data %>%
 ```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=8}
 table_1 <- gui_cluster_data %>%
   dplyr::select(
-    age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, CNS, IMI, IM, PComp, PChoice, Self_Est, Self_Eff # , CNS, RC1, RC2, clusters
+    age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, CNS, IMI,
+    #, IM, PComp, PChoice, 
+    Self_Est, Self_Eff # , CNS, RC1, RC2, clusters
   ) %>%
   rename("Frequency" = frequency_coded, "Commitment" = commitment_coded, "# of Programs" = number_programs) %>%
   correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "holm")
@@ -148,7 +150,8 @@ upper
 
 ```{r}
 upper %>%
-  mutate(Variables = c("age", "Frequency", "Commitment", "# of Programs", "SOC", "SoCoh", "CNS", "IMI", "IM", "PComp", "PChoice", "Self_Est", "Self_Eff")) %>%
+  mutate(Variables = c("age", "Frequency", "Commitment", "# of Programs", "SOC", "SoCoh", "CNS", "IMI", "Self_Est", "Self_Eff" #, "IM", "PComp", "PChoice", 
+                       )) %>%
   dplyr::select(Variables, everything()) %>%
   gt()
 ```

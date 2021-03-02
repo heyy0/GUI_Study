@@ -15,6 +15,8 @@ library(gt)
 library(ggplot2)
 library(lattice)
 library(FSA)
+library(boot) # creating table for descriptive stats
+library(table1) # creating table for descriptive stats
 ```
 
 ```{r include=FALSE}
@@ -33,37 +35,99 @@ cluster_comp_gui %>%
   summarize(count = n())
 ```
 
+## Descriptives
+
+```{r include=FALSE}
+table_GUI<- gui_cluster_data %>% 
+  select(-frequency) %>% 
+  mutate(clusters = as.numeric(clusters))
+
+table_GUI_2 <- table_GUI %>% 
+  rename("Age" = age,
+         "Frequency"=frequency_coded,
+         "Commitment" =commitment_coded,
+         "# of Programs"=number_programs) %>% 
+  mutate( 
+    clusters = case_when( # if 0, coded with 0
+   clusters == 1 ~ "Cluster 1",
+   clusters == 2 ~ "Cluster 2",
+   clusters == 3 ~ "Cluster 3",
+       TRUE ~ "Cluster 4"# if not, coded normally
+    ),
+   clusters = 
+     factor(clusters, levels = c("Cluster 1", "Cluster 2", "Cluster 3","Cluster 4"))
+  )
+```
+
+### Age, Gender, and Engagement
+```{r echo=FALSE}
+# Age to # of programs
+table1(~ Age+Frequency+Commitment+`# of Programs`
+       |clusters, data=table_GUI_2)
+```
+
+### Psychometric Scales
+```{r echo=FALSE}
+table1(~ SoCoh+SOC+IMI+CNS+Self_Est+Self_Eff
+       |clusters, data=table_GUI_2)
+```
+
+
 ## Fligner-Killeen test (median)
 - Since the sample size of each cluster is uneven, it is essential to check the homogenity of variance across the four clusters.
 
 - The null hypothesis of Fligner Killeen test is that variance is equall among the groups. If it’s significant, reject the null, and accept that varianle is not equal.
 
-- The results of Fligner Killeen test shows that __`PChoice` and `Self_Est`__ __do not have equal variance__ across the four groups. __The rest of variables__ have __equal variance__ across the groups.
+- The results of Fligner Killeen test shows that `Self_Est`__ __does not have equal variance__ across the four groups. __The rest of variables__ have __equal variance__ across the groups.
 
 ```{r echo=FALSE}
 fligner.test(SOC ~ clusters, gui_cluster_data) # not significant. Variance is equal
 fligner.test(SoCoh ~ clusters, gui_cluster_data) # not significant. Variance is equal
 fligner.test(CNS ~ clusters, gui_cluster_data) # not significant. Variance is equal
 fligner.test(IMI ~ clusters, gui_cluster_data) # not significant. Variance is equal
-fligner.test(IM ~ clusters, gui_cluster_data) # not significant. Variance is equal
-fligner.test(PComp ~ clusters, gui_cluster_data) # not significant. Variance is equal
-fligner.test(PChoice ~ clusters, gui_cluster_data) # Significant. Variance is NOT equal
+# fligner.test(IM ~ clusters, gui_cluster_data) # not significant. Variance is equal
+# fligner.test(PComp ~ clusters, gui_cluster_data) # not significant. Variance is equal
+# fligner.test(PChoice ~ clusters, gui_cluster_data) # Significant. Variance is NOT equal
 fligner.test(Self_Est ~ clusters, gui_cluster_data) # Significant. Variance is NOT equal
 fligner.test(Self_Eff ~ clusters, gui_cluster_data) # not significant. Variance is equal
 ```
 
+### Plots of Variance for `Self_Est`
+As it's shown below, the variance seems quite different: especially `Cluster 3` has much smaller variance compared to the rest of clusters. This is probably due to its small sample size (n=2).
+
+
+```{r echo=FALSE}
+# visualize all the means of `sense` by clusters
+ggboxplot(gui_cluster_data,
+  x = "clusters", y = "Self_Est",
+  color = "clusters", palette = "Dark2",
+  order = c("1", "2", "3", "4"),
+  ylab = "Self_Est", xlab = "Clusters"
+)
+```
+
 
 ## Kruskal-Wallis Test: 4 GUI groups
-```{r}
-# CNS
-kruskal.test(CNS ~ clusters, data = gui_cluster_data) # p > 0.05 (0.747)
-```
-
-```{r}
+```{r echo=FALSE}
 # SOC
 kruskal.test(SOC ~ clusters, data = gui_cluster_data) # p > 0.05 (0.1503)
-```
 
+# SoCoh
+kruskal.test(SoCoh ~ clusters, data = gui_cluster_data) # p > 0.05 (0.460)
+
+# CNS
+kruskal.test(CNS ~ clusters, data = gui_cluster_data) # p > 0.05 (0.747)
+
+# IMI
+kruskal.test(IMI ~ clusters, data = gui_cluster_data) # p > 0.05 (0.538)
+
+# Self-Est
+kruskal.test(Self_Eff ~ clusters, data = gui_cluster_data) # p > 0.05 (529)
+
+# Self-Eff
+kruskal.test(Self_Est ~ clusters, data = gui_cluster_data) # p > 0.05 (0.595)
+
+```
 
 
 <!-- ```{r echo=FALSE} -->
@@ -84,29 +148,16 @@ kruskal.test(SOC ~ clusters, data = gui_cluster_data) # p > 0.05 (0.1503)
 <!--                           gui_cluster_data$clusters, method = "holm") -->
 <!-- ``` -->
 
-```{r}
-# SoCoh
-kruskal.test(SoCoh ~ clusters, data = gui_cluster_data) # p > 0.05 (0.460)
-```
 
-```{r}
-# Self-Est
-kruskal.test(Self_Eff ~ clusters, data = gui_cluster_data) # p > 0.05 (529)
-
-# Self-Eff
-kruskal.test(Self_Est ~ clusters, data = gui_cluster_data) # p > 0.05 (0.595)
-
-# IMI
-kruskal.test(IMI ~ clusters, data = gui_cluster_data) # p > 0.05 (0.538)
-
-# IM
-kruskal.test(IM ~ clusters, data = gui_cluster_data) # p > 0.05 (0.604)
-
-# PChoice
-kruskal.test(PChoice ~ clusters, data = gui_cluster_data) # p > 0.05 (0.396)
-
-# PComp
-kruskal.test(PComp ~ clusters, data = gui_cluster_data) # p > 0.05 (0.647)
+```{r include=FALSE}
+# # IM
+# kruskal.test(IM ~ clusters, data = gui_cluster_data) # p > 0.05 (0.604)
+# 
+# # PChoice
+# kruskal.test(PChoice ~ clusters, data = gui_cluster_data) # p > 0.05 (0.396)
+# 
+# # PComp
+# kruskal.test(PComp ~ clusters, data = gui_cluster_data) # p > 0.05 (0.647)
 ```
 
 ### Comparing Fresh Members and Long-term members
@@ -118,89 +169,93 @@ two_groups <- gui_cluster_data %>%
 wilcox.test(two_groups$SOC ~ two_groups$clusters, mu = 0, alt = "two.sided", conf.int = F, conf.level = 0.95, paired = F, exact = F, correct = T)
 ```
 
-## Fligner-Killeen test for 5 groups
-- The results of Fligner Killeen test shows that __all the variables__ have __equal variance__ across the groups.
-
-```{r echo=FALSE}
-fligner.test(SOC ~ clusters, cluster_comp_gui) # not significant. Variance is equal
-fligner.test(SoCoh ~ clusters, cluster_comp_gui) # not significant. Variance is equal
-fligner.test(CNS ~ clusters, cluster_comp_gui) # not significant. Variance is equal
-fligner.test(Self_Est ~ clusters, cluster_comp_gui) # not significant. Variance is equal
-fligner.test(Self_Eff ~ clusters, cluster_comp_gui) # not significant. Variance is equal
-```
-
-## Kruskal-Wallis Test: Non-GUI members VS 4 GUI groups
-```{r}
-# CNS
-kruskal.test(CNS ~ clusters, data = cluster_comp_gui) # p < 0.05 (0.03)
-
-cluster_comp_gui$clusters <- factor(cluster_comp_gui$clusters, levels = c("1", "2", "3", "4", "5"))
-
-# post-hoc test - pairwise mann-whitney u-test
-PT <- pairwise.wilcox.test(cluster_comp_gui$CNS,
-  cluster_comp_gui$clusters,
-  p.adjust.method = "holm"
-)
-
-PT
-```
-
-```{r include=FALSE}
-library(dunn.test)
-dunn.test(cluster_comp_gui$CNS, cluster_comp_gui$clusters, method = "holm")
-```
-
-```{r echo=FALSE}
-# Self-Eff
-kruskal.test(Self_Eff ~ clusters, data = cluster_comp_gui) # p > 0.05 (0.61)
-
-# Self-Est
-kruskal.test(Self_Est ~ clusters, data = cluster_comp_gui) # p > 0.05 (0.32)
-```
 
 
+<!-- ## Fligner-Killeen test for 5 groups -->
+<!-- - The results of Fligner Killeen test shows that __all the variables__ have __equal variance__ across the groups. -->
 
-## Non-parametric MANOVA
+<!-- ```{r echo=FALSE} -->
+<!-- fligner.test(SOC ~ clusters, cluster_comp_gui) # not significant. Variance is equal -->
+<!-- fligner.test(SoCoh ~ clusters, cluster_comp_gui) # not significant. Variance is equal -->
+<!-- fligner.test(CNS ~ clusters, cluster_comp_gui) # not significant. Variance is equal -->
+<!-- fligner.test(Self_Est ~ clusters, cluster_comp_gui) # not significant. Variance is equal -->
+<!-- fligner.test(Self_Eff ~ clusters, cluster_comp_gui) # not significant. Variance is equal -->
+<!-- ``` -->
 
-### 4 groups
-- Non parametric MANOVA test returns that 4 groups are not significantly different in terms of 6 indicators.
-
-```{r echo=FALSE, message=FALSE}
-library(vegan)
-## Create the Y matrix of variables under comparison:
-Y <- gui_cluster_data[, c("SOC", "SoCoh", "CNS", "IMI", "Self_Est", "Self_Eff")]
-## Perform a one-way NPMANOVA:
-adonis(Y ~ gui_cluster_data$clusters,
-  method = "euclidean",
-  permutations = 999
-)
-```
-
-### 5 groups
-- Non parametric MANOVA test returns that 5 groups are significantly different in terms of 6 indicators.
-- However, the p-value fractuares slightly each time running the analysis. It is around 0.05.
-
-- 5 groups are significantly different in terms of `CNS`, `Self-Est` and `Self-Eff`
-
-
-```{r echo=FALSE}
-Z <- cluster_comp_gui[, c("CNS", "Self_Est", "Self_Eff")]
-## Perform a one-way NPMANOVA:
-adonis(Z ~ cluster_comp_gui$clusters,
-  method = "euclidean",
-  permutations = 999
-)
-```
-
-
+<!-- ## Kruskal-Wallis Test: Non-GUI members VS 4 GUI groups -->
 <!-- ```{r} -->
-<!-- Y -->
+<!-- # CNS -->
+<!-- kruskal.test(CNS ~ clusters, data = cluster_comp_gui) # p < 0.05 (0.03) -->
+
+<!-- cluster_comp_gui$clusters <- factor(cluster_comp_gui$clusters, levels = c("1", "2", "3", "4", "5")) -->
+
+<!-- # post-hoc test - pairwise mann-whitney u-test -->
+<!-- PT <- pairwise.wilcox.test(cluster_comp_gui$CNS, -->
+<!--   cluster_comp_gui$clusters, -->
+<!--   p.adjust.method = "holm" -->
+<!-- ) -->
+
+<!-- PT -->
+<!-- ``` -->
+
+<!-- ```{r include=FALSE} -->
+<!-- library(dunn.test) -->
+<!-- dunn.test(cluster_comp_gui$CNS, cluster_comp_gui$clusters, method = "holm") -->
+<!-- ``` -->
+
+<!-- ```{r echo=FALSE} -->
+<!-- # Self-Eff -->
+<!-- kruskal.test(Self_Eff ~ clusters, data = cluster_comp_gui) # p > 0.05 (0.61) -->
+
+<!-- # Self-Est -->
+<!-- kruskal.test(Self_Est ~ clusters, data = cluster_comp_gui) # p > 0.05 (0.32) -->
 <!-- ``` -->
 
 
-### Advantages of MANOVA
-- By measuring several dependent variables in a single experiment, there is a better chance of discovering which factor is truly important. 
 
-- Second, it can protect against Type I errors that might occur if multiple ANOVA’s were conducted independently. Additionally, it can reveal differences not discovered by ANOVA tests.
 
-- One of the key assumptions is that the dependent variables should be largely uncorrelated
+<!-- ## Non-parametric MANOVA -->
+
+<!-- ### 4 groups -->
+<!-- - Non parametric MANOVA test returns that 4 groups are not significantly different in terms of 6 indicators. -->
+
+<!-- ```{r echo=FALSE, message=FALSE} -->
+<!-- library(vegan) -->
+<!-- ## Create the Y matrix of variables under comparison: -->
+<!-- Y <- gui_cluster_data[, c("SOC", "SoCoh", "CNS", "IMI", "Self_Est", "Self_Eff")] -->
+<!-- ## Perform a one-way NPMANOVA: -->
+<!-- adonis(Y ~ gui_cluster_data$clusters, -->
+<!--   method = "euclidean", -->
+<!--   permutations = 999 -->
+<!-- ) -->
+<!-- ``` -->
+
+
+<!-- ### 5 groups -->
+<!-- - Non parametric MANOVA test returns that 5 groups are significantly different in terms of 6 indicators. -->
+<!-- - However, the p-value fractuares slightly each time running the analysis. It is around 0.05. -->
+
+<!-- - 5 groups are significantly different in terms of `CNS`, `Self-Est` and `Self-Eff` -->
+
+
+<!-- ```{r echo=FALSE} -->
+<!-- Z <- cluster_comp_gui[, c("CNS", "Self_Est", "Self_Eff")] -->
+<!-- ## Perform a one-way NPMANOVA: -->
+<!-- adonis(Z ~ cluster_comp_gui$clusters, -->
+<!--   method = "euclidean", -->
+<!--   permutations = 999 -->
+<!-- ) -->
+<!-- ``` -->
+
+
+<!-- <!-- ```{r} --> -->
+<!-- <!-- Y --> -->
+<!-- <!-- ``` --> -->
+
+
+<!-- ### Advantages of MANOVA -->
+<!-- - By measuring several dependent variables in a single experiment, there is a better chance of discovering which factor is truly important.  -->
+
+<!-- - Second, it can protect against Type I errors that might occur if multiple ANOVA’s were conducted independently. Additionally, it can reveal differences not discovered by ANOVA tests. -->
+
+<!-- - One of the key assumptions is that the dependent variables should be largely uncorrelated -->
