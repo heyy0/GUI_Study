@@ -23,12 +23,16 @@ gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds")) # 4 g
 #Showing 4 graphs by clusters
 #x is rating 1 to 7, and y is scales
 
+green_gradient <- c("#75BB6E", "#58B468", "#08A76C", "#069551", "#078139", "#0A592A")
+green_colors <- c("#C3E0C2", "#58B468", "#08A76C", "#069551", "#4D844C", "#0A592A")
+green_bage <- c("#75BB6E", "#08A76C", "#086E31", "#E3C69E", "#D6AA6F", "#936E3D")
+
 g1 <- gui_cluster_data %>%
   filter(clusters == 1) %>% 
   dplyr::select(SoCoh, SOC, IMI, CNS, Self_Est, Self_Eff) %>% 
   melt() %>% 
   ggplot(aes(factor(variable), value))+
-  geom_boxplot(aes(fill=variable, alpha=0.8))+
+  geom_boxplot(aes(fill=variable, alpha=0.9))+
   #geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   labs(x="Scales", y="Rating (1 to 7)", title="Cluster 1: Fresh Members (n=67)")+
   #scale_y_continuous(limits = c(1, 7))+
@@ -36,21 +40,25 @@ g1 <- gui_cluster_data %>%
   #coord_flip()+
   theme_minimal() +
   theme(legend.position = "none")+
-  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
+  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))+
+  scale_fill_manual(values = green_bage)
+
 
 g2 <- gui_cluster_data %>%
   filter(clusters == 2) %>% 
   dplyr::select(SoCoh, SOC, IMI, CNS, Self_Est, Self_Eff) %>% 
   melt() %>% 
   ggplot(aes(factor(variable), value))+
-  geom_boxplot(aes(fill=variable, alpha=0.8))+
+  geom_boxplot(aes(fill=variable, alpha=0.9))+
   #geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   labs(x="", y="", title="Cluster 2: Long-Term Members (n=28)")+
   expand_limits(y=c(1, 7))+
   #coord_flip()+
   theme_minimal() +
   theme(legend.position = "none")+
-  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
+  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))+
+  scale_fill_manual(values = green_bage)
+
 
 g3 <- gui_cluster_data %>%
   filter(clusters == 3) %>% 
@@ -64,7 +72,8 @@ g3 <- gui_cluster_data %>%
   #coord_flip()+
   theme_minimal() +
   theme(legend.position = "none")+
-  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
+  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))+
+  scale_fill_manual(values = green_bage)
 
 g4 <- gui_cluster_data %>%
   filter(clusters == 4) %>% 
@@ -78,7 +87,8 @@ g4 <- gui_cluster_data %>%
   #coord_flip()+
   theme_minimal() +
   theme(legend.position = "none")+
-  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))
+  theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))+
+  scale_fill_manual(values = green_bage)
 
 g1+g2+g3+g4
 ```
