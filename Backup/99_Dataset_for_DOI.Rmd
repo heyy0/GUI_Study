@@ -1,0 +1,18 @@
+---
+title: "Data Set for DOI"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+df_2 <- readRDS(here::here("data/only_gui_cluster_June4.rds")) %>% select(-survey_filled, -gui_non_gui, -residency ) %>% 
+  rename(first_visit=month_year)
+
+write_csv(df_2, "data/dataset_nature_placemaking_SG_2020.csv")
+```
+
