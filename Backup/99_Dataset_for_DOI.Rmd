@@ -10,9 +10,16 @@ library(tidyverse)
 ```
 
 ```{r}
-df_2 <- readRDS(here::here("data/only_gui_cluster_June4.rds")) %>% select(-survey_filled, -gui_non_gui, -residency ) %>% 
-  rename(first_visit=month_year)
+df_2 <- readRDS(here::here("data/only_gui_cluster_June4.rds")) %>% select(-survey_filled, -gui_non_gui, -residency, -frequency, -commitment) %>% 
+  rename(first_visit=month_year,
+         frequency_visits=frequency_coded,
+         commitment=commitment_coded)
 
-write_csv(df_2, "data/dataset_nature_placemaking_SG_2020.csv")
+#write_csv(df_2, "data/dataset_nature_placemaking_SG_2020.csv")
+```
+
+```{r}
+df_2 %>% select(frequency, frequency_coded)
+df_2 %>% select(commitment, commitment_coded)
 ```
 
