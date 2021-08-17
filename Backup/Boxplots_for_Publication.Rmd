@@ -33,6 +33,7 @@ g1 <- gui_cluster_data %>%
   melt() %>% 
   ggplot(aes(factor(variable), value))+
   geom_boxplot(aes(fill=variable, alpha=0.9))+
+  scale_color_manual(values=c("#E5536B", "#FC9841", "#6FB696"))+
   #geom_point(position = position_jitter(w = 0.2, h = 0), alpha=0.4)+
   labs(x="Scales", y="Rating (1 to 7)", title="Cluster 1: Fresh Members (n=67)")+
   #scale_y_continuous(limits = c(1, 7))+
@@ -41,7 +42,8 @@ g1 <- gui_cluster_data %>%
   theme_minimal() +
   theme(legend.position = "none")+
   theme(plot.title = element_text(face="bold", size = 12, hjust = 0.5))+
-  scale_fill_manual(values = green_bage)
+  scale_color_manual(values=c("#E5536B", "#FC9841", "#6FB696"))
+  #scale_fill_manual(values = green_bage)
 
 
 g2 <- gui_cluster_data %>%
