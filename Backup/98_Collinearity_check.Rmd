@@ -1,0 +1,193 @@
+---
+title: "Collinearity Check"
+date: "Last compiled on `r format(Sys.time(), '%d %b, %Y')`"
+output:
+  rmdformats::readthedown:
+    self_contained: true
+    thumbnails: false
+    lightbox: false
+    toc_depth: 5
+    code_folding: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+# Install and load packages
+packages <- c(
+  "tidyverse",
+  "psych",
+  "corrplot",
+  "heplots",
+  "gt",
+  "lsr"
+  )
+
+# Change to install = TRUE to install the required packages
+pacman::p_load(packages, character.only = TRUE, install = TRUE)
+```
+
+
+```{r include=FALSE}
+gui_cluster_data <- readRDS(here::here("data/only_gui_cluster_June4.rds"))
+```
+
+```{r include=FALSE}
+dat_numeric <- gui_cluster_data %>%
+  dplyr::select(age, frequency_coded, commitment_coded, number_programs, SOC, SoCoh, CNS, IMI, Self_Est, Self_Eff
+                #, IM, PComp, PChoice, RC1, RC2, clusters
+                ) %>%
+  rename("Frequency" = frequency_coded, "Commitment" = commitment_coded, "# of Programs" = number_programs) 
+  #%>% mutate(clusters = as.numeric(clusters))
+
+dat_numeric %>%   pairs()
+```
+
+
+## Visual Inspection: Histogram and Scatter Plot
+
+- The histogram and scatter plot show that `# of programs`, `commitment`, and `frequency` are skewed towards left. Especially, `frequency` has two outliers around 200 and 300
+
+- `Self_Eff` and `Self_Est` also have outliers on the left side (around 1)
+
+```{r}
+ggplot(gather(dat_numeric), aes(value)) +
+  geom_histogram(bins = 15, alpha=0.7, fill="darkgreen") +
+  facet_wrap(~key, scales = "free") +
+  labs(x = "", y = "") +
+  theme_minimal()
+#All major indicators do not seem to be normally distributed
+```
+
+```{r}
+# function better_smooth from https://github.com/m-clark/generalized-additive-models/blob/master/funcs/better_smooth.R
+
+better_smooth <- function(data, mapping, ptcol, ptalpha = 1, ptsize = 1, linecol, ...) {
+  p <- ggplot(data = data, mapping = mapping) +
+    geom_point(color = ptcol, alpha = ptalpha, size = ptsize) +
+    geom_smooth(color = linecol, ...)
+  p
+}
+```
+
+```{r out.width='85%', fig.asp=.85}
+library(GGally)
+ggpairs(dat_numeric,
+  lower = list(continuous = GGally::wrap(better_smooth,
+    ptalpha = .25, ptcol = "#E3C69E", ptsize = 1,
+    linecol = "#078139", method = "loess", se = F, lwd = .5
+  )),
+  diag = list(continuous = GGally::wrap("densityDiag", color = "gray50", lwd = .5)),
+  axisLabels = "none") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    panel.grid.major = element_blank(),
+    axis.ticks = element_blank(),
+    text = element_text(size=6, angle = 45)
+  )
+
+#"#936E3D", "#D6AA6F", "#E3C69E", "#C3E0C2", "#58B468", "#078139"
+#"#ff5500"
+#03b3ff
+```
+
+## Correlation Analysis
+- __`Correlation Test (Spearman's Rank Test with Holm adjustment)`__ shows correlation r by the figures and highlights: towards __shades of blue__ mean __negative__ and __shades of red__ mean __positive correlations__. 
+
+- Those squares with no stars (white) are non-significant correlations (p> 0.05). * = _p_ < 0.05, "* * *" = _p_ < 0.001, "* * * * " = _p_ < 0.0001
+
+- It's observed that __Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation Inventry (`IMI`)__ show __significant correlations (moderate to strong)__ among them.   
+
+<!-- - The subset of __Intrinsic Motivation Inventry (`IMI`)__, including __Intrinsic Motivation (enjoyment/ intetests: `IM`)__, __Perceived Competence (`PComp`)__ and __Perceived Chocie (`PChoice`)__ also __show significant correlations__ with `SOC` and `SoCoh` (however, the correlations are weaker compared to the ones with `IMI`) -->
+
+- `Frequency`, `Commitment`, and number of types of programs attended (`# of Programs`) also show moderate to strong correlations (Spearman). However, __the correlation test with Pearson__ only __showed a weak correlation (r=0.23, Pearson)__.
+  
+- __Those who visit GUI frequently__ seems to have __a higher `SOC`__ (significant at p< 0.001). Earlier studies from Community Psychology support these findings: __sense of community can be built through frequent interactions over the long term__ (Christens & Peterson, 2010; Bidee, 2013; Oostlander et al., 2013). 
+
+- It is interesting to note that `# of Programs` shows a significant correlation with `SoCoh` and `IMI`, implying that those who have attended more number of different types of programs have higher degrees of `SoCoh` and `IMI`.
+
+- Although `Frequency` and `# of Programs` show a significant correlation with at least one psychometric scale (`SOC` for `Frequency`, and `SoCoh` and `IMI` for `# of Programs`), `Commitment` does not show significant correlations with any psychometric scales. However, correlation R for `Commitment` are postive and, they are weak to moderate (0.11 to 0.25)
+
+
+<!-- Whereas, `SoCoh` (Social Cohesion) does not show any significant correlations with  `Frequency` and `Commitment`, indicating that `SoCoh` does not develop over time through frequent interactions.     -->
+  
+- There is __a strong correlation__ between __Nature Connection (`CNS`)__ and __Intrinsic Motivation (`IMI`)__ (r=0.47)__, implying that __those who are self-motivated also have a high sense of nature connection.__
+
+- `CNS` is also significantly correlated with `SOC` and `Self_Eff`.
+  
+<!-- - The number of __program types attended__ (`# of Programs`) shows __significant positive correlations__ with __`Frequency`, `Commitment`, Sense of Community (`SOC`),  Social Cohesion (`SoCoh`), and Intrinsic Motivation (`IMI`)__. Hence, __more committed members__ with __a higher sense of community__ engage in __a variety of programs__. It is also interesting to note that `# of Programs` shows a significant negative correlation with `age`: __older GUI members__ attend __less variety of GUI programs__. -->
+
+- This correlation test did not show significant correlations between __1) frequency and commitment, and 2) Social Cohesion (`SoCoh`)__ and __Nature connection (`CNS`)__. This suggests that even the new members may have high degree of __Social Cohesion__ and __Nature Connection__. As the focus group discussion with GUI volunteers noted, perhaps __GUI members__ can gain a sense of Social Cohesion __immediately__ through their engagement at GUI. Regarding the Nature Connection, it seems that __those who visit GUI already have a higher sense of nature connection__. Therefore, it doesn't seem to change much over time.
+
+  
+
+```{r}
+table_1 <- dat_numeric %>% 
+  lsr::correlate(test = TRUE, corr.method = "spearman", p.adjust.method = "holm")
+
+library(corrplot)
+
+confident_95 <- table_1$p.value
+cor_M <- table_1$correlation
+
+#col <- colorRampPalette(c("#4477AA", "#77AADD", "#FFFFFF", "#EE9988", "#BB4444"))
+col <- colorRampPalette(c("#936E3D", "#D6AA6F", "#E3C69E", "#C3E0C2", "#58B468", "#078139"))
+
+corrplot(cor_M,
+  method = "color", col = col(200),
+  type = "upper", number.cex = .7,
+  addCoef.col = "black", # Add coefficient of correlation
+  tl.col = "black", tl.srt = 45, tl.cex = 0.7, # Text label color and rotation
+  # Combine with significance
+  p.mat = confident_95,
+  #sig.level = c(.001, .01, .05), insig = "label_sig",
+  pch.cex = 1, pch.col = "white",
+  # hide correlation coefficient on the principal diagonal
+  diag = FALSE,
+  # title = "Correlation Test (Spearman's Rank Test. Holm Adjustment)",
+  mar = c(0, 0, 5, 0)
+)
+```
+
+
+<!-- ```{r include=FALSE} -->
+
+<!-- corrplot(cor_M, -->
+<!--   method = "color", col = col(200), -->
+<!--   type = "upper", number.cex = .7, -->
+<!--   #addCoef.col = "black", # Add coefficient of correlation -->
+<!--   tl.col = "black", tl.srt = 45, tl.cex = 0.7, # Text label color and rotation -->
+<!--   # Combine with significance -->
+<!--   p.mat = confident_95, -->
+<!--   sig.level = c(.001, .01, .05), insig = "label_sig", -->
+<!--   pch.cex = 0, pch.col = "white", -->
+<!--   # hide correlation coefficient on the principal diagonal -->
+<!--   diag = FALSE, -->
+<!--   # title = "Correlation Test (Spearman's Rank Test. Holm Adjustment)", -->
+<!--   mar = c(0, 0, 5, 0) -->
+<!-- ) -->
+<!-- ``` -->
+
+## Table
+
+```{r include=FALSE}
+cor_summary <- cor_M %>% round(., 3)
+
+upper <- cor_summary
+upper[upper.tri(cor_summary)] <- ""
+upper <- as.data.frame(upper)
+upper
+```
+
+```{r}
+upper %>%
+  mutate(Variables = c("age", "Frequency", "Commitment", "# of Programs", "SOC", 
+                       "SoCoh", "CNS", "IMI", "Self_Est", "Self_Eff" #, "IM", "PComp", "PChoice", 
+                       )) %>%
+  dplyr::select(Variables, everything()) %>%
+  gt()
+```
+
