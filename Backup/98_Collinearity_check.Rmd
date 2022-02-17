@@ -1,17 +1,21 @@
 ---
 title: "Collinearity Check"
 date: "Last compiled on `r format(Sys.time(), '%d %b, %Y')`"
-output:
-  rmdformats::readthedown:
-    self_contained: true
-    thumbnails: false
-    lightbox: false
-    toc_depth: 5
-    code_folding: hide
+output: html_document
 editor_options: 
   chunk_output_type: console
 ---
 
+
+<!-- output: -->
+<!--   rmdformats::readthedown: -->
+<!--     self_contained: true -->
+<!--     thumbnails: false -->
+<!--     lightbox: false -->
+<!--     toc_depth: 5 -->
+<!--     code_folding: hide -->
+<!-- editor_options:  -->
+<!--   chunk_output_type: console -->
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
